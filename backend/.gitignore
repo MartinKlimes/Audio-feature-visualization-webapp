@@ -1,0 +1,10 @@
+# Editor directories and files
+.idea/
+
+# Python cache files
+*.pyc
+
+# sound files
+*.wav
+
+*.mp3
