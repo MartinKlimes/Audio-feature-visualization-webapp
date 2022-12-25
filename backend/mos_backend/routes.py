@@ -2,7 +2,7 @@ from mos_backend import app, db, bcrypt, jwt
 from mos_backend.db_models import User, Recording
 
 from pydub import AudioSegment
-from requests_toolbelt import MultipartEncoder
+# # from requests_toolbelt import MultipartEncoder
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
@@ -155,7 +155,7 @@ def register():
 
 
 @app.route('/upload-audio-file', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def upload_audio_file():
     user = current_user
     file = request.files['file']

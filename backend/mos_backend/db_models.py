@@ -17,7 +17,7 @@ class Recording(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(128), unique=False, nullable=False)
     filepath = db.Column(db.String(128), unique=True, nullable=False)
-    ground_truth = db.Column(db.String(128), unique=True, nullable=False)
+    ground_truth = db.Column(db.String(128), unique=True, nullable=True)
     # optional parameters
     year = db.Column(db.Integer, unique=False, nullable=True)
     performer = db.Column(db.String(128), unique=False, nullable=True)
