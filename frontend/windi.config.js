@@ -10,6 +10,7 @@ export default {
         'btn-blue': 'text-white bg-blue-800 hover:bg-blue-700 transition',
         'btn-dark': 'text-white bg-black hover:bg-dark-50 transition',
         'btn-disabled': 'text-white bg-dark-800 opacity-50 cursor-default',
+        'btn-blue-border': 'text-white bg-blue-400 hover:bg-blue-700 transition',
 
         'input-field': 'h-7 mb-5 p-2 rounded-md text-black text-sm',
         'input-field-nomargin': 'h-7 p-2 rounded-md text-black text-sm',

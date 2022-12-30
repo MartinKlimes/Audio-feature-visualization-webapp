@@ -20,15 +20,7 @@ const year = '1994';
 const tracklistGlobalState = tracklistState();
 const {tracklistExpanded} = storeToRefs(tracklistGlobalState);
 
-function deleteTrack(trackToDelete){
-    const fileToRemove = currentTrackList.trackName[0].indexOf(trackToDelete)
-    currentTrackList.trackName[0].splice(fileToRemove, 1);
-    api.get('/delete-audio-file/'+trackToDelete)
-    .then((response) => {
-        showAlert(response.data.message);
-        setTimeout(closeAlert, 1000);
-    })
-}
+
 
 </script>
 

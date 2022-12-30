@@ -20,7 +20,7 @@ const routes = [
         
     
         beforeEnter: async (to, from) => {
-  
+           
             let loginCheck; 
             const currentUserInfo = userInfo();
 

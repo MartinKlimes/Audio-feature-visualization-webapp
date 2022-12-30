@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { api } from '../custom'
+
 
 export const alertState = defineStore('alertState', 
 {
@@ -42,13 +44,24 @@ export const trackInfo = defineStore('trackInfo',
 export const trackList = defineStore('trackList', 
 {
     state: () => ({ 
-        trackName: '',
+        trackName: [],
     }),
-    // actions: {
-    //     addToTrackList(trackList){
-    //         this.trackName.push(trackList)
-    //     }
-    // }
+    actions: {
+        // addTrackList(trackList){
+        //     this.trackName.push(trackList)
+        // },
+        getTrackList(){
+            api.get('http://127.0.0.1:5000/get-track-list')
+            .then((response) => {   
+                this.trackName = []
+                this.trackName.push(response.data) 
+                
+            // currentTrackList.trackName = trackName
+            // currentTrackList.addToTrackList(response.data)
+            })
+        }
+    }
+
 })
 
 export const trackIndex = defineStore('trackIndex', 
