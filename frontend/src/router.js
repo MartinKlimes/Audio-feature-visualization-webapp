@@ -7,7 +7,7 @@ import {loggedIn} from './cookieHandling'
 
 import {showAlert, closeAlert} from './alerts'
 import { userInfo } from './globalStores';
-import { getTrackList } from './filesFunctions'
+
 
 
 
@@ -31,7 +31,7 @@ const routes = [
                     loginCheck = true;
                     currentUserInfo.username = response.data.username;
                  
-                    getTrackList()
+ 
                     // console.log(response.data.exp);
                     
                 }

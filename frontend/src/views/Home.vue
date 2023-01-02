@@ -1,24 +1,30 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue';
-import AudioTrackSide from '../components/AudioTrackSide.vue'
-import UploadModal from '../components/UploadModal.vue';
-import MainPanel from '../components/MainPanel.vue';
+import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
+import UploadModal from '../components/trackManager/UploadModal.vue';
+import MainPanel from '../components/MainPanel/MainPanel.vue';
 import { tracklistState, uploadModalState, trackList } from '../globalStores';
 import Waveform from '../components/Waveform.vue';
 import Spectrogram from '../components/Spectrogram.vue';
-import { getTrackList } from '../filesFunctions'
+
 import {trackFromStart} from '../Waveform.js'
 import PianoRoll from '../components/PianoRoll.vue';
 import { api } from '../../custom';
 import { getCookie } from '../cookieHandling';
+
 
 const trackListGlobalState = tracklistState();
 const currentTrackList = trackList();
 const isWaveform = ref(true)
 const isSpectrogram = ref(false)
 const isPianoRoll = ref(false)
+
+onBeforeMount(() => {
+    currentTrackList.getTrackList()
+})
+
 
 const axiosConfig = {
     headers: {

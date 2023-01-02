@@ -54,8 +54,9 @@ export const trackList = defineStore('trackList',
             api.get('http://127.0.0.1:5000/get-track-list')
             .then((response) => {   
                 this.trackName = []
-                this.trackName.push(response.data) 
-                
+                response.data.forEach(oneTrackName => {
+                    this.trackName.push(oneTrackName)
+                });
             // currentTrackList.trackName = trackName
             // currentTrackList.addToTrackList(response.data)
             })

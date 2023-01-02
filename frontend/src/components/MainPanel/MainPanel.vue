@@ -1,17 +1,17 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import { onMounted, reactive, ref } from 'vue';
-import {showVolume,hideVolume, playAll, pauseAll, stopAll, muteAll, showIOIBtnIBIBtn} from '../filesFunctions'
-import { makeWaveform, wavesurfer, trackFromStart} from '../Waveform';
-import { trackList, trackIndex } from '../globalStores';
-import { api } from '../../custom';
-import {getCookie} from '../cookieHandling'
+import {showVolume,hideVolume, playAll, pauseAll, stopAll, muteAll, showIOIBtnIBIBtn} from '../../filesFunctions'
+import { makeWaveform, wavesurfer, trackFromStart} from '../../Waveform';
+import { trackList, trackIndex } from '../../globalStores';
+import { api } from '../../../custom';
+import {getCookie} from '../../cookieHandling'
 
-import TimeSelection from './MainPanel/TimeSelection.vue';
-import BarSelection from './MainPanel/BarSelection.vue';
-import InterMeasureInterval from './MainPanel/InterMeasureInterval.vue';
-import OnsetBeatsIntervals from './MainPanel/OnsetBeatsIntervals.vue';
-import MIDI from './MainPanel/MIDI.vue';
+import TimeSelection from './TimeSelection.vue';
+import BarSelection from './BarSelection.vue';
+import InterMeasureInterval from './InterMeasureInterval.vue';
+import OnsetBeatsIntervals from './OnsetBeatsIntervals.vue';
+import MIDI from './MIDI.vue';
 
 const globalTrackIndex = trackIndex()
 

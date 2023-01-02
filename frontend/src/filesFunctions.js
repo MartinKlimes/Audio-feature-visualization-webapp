@@ -41,16 +41,16 @@ export const changeBackground = name => {
     }
 }
 
-export function getTrackList(){
-    const currentTrackList = trackList();
-    api.get('http://127.0.0.1:5000/get-track-list')
-    .then((response) => {   
-        let trackName = []
-        trackName.push(response.data) 
-        currentTrackList.trackName = trackName
-        // currentTrackList.addToTrackList(response.data)
-    })
-}
+// export function getTrackList(){
+//     const currentTrackList = trackList();
+//     api.get('http://127.0.0.1:5000/get-track-list')
+//     .then((response) => {   
+//         let trackName = []
+//         trackName.push(response.data) 
+//         currentTrackList.trackName = trackName
+//         // currentTrackList.addToTrackList(response.data)
+//     })
+// }
 
 // function hideWaveform(id){ 
 //     document.getElementById(`timeline-${id}`).style.display = "none"

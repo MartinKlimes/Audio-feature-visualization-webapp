@@ -39,3 +39,5 @@ alert:
   usernameexists: Username is already taken.
 
 not-found: Not Found
+
+edit-trackName: Name of track is too short.

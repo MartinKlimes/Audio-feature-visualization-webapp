@@ -1,14 +1,14 @@
 <script setup>
 
-import { tracklistState, trackList } from '../globalStores';
+import { tracklistState, trackList } from '../../globalStores';
 import { storeToRefs } from 'pinia'
-import { api } from '../../custom';
-import UploadModal from '../components/UploadModal.vue';
+import { api } from '../../../custom';
+import UploadModal from './UploadModal.vue';
 import { reactive, ref } from 'vue'
 import { Icon } from '@iconify/vue';
-import {showAlert, closeAlert} from '../alerts'
-import { uploadModalState } from '../globalStores';
-import {getAudioFile} from  '../filesFunctions'
+import {showAlert, closeAlert} from '../../alerts'
+import { uploadModalState } from '../../globalStores';
+import {getAudioFile} from  '../../filesFunctions'
 
 
 const currentTrackList = trackList();
@@ -26,7 +26,7 @@ const {tracklistExpanded} = storeToRefs(tracklistGlobalState);
 
 
 <template>
-    <div v-for="(trackname, i) in currentTrackList.trackName[0]" :id="`file-${i}`" :key="trackname">
+    <div v-for="(trackname, i) in currentTrackList.trackName" :id="`file-${i}`" :key="trackname">
         <div v-if="!(trackname.includes('...') || trackname.includes('\(trim.'))">
             <div class="py-2 px-4 rounded-md text-black bg-light-900 hover:bg-gray-400 transition audio-track h-10" :id="`audioList-${trackname}`">
                     <div class="track-name cursor-pointer"

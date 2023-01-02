@@ -1,17 +1,17 @@
 <script setup>
 import TrackManager from "./TrackManager.vue";
-import { trackList, uploadModalState } from "../globalStores";
+import { trackList, uploadModalState } from "../../globalStores";
 import { storeToRefs } from "pinia";
 import { Icon } from "@iconify/vue";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { ref } from "vue";
-import { getCookie } from "../cookieHandling";
-import { api } from "../../custom";
-import { showAlert, closeAlert } from "../alerts";
+import { getCookie } from "../../cookieHandling";
+import { api } from "../../../custom";
+import { showAlert, closeAlert } from "../../alerts";
 
 // import { useDraggable } from '@vueuse/core'
 // import { ref } from 'vue'
-import { getAudioFile, getTrackList } from "../filesFunctions";
+import { getAudioFile } from "../../filesFunctions";
 
 const uploadModalGlobalState = uploadModalState();
 const { uploadModalVisible } = storeToRefs(uploadModalGlobalState);
@@ -64,7 +64,6 @@ function uploadAllFiles() {
 // progress bar načítání podle dat ze serveru ne podle css třídy
 
 function uploadOneFile(file, id) {
-
   if (!isUploaded[id]) {
     let formData = new FormData();
     formData.append("file", file);
@@ -90,20 +89,21 @@ function uploadOneFile(file, id) {
       .then(function (response) {
         // uploadCheck.style.visibility = "visible";
         isUploaded.value[id] = true;
-        currentTrackList.getTrackList()
-
+        currentTrackList.getTrackList();
       });
   }
 }
 
 const upload = ($event) => {
   isDragover.value = false;
-  const files = $event.dataTransfer ? [...$event.dataTransfer.files] : [...$event.target.files]
+  const files = $event.dataTransfer
+    ? [...$event.dataTransfer.files]
+    : [...$event.target.files];
 
-  let audioTypes = 'audio/*'
+  let audioTypes = "audio/*";
   for (let i = 0; i < files.length; i++) {
     if (files[i].type.match(audioTypes)) {
-      if (!currentTrackList.trackName[0].includes(files[i].name)) {
+      if (!currentTrackList.trackName.includes(files[i].name)) {
         fileNameList.push(files[i].name);
         fileList.push(files[i]);
         isUploaded.value.push(false);
@@ -115,8 +115,7 @@ const upload = ($event) => {
   }
   setTimeout(() => {
     uploadAllFiles();
-  },0);
-
+  }, 0);
 };
 
 // const uploadModalElement = ref(null);
@@ -141,43 +140,48 @@ const upload = ($event) => {
           >
             <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
               <span class="card-title">Upload</span>
-              <Icon icon="material-symbols:close" class="float-right text-2xl -m-3  hover:bg-gray-300 transition cursor-pointer"/>
-             
+              <Icon
+                icon="material-symbols:close"
+                class="float-right text-2xl -m-3 hover:bg-gray-300 transition cursor-pointer"
+                @click="closeUploadModal"
+              />
             </div>
-            <div class="p-6 overflow-y-auto">
+            <div class="p-6">
               <label for="added-files">
-              <!-- Upload Dropbox -->
-              <div
-                class="w-full px-10 py-20 rounded text-center cursor-pointer border border-dashed border-gray-400 text-gray-400 transition duration-500 hover:text-white hover:bg-green-400 hover:border-green-400 hover:border-solid"
-                :class="{
-                  'bg-green-400 border-green-400 border-solid': isDragover,
-                }"
-                @drag.prevent.stop=""
-                @dragstart.prevent.stop=""
-                @dragend.prevent.stop="isDragover = false"
-                @dragover.prevent.stop="isDragover = true"
-                @dragenter.prevent.stop="isDragover = true"
-                @dragleave.prevent.stop="isDragover = false"
-                @drop.prevent.stop="upload($event)"
-              >
-                <Icon icon="uil:upload" class="text-2xl" /> <br />
-                <h5>Choose a file or drag it here</h5>
-                <input
-                  id="added-files"
-                  type="file"
-                  class="hidden"
-                  accept="audio/*"
-                  multiple
-                  @change="upload($event), $event.target.value = ''"
-                  
-                />
-              </div>
-            </label>
-              <hr class="my-6" />
+                <!-- Upload Dropbox -->
+                <div
+                  class="w-full px-10 py-20 rounded text-center cursor-pointer border border-dashed border-gray-400 text-gray-400 transition duration-500 hover:text-white hover:bg-green-400 hover:border-green-400 hover:border-solid"
+                  :class="{
+                    'bg-green-400 border-green-400 border-solid': isDragover,
+                  }"
+                  @drag.prevent.stop=""
+                  @dragstart.prevent.stop=""
+                  @dragend.prevent.stop="isDragover = false"
+                  @dragover.prevent.stop="isDragover = true"
+                  @dragenter.prevent.stop="isDragover = true"
+                  @dragleave.prevent.stop="isDragover = false"
+                  @drop.prevent.stop="upload($event)"
+                >
+                  <Icon icon="uil:upload" class="text-2xl" /> <br />
+                  <h5>Choose a file or drag it here</h5>
+                  <input
+                    id="added-files"
+                    type="file"
+                    class="hidden"
+                    accept="audio/*"
+                    multiple
+                    @change="upload($event), ($event.target.value = '')"
+                  />
+                </div>
+              </label>
+              <hr class="my-6 "  />
               <!-- Progess Bars -->
-              <div v-for="(filename, i) in fileNameList"
+              <div class="h-auto max-h-72 overflow-y-auto">
+              <div
+                v-for="(filename, i) in fileNameList"
                 :id="`file-${i}`"
                 :key="filename"
+                
               >
                 <div class="mb-4">
                   <!-- File Name -->
@@ -202,6 +206,7 @@ const upload = ($event) => {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>
