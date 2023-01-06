@@ -9,13 +9,15 @@ import { ref } from "vue";
 
 const currentTrackList = trackList();
 
-const deleteTrack = (event) => {
-  currentTrackList.trackName.splice(event.index, 1);
-  api.get('/delete-audio-file/'+event.name)
+const deleteTrack = async(event) => {
+  
+  await api.get('/delete-audio-file/'+event.name)
   .then((response) => {
-      showAlert(response.data.message);
-      setTimeout(closeAlert, 1500);
+    showAlert(response.data.message);
+    setTimeout(closeAlert, 1500);
+    currentTrackList.trackName.splice(event.index, 1);
   })
+
 };
 
 </script>

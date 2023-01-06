@@ -14,6 +14,7 @@ const state = reactive({
   in_submission: false,
   showForm: false,
   showAlert: false,
+  trackSelected: false,
   alert_variant: "",
   alert_message: "",
 });
@@ -62,24 +63,32 @@ const rules = computed(() => ({
 }));
 
 const v$ = useVuelidate(rules, { modifiedName });
+const useTrack = () => {
+  state.trackSelected = !state.trackSelected
+}
 </script>
 
 <template>
+  
   <div
-    class="border border-gray-200 p-3 mb-4 rounded"
-    :class="{ 'bg-gray-200 border-gray-400': state.showForm }"
+  
+    class="border border-gray-200 p-3 mb-4 rounded md:text-2xl cursor-pointer hover:bg-gray-100"
+    :class="{ 'bg-gray-200 border-gray-400': state.showForm, 'bg-yellow-100 border-2 border-yellow-400 border-dashed shadow-md shadow-gray-400 hover:bg-yellow-100 ': state.trackSelected & !state.showForm}"
+    
+    @click="useTrack"
   >
     <div>
-      <h4 class="inline-block text-2xl font-bold ">{{ name }}</h4>
+      <h4 class="inline-block font-bold">{{ name }}</h4>
       <button
-        class="ml-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right"
+      title="Delete song"
+        class="ml-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
         @click="$emit('deleteTrack', props)"
       >
         <Icon icon="fa:times" />
       </button>
       <button
         title="Rename song"
-        class="ml-1 py-1 px-2 text-xs rounded text-white bg-green-600 float-right"
+        class="ml-1 py-1 px-2 text-xs rounded text-white bg-green-600 hover:bg-green-500 float-right"
         @click="state.showForm = !state.showForm"
       >
         <Icon icon="fa:pencil" />

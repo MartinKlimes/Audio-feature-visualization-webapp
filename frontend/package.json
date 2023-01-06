@@ -20,12 +20,14 @@
     "vue": "^3.2.25",
     "vue-i18n": "^9.1.9",
     "vue-router": "4",
+    "vuedraggable": "^4.1.0",
     "wavesurfer.js": "^6.2.0"
   },
   "devDependencies": {
     "@iconify/vue": "^3.2.1",
     "@intlify/vite-plugin-vue-i18n": "^3.4.0",
     "@vitejs/plugin-vue": "^2.2.0",
+    "@windicss/plugin-animations": "^1.0.9",
     "vite": "^2.9.5",
     "vite-plugin-windicss": "^1.8.3",
     "windicss": "^3.5.1"

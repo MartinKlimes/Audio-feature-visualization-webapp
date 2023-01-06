@@ -40,7 +40,7 @@ const getSpectrogram = (id) => {
 <template>
   <div>
     <div id="spectrograms" class="relative">
-      <img :id="`Spectrogram-${id}`" class="h-80" />
+      <!-- <img :id="`Spectrogram-${id}`" class="h-80" /> -->
       <div
         :class="{ hide: !state.isSpectrogramHide }"
         :id="`showSpectBtn-${id}`"
@@ -68,9 +68,7 @@ const getSpectrogram = (id) => {
             clickOnSpectrogram(id);
           "
         >
-          <button class="bg-dark-100 text-base" @click="getSpectrogram(id)">
-            Get Spectrogram
-          </button>
+
           <Icon
             icon="ep:arrow-up"
             :inline="true"

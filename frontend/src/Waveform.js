@@ -164,8 +164,9 @@ function createWavesurfer(audio,trackName){
     scrollParent: true,
     autoCenter: true,
     responsive: true, 
-    
-    barMinHeight: 20,
+    normalize: true,
+    pixelRatio: 1,
+    height: 200,
     xhr: {credentials: "include"},
  
     plugins: [
