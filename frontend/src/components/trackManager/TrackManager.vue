@@ -3,7 +3,7 @@ import { Icon } from "@iconify/vue";
 import { trackList } from "../../globalStores";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
-import RenameTrack from "./RenameTrack.vue";
+import EditTrack from "./EditTrack.vue";
 import { ref } from "vue";
 
 
@@ -25,19 +25,20 @@ const deleteTrack = async(event) => {
 <template>
   <div class="bg-white rounded border border-b-gray-200 relative flex flex-col">
     <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
-      <span class="card-title">My audio</span>
-      <Icon
-        icon="material-symbols:audio-file-outline"
-        class="ml-3 text-lg"
-        :inline="true"
-      />
+
+        <span class="card-title">My audio</span>
+        <Icon
+          icon="material-symbols:audio-file-outline"
+          class="ml-3 text-lg"
+          :inline="true"
+        />
     </div>
     <div class="p-6 h-150 overflow-y-auto">
       
-      <RenameTrack
+      <EditTrack
         v-for="(trackName, i) in currentTrackList.trackName"
         :key="trackName"
-        :name="trackName"
+        :name="trackName[0]"
         :index="i"
         @deleteTrack="deleteTrack($event)"
       />

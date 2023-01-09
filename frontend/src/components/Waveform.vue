@@ -112,7 +112,7 @@ const playTrack = (id) => {
         
     </div>
     </transition>
-    <Icon icon="ci:close-small" v-show="!state.isWaveformHide" class="hover:bg-gray-300 transition cursor-pointer top-0 right-0 absolute -my-1  -mr-4.25 text-black" @click="deleteVisualization(id)"/>
+    <!-- <Icon icon="ci:close-small" v-show="!state.isWaveformHide" class="hover:bg-gray-300 transition cursor-pointer top-0 right-0 absolute -my-1  -mr-4.25 text-black" @click="deleteVisualization(id)"/> -->
 
     <div :class="{hide : state.isWaveformHide}" :id="`timeline-${trackname[0].replace(/\.|\(|\)|\ /g, '')}`" ></div>
 

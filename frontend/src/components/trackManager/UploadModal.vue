@@ -128,6 +128,7 @@ const upload = ($event) => {
   <section
     v-if="uploadModalVisible"
     class="flex justify-center items-center absolute top-0 left-0 w-full h-full z-22 bg-dark-600 bg-opacity-50"
+   
   >
     <section class="container mx-auto mt-6">
       <div class="md:grid md:grid-cols-3 md:gap-4">

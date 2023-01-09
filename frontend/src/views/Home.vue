@@ -14,24 +14,19 @@ import {trackFromStart} from '../Waveform.js'
 import PianoRoll from '../components/PianoRoll.vue';
 import { api } from '../../custom';
 import { getCookie } from '../cookieHandling';
-import Draggable from '../components/Draggable.vue';
+
+import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 
 const trackListGlobalState = tracklistState();
 const currentTrackList = trackList();
 const isWaveform = ref(true)
 const isSpectrogram = ref(true)
 const isPianoRoll = ref(false)
+const hideSettingPanel = ref(false)
+const hideTracklistPanel = ref(false)
 
 onBeforeMount(() => {
     currentTrackList.getTrackList()
-})
-
-onBeforeRouteLeave((to, from) => {
-      const answer = window.confirm(
-        'Do you really want to leave? you have unsaved changes!'
-      )
-      // cancel the navigation and stay on the same page
-      if (!answer) return false
 })
 
 const axiosConfig = {
@@ -62,27 +57,94 @@ const axiosConfig = {
 function expandTracklist() {
     
     const tracklist = document.getElementById('tracklist');
-    const tracklistContent = document.getElementById('tracklist-content');
+    // const tracklistContent = document.getElementById('tracklist-content');
     const tracklistButton = document.getElementById('arrow');
     const addTrackBtn = document.getElementById('add-track-btn');
+    const content = document.getElementById('content');
+    const panel = document.getElementById('visualization-settings');
 
     if (trackListGlobalState.tracklistExpanded) {
         trackListGlobalState.tracklistExpanded = false;
-        tracklist.style.transform = 'translateX(-50%)';
-        tracklistContent.style.paddingLeft = '15rem';        
-        tracklistButton.style.borderLeft = '0.5rem solid black';
-        tracklistButton.style.borderRight = '0rem'
-        addTrackBtn.style.marginLeft = '15rem';
+        
+        tracklist.style.transform = 'translateX(0%)';
+        tracklist.style.transition = 'transform 0s'
+        content.style.transform = 'translateX(0rem)'
+        content.style.transition = 'transform 0s'
+
+        if(panel.style.transform === 'translateX(5.5rem)'){
+            content.style.width = '87.5vw'
+        }else{
+            content.style.width = '82.9vw'
+            
+        }
+        // tracklistContent.style.paddingLeft = '15rem';        
+        tracklistButton.style.borderRight = '0.5rem solid black';
+        tracklistButton.style.borderLeft = '0rem'
+        // addTrackBtn.style.marginLeft = '15rem';
     }
     else {
         trackListGlobalState.tracklistExpanded = true;
+        tracklist.style.transform = 'translateX(-98.5%)';
+        tracklist.style.transition = 'transform 0.4s'
+        content.style.transform = 'translateX(-15rem)'
+        content.style.transition = 'transform 0.4s'
+        tracklistButton.style.borderLeft = '0.5rem solid black'
+        tracklistButton.style.borderRight = '0rem';
+    
+        if (panel.style.transform === ''){
+            content.style.width = '95vw' 
+            // alert('asfd')
+        } else {
+            content.style.width = '100vw' 
+        }
         
-        tracklist.style.transform = 'translateX(-0%)';
-        tracklistContent.style.paddingLeft = '0%';
-        tracklistButton.style.borderRight = '0.5rem solid black'
-        tracklistButton.style.borderLeft = '0rem';
-        addTrackBtn.style.marginLeft = '0rem'
+        
+        
+        // content.style.width = '100vw' 
+        // content.style.width = currWidth + 1 + 'rem'
+        // tracklistContent.style.paddingLeft = '0%';
+        
+        // addTrackBtn.style.marginLeft = '0rem'
     }
+}
+const expandSettings = () => {
+    const panel = document.getElementById('visualization-settings');
+    const paneltButton = document.getElementById('arrow');
+    const content = document.getElementById('content');
+    const tracklist = document.getElementById('tracklist');
+
+   
+
+    
+    
+    if(panel.style.transform === ''){
+        alert('1')
+        panel.style.transform = 'translateX(5.5rem)';
+        // content.style.transform = 'translateX(5.5rem)'
+        if(tracklist.style.transform === 'translateX(0rem)'){
+            content.style.width =  '87.5vw'
+            alert('2')
+        }else{
+            content.style.width =  '100vw'
+            alert('3')
+        }
+
+    }else {
+        panel.style.transform = 'translateX(0rem)';
+        // content.style.transform = 'translateX(5.5rem)'
+        content.style.width =  '82.9vw'
+    }
+    // }else{
+    //     if (trackListGlobalState.tracklistExpanded && panel.style.transform === 'translateX(0rem)'){
+
+    //     }
+
+    //     panel.style.transform = 'translateX(5.5rem)';
+    //     // content.style.width =  '100vw'
+
+    // }
+
+
 }
 
 
@@ -98,57 +160,28 @@ function openUploadModal() {
 
 <template>
 
-<div class="min-h-screen">
+<div class="min-h-full">
     <NavBar/>
     <UploadModal/>
 
-    <div id="main-container" class="h-[calc(100vh-4.5rem)] flex">
+    <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
 
-        <div id="tracklist" class="w-128 h-[calc(100vh-4.5rem)] mt-14 ">
+        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)]  " :class="{'transform -translate-x-[98%]' : hideTracklistPanel}">
 
-            <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
+            <div id="tracklist-divider" class="w-full h-full bg-white ">
                 
-                <div id="tracklist-content" class="w-full h-[90%] pl-60 pt-3 pb-5 flex flex-col items-center gap-1">
-                    
-                    <div class=" h-55 w-[85%] ml-7 px-2 py-1 flex-col justify-center bg-light-700  border-2 border-gray-300  rounded-md">
-                        <div class="flex justify-center items-center relative">
-                            <span class="font-bold font-serif text-gray-500 text-sm">Chopin_ukázka_014</span>
-                            <div class="w-4 h-4 bg-gray-100 border border-gray-400 hover:bg-gray-400 duration-200 rounded-sm absolute right-0 cursor-pointer" title="Select"></div>
-                        </div>
-                        <div class="mt-4 player-buttons h-7 w-full bg-gray-400 flex items-center justify-between px-2 rounded-md">
-                            <Icon icon="material-symbols:volume-up-outline" width="20" />
-                            <input type="range" class="slider appearance-none  rounded-lg cursor-pointer w-28">
-                            <div class="inline-flex rounded-md shadow-sm bg-gray-600 text-white " >
-                                <button class="w-5 text-sm border-r border-gray-400 rounded-l-md hover:bg-gray-300 hover:text-gray-800 duration-200 ">M</button>
-                                <button class="w-5 text-sm rounded-r-md hover:bg-gray-300 hover:text-gray-800 duration-200 ">S</button>
-
-                            </div>
-
-                        </div>
-                        
-                        <div class="h-[47%] w-full mt-5 p-2 border border-dashed border-gray-500 rounded-md ">
-                            <div class="grid grid-cols-2 gap-2">
-                                <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100">Waveform</button>
-                                <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">Spectrogram</button>
-                                <button class="btn-hover-cursor  w-22 font-semibold shadow-sm shadow-dark-100">Pianoroll</button>
-                                <div class="flex w-22 h-max">
-                                    <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none">IOI</button>
-                                    <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-l-none">IBI</button>
-                                </div>
-        
-                                <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">Tempo</button>
-                                <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">RMS</button>
-
-                            
-
-                            </div>
-                        </div>
-                        <Icon icon="ph:files" width="18" class="w-8 float-right mt-2 shadow-sm shadow-gray-500 rounded-md hover:bg-gray-300 cursor-pointer"/>
+                <div id="tracklist-content" class="w-full h-[90%] pb-5 flex flex-col items-center gap-1 overflow-y-auto">
+                    <div v-for="trackName in currentTrackList.trackName">
+                        <TrackToVisualize 
+                        v-if="trackName[1] == true"
+                        :key="trackName[0]"
+                        :name="trackName[0]"/>
                     </div>
-                    <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
-                        <button class="btn">Bars</button>
-
-                    </div> -->
+                        <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
+                            <button class="btn">Bars</button>
+    
+                        </div> -->
+                    
 
                     <AudioTrackSide/>
                     
@@ -160,14 +193,19 @@ function openUploadModal() {
                 </div>
             
             </div>
-            
-            <div id="tracklist-button" class="w-[1%] h-full">
-                <button @click="expandTracklist()" id="arrow" class="h-50"></button>
+            <div id="tracklist-button" class="w-[1%] h-full ">
+                <button @click="hideTracklistPanel = !hideTracklistPanel" id="arrow" class="h-50 border-black" 
+                :class="{' border-l-[0.5rem] border-r-[0rem]' : hideTracklistPanel, 'border-r-[0.5rem] border-l-[0rem]': !hideTracklistPanel}"></button>
             </div>
+
             
         </div>
-
-        <div id="content" class="h-full w-full text-xl p-3 text-black ml-60 bg-light-300 overflow-hidden">
+        
+        <div id="content" 
+        class="h-full w-83vw text-xl p-1 text-black ml-61 pr-4 bg-light-800 overflow-y-auto overflow-x-hidden "
+        :class="{'w-[87.5vw]' : hideSettingPanel,'transition duration-0' : hideSettingPanel, 'w-[95vw] ml-0 ' : hideTracklistPanel, 'w-[100vw] ml-0 ' : hideTracklistPanel && hideSettingPanel}"
+        >
+      
             <!-- <div class="mb-7">
                 
                 <MainPanel 
@@ -201,9 +239,25 @@ function openUploadModal() {
                     :id="id"
                     :trackname="trackname"/>
                 </transition>
+            </div>
+        </div>
+        <!-- <div id="tracklist-button" class="w-[1%] h-full">
+                <button @click="expandTracklist()" id="arrow" class="h-50"></button>
+        </div> -->
+        <!-- <div id="tracklist-button" class="w-[3%] h-full">
+                <button @click="expandTracklist()" id="arrow-left" class="h-50"></button>
+            </div> -->
+        <div id="visualization-settings" 
+            class="h-full w-20 absolute top-0 right-4 flex border border-gray-900 bg-gray-100 opacity-80 "
+            :class="{'transform translate-x-22' : hideSettingPanel}"
+            >
 
-            </div> 
 
+            <div id="tracklist-button" class="w-[10%] h-full">
+                <button @click="hideSettingPanel = ! hideSettingPanel" id="arrow-left" class="h-50 border-black"
+                :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
+            </div>
+            <div class="w-[97%] bg-red-900"></div>
 
         </div>
         
@@ -216,48 +270,21 @@ function openUploadModal() {
 
 <style scoped>
 
-input[type=range]{
-    -webkit-appearance: none;
-}
 
-input[type=range]::-webkit-slider-runnable-track {
-    width: 300px;
-    height: 5px;
-    background: #ddd;
-    border: none;
-    border-radius: 3px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: rgb(63, 63, 63);
-    margin-top: -4px;
-}
-
-input[type=range]:focus {
-    outline: none;
-}
-
-input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #ccc;
-}
 
 
 
 #tracklist{
     top: 0;
+    left: 0;
     position: absolute;
 
     display: flex;
     flex-direction: row;
     align-items: center;
-    transform: translateX(-50%);
+   /* transform: translateX(0rem); */
 
-    transition: transform 0.2s;
+    transition: transform 0.4s;
     z-index:21;
     
 }
@@ -270,6 +297,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     gap: 0.25rem;*/
 
     transition: padding-left 0.2s;
+    
     /* overflow-y: scroll;
     overflow-x: hidden; */
 }
@@ -287,14 +315,29 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     height: 0; 
     border-top: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
-    border-left: 0.5rem solid black;
+    /* border-right: 0.5rem solid black; */
+}
+#arrow-left {
+    width: 0; 
+    height: 0; 
+    border-top: 0.5rem solid transparent;
+    border-bottom: 0.5rem solid transparent;
+    /* border-left: 0.5rem solid black; */
 }
 
 #content{
+    top: 0;
+    left: 0;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: left;
-    overflow-y: scroll;
+    transition: transform 0.4s;
+    transition: margin-left 0.4s;
+    
+}
+#visualization-settings{
+    /* transform: translateX(0rem); */
 }
 
 #add-track-div{

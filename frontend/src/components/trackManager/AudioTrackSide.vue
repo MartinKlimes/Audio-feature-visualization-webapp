@@ -30,8 +30,8 @@ const {tracklistExpanded} = storeToRefs(tracklistGlobalState);
         <div v-if="!(trackname.includes('...') || trackname.includes('\(trim.'))">
             <div class="py-2 px-4 rounded-md text-black bg-light-900 hover:bg-gray-400 transition audio-track h-10" :id="`audioList-${trackname}`">
                     <div class="track-name cursor-pointer"
-                    @click="getAudioFile(trackname)">
-                        {{ trackname }}
+                    @click="getAudioFile(trackname[0])">
+                        {{ trackname[0] }}
                     </div>  
                 <Transition>     
                     <div v-if="tracklistExpanded" class="hidden-content">               

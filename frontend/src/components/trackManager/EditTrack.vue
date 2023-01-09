@@ -14,9 +14,9 @@ const state = reactive({
   in_submission: false,
   showForm: false,
   showAlert: false,
-  trackSelected: false,
   alert_variant: "",
   alert_message: "",
+  showTextInstruction: false,
 });
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const props = defineProps({
   name: String,
 });
 
-const emits = defineEmits(['deleteTrack'])
+const emits = defineEmits(["deleteTrack"]);
 
 async function rename() {
   state.in_submission = true;
@@ -47,7 +47,7 @@ async function rename() {
   state.in_submission = false;
 
   setTimeout(() => {
-    currentTrackList.trackName[props.index] = modifiedName.value;
+    currentTrackList.trackName[props.index][0] = modifiedName.value;
     state.showForm = false;
     state.showAlert = false;
   }, 1000);
@@ -63,37 +63,61 @@ const rules = computed(() => ({
 }));
 
 const v$ = useVuelidate(rules, { modifiedName });
+
 const useTrack = () => {
-  state.trackSelected = !state.trackSelected
-}
+  api
+    .get("/change-track-status/" + props.name)
+    .then(
+      (currentTrackList.trackName[props.index][1] =
+        !currentTrackList.trackName[props.index][1])
+    );
+};
 </script>
 
 <template>
-  
   <div
-  
-    class="border border-gray-200 p-3 mb-4 rounded md:text-2xl cursor-pointer hover:bg-gray-100"
-    :class="{ 'bg-gray-200 border-gray-400': state.showForm, 'bg-yellow-100 border-2 border-yellow-400 border-dashed shadow-md shadow-gray-400 hover:bg-yellow-100 ': state.trackSelected & !state.showForm}"
-    
-    @click="useTrack"
+    class="border border-gray-200 p-3 mb-4 rounded md:text-2xl hover:bg-gray-200 relative"
+    @mouseover="state.showTextInstruction = true"
+    @mouseleave="state.showTextInstruction = false"
+    :class="{
+      'bg-gray-200 border-gray-400': state.showForm,
+      'bg-yellow-100 border-2 border-yellow-400 border-dashed shadow-md shadow-gray-400 hover:bg-yellow-200 ':
+        currentTrackList.trackName[props.index][1] & !state.showForm,
+    }"
   >
     <div>
       <h4 class="inline-block font-bold">{{ name }}</h4>
+
       <button
-      title="Delete song"
-        class="ml-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
+        title="Delete song"
+        class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
         @click="$emit('deleteTrack', props)"
       >
         <Icon icon="fa:times" />
       </button>
       <button
         title="Rename song"
-        class="ml-1 py-1 px-2 text-xs rounded text-white bg-green-600 hover:bg-green-500 float-right"
+        class="ml-1 py-1 mt-1 px-2 text-xs rounded text-white bg-green-600 hover:bg-green-500 float-right"
         @click="state.showForm = !state.showForm"
       >
         <Icon icon="fa:pencil" />
       </button>
+
+      <span
+        v-show="state.showTextInstruction & !state.showForm"
+        class="mt-1 mr-8 float-right text-gray-400 text-sm"
+        >{{
+          !currentTrackList.trackName[props.index][1]
+            ? "Click to use audio"
+            : "Click to remove audio"
+        }}</span
+      >
     </div>
+    <div
+      v-show="!state.showForm"
+      class="absolute -mt-11 ml-3 w-[90%] h-full rounded cursor-pointer"
+      @click="useTrack"
+    ></div>
     <div v-show="state.showForm">
       <div
         v-if="state.showAlert"
@@ -104,7 +128,7 @@ const useTrack = () => {
       </div>
 
       <form>
-        <div class="mb-3">
+        <div class="mb-3 cursor-default">
           <input
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
@@ -121,7 +145,7 @@ const useTrack = () => {
         <div v-if="!v$.modifiedName.$invalid">
           <button
             type="submit"
-            class="py-1 px-2 rounded text-white bg-blue-600"
+            class="py-1 px-2 rounded text-white bg-blue-600 hover:bg-blue-500"
             @click.prevent="rename"
             :disabled="state.in_submission"
           >
