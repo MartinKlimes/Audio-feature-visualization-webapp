@@ -1,59 +1,79 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { wavesurfer } from '../../Waveform';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { changeBackground } from '../../filesFunctions';
-import { trackFromStart, trimWaveform } from '../../Waveform';
-import { trackIndex } from '../../globalStores';
+import { trackFromStart } from '../../Waveform';
+import { trackIndex, trackList} from '../../globalStores';
+import { api } from '../../../custom';
+import { wavesurfer, trimWaveform } from '../../functions/waveform';
 
 const globalTrackIndex = trackIndex()
+const currentTrackList = trackList()
 
 const isCheckTime = ref(true)
 const from = ref()
 const to = ref()
 
+const props = defineProps({
+    id: Number,
+    trackName: String,
+})
+
 onMounted(() => {
-    window.eventBus.on('stopTimeSelection', event => isCheckTime.value = true)
+    selectTime()
+})
+onUnmounted(() => {
+    wavesurfer[props.id].clearRegions()
+    wavesurfer[props.id].disableDragSelection()
 })
 
 function selectTime(){
-    window.eventBus.emit('stopBarSelection') 
-   
-    for(let i = 0; i < wavesurfer.length; i++){
+    if (wavesurfer[props.id].regions.list){
+        wavesurfer[props.id].clearRegions()
+    }  
+    var reg = wavesurfer[props.id].addRegion({
+        start: from.value,
+        end: to.value,
+        color: 'hsla(200, 100%, 30%, 0.3)'
+    })
 
-        if (!isCheckTime.value){
-            if (to.value < from.value){
-                to.value = from.value
-            }
-            if (wavesurfer[i].regions.list){
-                wavesurfer[i].clearRegions()
-            }   
-            var reg = wavesurfer[i].addRegion({
-                start: from.value,
-                end: to.value,
-            })
-            var reg = wavesurfer[i].enableDragSelection({
-                start: from.value,
-                end: to.value,
-            })
-            
-            wavesurfer[i].on("region-updated", (region, e) => {  
-                    changeBackground(trackFromStart.value[i][0])
-                    globalTrackIndex.selTrackIndex = i
-
-                    var regions = wavesurfer[i].regions.list;
-                    var keys = Object.keys(regions);
-                    if(keys.length > 1){
-                        regions[keys[0]].remove();
-                    }
-                    from.value = region.start
-                    to.value = region.end
-            })
-        }else{
-            wavesurfer[i].clearRegions()
-            wavesurfer[i].disableDragSelection()
-        }
-
+    if (to.value < from.value){
+        to.value = from.value
     }
+    var reg = wavesurfer[props.id].enableDragSelection({
+        start: from.value,
+        end: to.value,
+    })
+      
+    wavesurfer[props.id].on("region-updated", (region, e) => {  
+            var regions = wavesurfer[props.id].regions.list;
+            var keys = Object.keys(regions);
+            if(keys.length > 1){
+                regions[keys[0]].remove();
+            }
+            from.value = region.start
+            to.value = region.end
+            region.color = 'hsla(200, 100%, 30%, 0.3)'
+    })
+
+}
+
+const trimAudio = () => {
+    api.get('/trim-audio/' + props.trackName + '/' + from.value + '/' + to.value + '/undefined/undefined')
+    .then((response) => {
+        // console.log(response.data);
+        currentTrackList.fill()
+    })
+    // .then((response) => {  
+    //     // getOnset(nameOfCuttedTrack + ' - ' +trackFromStart.value[selectedTrackIndex][0], trackFromStart.value[selectedTrackIndex][0] + nameOfCuttedTrack)
+    // })
+
+    // currentTrackList.addTrack(props.trackName)
+
+
+    // trimWaveform(props.trackName, from.value, to.value, props.id)  
+ /////využít audio list, aby nebylo nutné taht ze serveru řpes get-audio
+    
+
 }
 
 
@@ -61,14 +81,16 @@ function selectTime(){
 
 
 <template>
-    
-<div :class="{deactive : isCheckTime}" >
-    <input v-model="from" type="number" placeholder="from" class="input-field-nomargin w-16.1" @change="selectTime()">
-    <input v-model="to" type="number" placeholder="to"  class="input-field-nomargin w-16.1 ml-1" @change="selectTime()">
-    <button class="btn hover:bg-gray-300 transition mx-1" @click="isCheckTime = !isCheckTime; trimWaveform(from, to, globalTrackIndex.selTrackIndex); selectTime()">Select</button>
+
+<div class="flex flex-col items-center ">
+    <div class="flex mt-1  rounded-md">
+    <input v-model="from" type="number" placeholder="from" class="input-field-nomargin w-15 border-2 border-blue-400" @change="selectTime()">
+    <input v-model="to" type="number" placeholder="to"  class="input-field-nomargin w-15 ml-1 border-2 border-blue-400" @change="selectTime()">
+    </div>
+    <button class="btn btn-blue hover:bg-blue-500 transition w-max mt-1" @click="trimAudio">Select</button>
 </div>
 
-<button class="btn-hover" :class="{ picker : !isCheckTime}" @click=" isCheckTime=! isCheckTime; selectTime()">Select a section</button>
+<!-- <button class="btn-hover" :class="{ picker : !isCheckTime}" @click=" isCheckTime=! isCheckTime; selectTime()">Select a section</button> -->
 </template>
 
 

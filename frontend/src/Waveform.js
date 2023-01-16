@@ -235,5 +235,5 @@ function createWavesurfer(audio,trackName){
 }
 
 
-export { makeWaveform, marker, track, trackFromStart, wavesurfer, numberOfBars, trimWaveform}
+export { makeWaveform, marker, track, trackFromStart, wavesurfer, numberOfBars}
 

@@ -1,15 +1,31 @@
 <script setup>
-import { ref, reactive} from 'vue';
+import { ref, reactive, onMounted} from 'vue';
 import { Icon } from '@iconify/vue';
 import {wavesurfer, trackFromStart, track} from '../Waveform'; 
 import { changeBackground } from '../filesFunctions';
 import { trackIndex } from '../globalStores';
+import { api } from '../../custom';
+import { trackList } from '../globalStores';
+import { createWavesurfer } from '../functions/waveform';
+
+const currentTrackList = trackList()
+
+onMounted(() => {
+    api.get('/get-audio-file/' + props.trackname)
+        .then((response) => {
+            const audioSrc = response.request.responseURL
+            createWavesurfer(audioSrc ,props.trackname, props.id)
+          
+        })
+})
+
+
 
 const globalTrackIndex = trackIndex()
 
 const props = defineProps({
     id: Number,
-    trackname: Array
+    trackname: String
 })
 
 const state = reactive({
@@ -19,8 +35,14 @@ const state = reactive({
     isMuteBtnHide: false,
 })
 function clickOnWaveform(id){
-    window.eventBus.emit('select', id)
-    globalTrackIndex.selTrackIndex = id
+    if(globalTrackIndex.selTrackIndex == props.id){
+        return
+    } else{
+        globalTrackIndex.selTrackIndex = props.id
+    }
+
+    // window.eventBus.emit('select', id)
+    // globalTrackIndex.selTrackIndex = id
   
 }
 
@@ -78,15 +100,15 @@ const playTrack = (id) => {
 <template>
     <!-- //vif -->
 <div justify="between" >
-<div class="relative" id="waveforms">
+<div class="relative mt-1 border border-gray-300" id="waveforms">
     <div :class="{hide : !state.isWaveformHide}" :id="`showWaveBtn-${id}`" @click="state.isWaveformHide = false">
         <Icon icon="ep:arrow-down"  width="18" class="btn-hover-cursor"/>
-        <div class="inline text-gray-400 text-sm ml-3">{{trackname[0]}} (w)</div>
+        <div class="inline text-gray-400 text-sm ml-3">{{trackname}} (w)</div>
     </div>
     <transition>
     
     
-    <div :id="`waveform-${trackname[0].replace(/\.|\(|\)|\ /g, '')}`" v-show="!state.isWaveformHide" @click="changeBackground(trackname[0]); clickOnWaveform(id)">
+    <div :id="`waveform-${id}`" v-show="!state.isWaveformHide" @click="clickOnWaveform(id)" :class="{'shadow-md shadow-gray-500' : id==globalTrackIndex.selTrackIndex}">
         <Icon icon="bi:play" width="20"  :class="{hide : state.isPlayBtnHide}" :id="`playPause-btnOn-${id}`" @click="playTrack(id)" class="btn-hover-cursor" />
 
         <Icon icon="bi:pause" width="20"  :class="{hide : !state.isPlayBtnHide}" :id="`playPause-btnOff-${id}`" @click="wavesurfer[id].pause(); state.isPlayBtnHide = false"  class="btn-hover-cursor"/>
@@ -106,7 +128,7 @@ const playTrack = (id) => {
         </div>
         
         <Icon icon="ep:arrow-up" width="18" @click="state.isWaveformHide = true" :id="`hideWaveBtn-${id}`" class="btn-hover-cursor"/>
-        <div class="inline text-gray-400 text-sm">{{trackname[0]}}</div>
+        <div class="inline text-gray-400 text-sm">{{trackname}}</div>
         
         
         
@@ -114,7 +136,7 @@ const playTrack = (id) => {
     </transition>
     <!-- <Icon icon="ci:close-small" v-show="!state.isWaveformHide" class="hover:bg-gray-300 transition cursor-pointer top-0 right-0 absolute -my-1  -mr-4.25 text-black" @click="deleteVisualization(id)"/> -->
 
-    <div :class="{hide : state.isWaveformHide}" :id="`timeline-${trackname[0].replace(/\.|\(|\)|\ /g, '')}`" ></div>
+    <div :class="{hide : state.isWaveformHide}" :id="`timeline-${trackname.replace(/\.|\(|\)|\ /g, '')}`" ></div>
 
     </div>
 </div>

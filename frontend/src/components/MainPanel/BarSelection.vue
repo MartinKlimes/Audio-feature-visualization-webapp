@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import { ref, reactive, onMounted } from 'vue';
-import { wavesurfer, trimWaveform, trackFromStart, marker } from '../../Waveform';
+import { wavesurfer,trackFromStart, marker } from '../../Waveform';
 import { addTxtFilesToUpload } from '../../filesFunctions';
 import { trackIndex } from '../../globalStores';
 import clickAudio from '/public/click.mp3'
@@ -83,8 +83,15 @@ const clickSound = () => {
 
 
 <template>
+<div class="flex flex-col items-center ">
+    <div class="flex mt-1  rounded-md">
+    <input v-model="fromBar" type="number" placeholder="from" class="input-field-nomargin w-12 border-2 border-blue-400 " @change="selectBar(hideBars)">
+    <input v-model="toBar" type="number" placeholder="to"  class="input-field-nomargin w-12 border-2 border-blue-400 ml-1" @change="selectBar(hideBars)">
+</div>
+    <button class="btn btn-blue hover:bg-blue-500 transition mt-1" @click="selectBar(hideBars)">Select bars {{fromBar}} to {{toBar}}</button>
+</div>
 
-<div v-show="!hideBars" class="flex ">
+<!-- <div v-show="!hideBars" class="flex ">
     <input v-model="fromBar" type="number" placeholder="from" class="input-field-nomargin w-12 mx-1 mt-1 " @change="selectBar(hideBars)">
     <input v-model="toBar" type="number" placeholder="to"  class="input-field-nomargin w-12 mr-1 mt-1" @change="selectBar(hideBars)">
     <button class="btn hover:bg-gray-300 transition mt-1" @click="trimWaveform(wavesurfer[globalTrackIndex.selTrackIndex].regions.list[fromBar].start,wavesurfer[globalTrackIndex.selTrackIndex].regions.list[toBar].end, globalTrackIndex.selTrackIndex, fromBar, toBar); hideBars =! hideBars; selectBar(hideBars)">Select bars {{fromBar}} to {{toBar}}</button>
@@ -100,7 +107,7 @@ const clickSound = () => {
     <div id="add-files-btn" class="btn-hover">Upload bars</div>
 </label>
 <input id="added-textFile" type="file" class="hidden" accept=".txt" multiple 
-@change="addTxtFilesToUpload(globalTrackIndex.selTrackIndex, trackFromStart[globalTrackIndex.selTrackIndex][0]); hideBars = !hideBars">
+@change="addTxtFilesToUpload(globalTrackIndex.selTrackIndex, trackFromStart[globalTrackIndex.selTrackIndex][0]); hideBars = !hideBars"> -->
 
 
 

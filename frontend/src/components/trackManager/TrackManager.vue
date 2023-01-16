@@ -15,7 +15,7 @@ const deleteTrack = async(event) => {
   .then((response) => {
     showAlert(response.data.message);
     setTimeout(closeAlert, 1500);
-    currentTrackList.trackName.splice(event.index, 1);
+    currentTrackList.trackState.splice(event.index, 1);
   })
 
 };
@@ -36,9 +36,9 @@ const deleteTrack = async(event) => {
     <div class="p-6 h-150 overflow-y-auto">
       
       <EditTrack
-        v-for="(trackName, i) in currentTrackList.trackName"
-        :key="trackName"
-        :name="trackName[0]"
+        v-for="(track, i) in currentTrackList.trackState"
+        :key="track.id"
+        :name="track.trackName"
         :index="i"
         @deleteTrack="deleteTrack($event)"
       />

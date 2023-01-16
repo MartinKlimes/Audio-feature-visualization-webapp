@@ -89,7 +89,7 @@ function uploadOneFile(file, id) {
       .then(function (response) {
         // uploadCheck.style.visibility = "visible";
         isUploaded.value[id] = true;
-        currentTrackList.getTrackList();
+        currentTrackList.fill();
       });
   }
 }
@@ -103,7 +103,7 @@ const upload = ($event) => {
   let audioTypes = "audio/*";
   for (let i = 0; i < files.length; i++) {
     if (files[i].type.match(audioTypes)) {
-      if (!currentTrackList.trackName.includes(files[i].name)) {
+      if (!currentTrackList.trackState.includes(files[i].name)) {
         fileNameList.push(files[i].name);
         fileList.push(files[i]);
         isUploaded.value.push(false);

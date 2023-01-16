@@ -1,5 +1,5 @@
 <script setup>
-import SpectrogramSetting from "./SpectrogramSetting.vue";
+import SpectrogramSetting from "./VisualizationSetting/SpectrogramSetting.vue";
 import { ref, reactive } from "vue";
 import { Icon } from "@iconify/vue";
 import { wavesurfer, trackFromStart, track } from "../Waveform";

@@ -1,21 +1,26 @@
 <script setup>
 import { Icon } from '@iconify/vue';
+import { trackIndex } from '../../globalStores';
+import VisButtons from './VisButtons.vue';
 
+const globalTrackIndex = trackIndex()
 
 
 const props = defineProps({
     name: String,
+    id: Number
 })
 </script>
 
 
+
 <template>
-<div class=" h-55 w-full px-2 py-1 flex-col justify-center bg-light-700  border-2 border-gray-300  rounded-md">
+<div class=" h-57 w-full px-1 py-1 flex-col justify-center bg-light-700  border-2 border-gray-300  rounded-md" :class="{'shadow-md shadow-gray-500' : id==globalTrackIndex.selTrackIndex}">
     <div class="flex justify-center items-center relative">
         <button class="absolute left-0 opacity-70 rounded-md hover:opacity-100">
             <Icon icon="ic:outline-color-lens" />
         </button>
-        <span class="font-bold font-serif text-gray-500 text-sm">{{name}}</span>
+        <span class="font-bold font-serif text-gray-500 text-sm max-w-30">{{name}}</span>
         <div class="w-4 h-4 bg-gray-100 border border-gray-400 hover:bg-gray-400 duration-200 rounded-sm absolute right-0 cursor-pointer" title="Select"></div>
     </div>
     <div class="mt-4 player-buttons h-7 w-full bg-gray-400 flex items-center justify-between px-2 rounded-md">
@@ -29,23 +34,8 @@ const props = defineProps({
 
     </div>
     
-    <div class="h-[47%] w-full mt-5 p-2 border border-dashed border-gray-500 rounded-md ">
-        <div class="grid grid-cols-2 gap-2">
-            <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100">Waveform</button>
-            <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">Spectrogram</button>
-            <button class="btn-hover-cursor  w-22 font-semibold shadow-sm shadow-dark-100">Pianoroll</button>
-            <div class="flex w-22 h-max">
-                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none">IOI</button>
-                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-l-none">IBI</button>
-            </div>
+    <VisButtons :name="name" :id="id"/>
 
-            <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">Tempo</button>
-            <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">RMS</button>
-
-        
-
-        </div>
-    </div>
     <Icon icon="ph:files" width="18" class="w-8 float-right mt-2 shadow-sm shadow-gray-500 rounded-md hover:bg-gray-300 cursor-pointer"/>
 </div>
 

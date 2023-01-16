@@ -34,32 +34,65 @@ export const userInfo = defineStore('userInfo',
     }),
 })
 
-export const trackInfo = defineStore('trackInfo', 
-{
-    state: () => ({ 
-        fileNameList: '',
-    }),
-})
+// export const trackInfo = defineStore('trackInfo', 
+// {
+//     state: () => ({ 
+//         id: '',
+//         trackname: '',
+//         isTrackSelected: false,
+//     }),
+
+//     actions: {
+//         getTrackList(){
+//             api.get('http://127.0.0.1:5000/get-track-list')
+//             .then((response) => {   
+
+//                 // this.trackState[0].isTrackClicked = true
+//                 response.data.forEach((oneTrack)=> {
+//                     this.id = oneTrack.id
+//                     this.trackname = oneTrack.trackname
+//                 });
+//             // currentTrackList.trackName = trackName
+//             // currentTrackList.addToTrackList(response.data)
+//             })
+//         },
+//     }
+// })
+ 
+
 
 export const trackList = defineStore('trackList', 
 {
     state: () => ({ 
-        trackName: [],
+        trackState: [],
+        selectedTracks: [],
     }),
     actions: {
-        // addTrackList(trackList){
-        //     this.trackName.push(trackList)
-        // },
-        getTrackList(){
-            api.get('http://127.0.0.1:5000/get-track-list')
+       async fill(){
+            await api.get('http://127.0.0.1:5000/get-track-list')
             .then((response) => {   
-                this.trackName = []
-                response.data.forEach(oneTrackName => {
-                    this.trackName.push(oneTrackName)
+                this.trackState = response.data
+
+                response.data.forEach((oneTrack)=> {
+                    if(oneTrack.isTrackSelected == true){
+                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id})
+                    }
+                    
+                    // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})
                 });
+
             // currentTrackList.trackName = trackName
             // currentTrackList.addToTrackList(response.data)
             })
+        },
+        addTrack(name) {
+            this.trackState.push({id: 17, isTrackSelected: true, isWaveform: true, trackName: name })
+        }
+
+    },
+    getters: {
+        selectTrack(state) {
+            return (trackId) => state.trackState.find((track) => track.id == trackId)
         }
     }
 
@@ -71,5 +104,6 @@ export const trackIndex = defineStore('trackIndex',
         selTrackIndex: '',
     }),
 })
+
 
 

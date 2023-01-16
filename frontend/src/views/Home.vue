@@ -1,33 +1,35 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref, onBeforeMount, onMounted } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
+import { ref, onMounted } from 'vue';
+
 import NavBar from '../components/NavBar.vue';
 import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
 import UploadModal from '../components/trackManager/UploadModal.vue';
 import MainPanel from '../components/MainPanel/MainPanel.vue';
-import { tracklistState, uploadModalState, trackList } from '../globalStores';
+import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
 import Waveform from '../components/Waveform.vue';
 import Spectrogram from '../components/Spectrogram.vue';
-
 import {trackFromStart} from '../Waveform.js'
 import PianoRoll from '../components/PianoRoll.vue';
 import { api } from '../../custom';
 import { getCookie } from '../cookieHandling';
 
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
+import WaveformSetting from '../components/VisualizationSetting/WaveformSetting.vue';
+import SpectrogramSetting from '../components/VisualizationSetting/SpectrogramSetting.vue';
 
 const trackListGlobalState = tracklistState();
 const currentTrackList = trackList();
-const isWaveform = ref(true)
+const isWaveform = ref(false)
 const isSpectrogram = ref(true)
 const isPianoRoll = ref(false)
 const hideSettingPanel = ref(false)
 const hideTracklistPanel = ref(false)
+const globalTrackIndex = trackIndex()
 
-onBeforeMount(() => {
-    currentTrackList.getTrackList()
-})
+
+currentTrackList.fill()
+
 
 const axiosConfig = {
     headers: {
@@ -54,86 +56,86 @@ const axiosConfig = {
 // })
 
 
-function expandTracklist() {
+// function expandTracklist() {
     
-    const tracklist = document.getElementById('tracklist');
-    // const tracklistContent = document.getElementById('tracklist-content');
-    const tracklistButton = document.getElementById('arrow');
-    const addTrackBtn = document.getElementById('add-track-btn');
-    const content = document.getElementById('content');
-    const panel = document.getElementById('visualization-settings');
+//     const tracklist = document.getElementById('tracklist');
+//     // const tracklistContent = document.getElementById('tracklist-content');
+//     const tracklistButton = document.getElementById('arrow');
+//     const addTrackBtn = document.getElementById('add-track-btn');
+//     const content = document.getElementById('content');
+//     const panel = document.getElementById('visualization-settings');
 
-    if (trackListGlobalState.tracklistExpanded) {
-        trackListGlobalState.tracklistExpanded = false;
+//     if (trackListGlobalState.tracklistExpanded) {
+//         trackListGlobalState.tracklistExpanded = false;
         
-        tracklist.style.transform = 'translateX(0%)';
-        tracklist.style.transition = 'transform 0s'
-        content.style.transform = 'translateX(0rem)'
-        content.style.transition = 'transform 0s'
+//         tracklist.style.transform = 'translateX(0%)';
+//         tracklist.style.transition = 'transform 0s'
+//         content.style.transform = 'translateX(0rem)'
+//         content.style.transition = 'transform 0s'
 
-        if(panel.style.transform === 'translateX(5.5rem)'){
-            content.style.width = '87.5vw'
-        }else{
-            content.style.width = '82.9vw'
+//         if(panel.style.transform === 'translateX(5.5rem)'){
+//             content.style.width = '87.5vw'
+//         }else{
+//             content.style.width = '82.9vw'
             
-        }
-        // tracklistContent.style.paddingLeft = '15rem';        
-        tracklistButton.style.borderRight = '0.5rem solid black';
-        tracklistButton.style.borderLeft = '0rem'
-        // addTrackBtn.style.marginLeft = '15rem';
-    }
-    else {
-        trackListGlobalState.tracklistExpanded = true;
-        tracklist.style.transform = 'translateX(-98.5%)';
-        tracklist.style.transition = 'transform 0.4s'
-        content.style.transform = 'translateX(-15rem)'
-        content.style.transition = 'transform 0.4s'
-        tracklistButton.style.borderLeft = '0.5rem solid black'
-        tracklistButton.style.borderRight = '0rem';
+//         }
+//         // tracklistContent.style.paddingLeft = '15rem';        
+//         tracklistButton.style.borderRight = '0.5rem solid black';
+//         tracklistButton.style.borderLeft = '0rem'
+//         // addTrackBtn.style.marginLeft = '15rem';
+//     }
+//     else {
+//         trackListGlobalState.tracklistExpanded = true;
+//         tracklist.style.transform = 'translateX(-98.5%)';
+//         tracklist.style.transition = 'transform 0.4s'
+//         content.style.transform = 'translateX(-15rem)'
+//         content.style.transition = 'transform 0.4s'
+//         tracklistButton.style.borderLeft = '0.5rem solid black'
+//         tracklistButton.style.borderRight = '0rem';
     
-        if (panel.style.transform === ''){
-            content.style.width = '95vw' 
-            // alert('asfd')
-        } else {
-            content.style.width = '100vw' 
-        }
+//         if (panel.style.transform === ''){
+//             content.style.width = '95vw' 
+//             // alert('asfd')
+//         } else {
+//             content.style.width = '100vw' 
+//         }
         
         
         
-        // content.style.width = '100vw' 
-        // content.style.width = currWidth + 1 + 'rem'
-        // tracklistContent.style.paddingLeft = '0%';
+//         // content.style.width = '100vw' 
+//         // content.style.width = currWidth + 1 + 'rem'
+//         // tracklistContent.style.paddingLeft = '0%';
         
-        // addTrackBtn.style.marginLeft = '0rem'
-    }
-}
-const expandSettings = () => {
-    const panel = document.getElementById('visualization-settings');
-    const paneltButton = document.getElementById('arrow');
-    const content = document.getElementById('content');
-    const tracklist = document.getElementById('tracklist');
+//         // addTrackBtn.style.marginLeft = '0rem'
+//     }
+// }
+// const expandSettings = () => {
+//     const panel = document.getElementById('visualization-settings');
+//     const paneltButton = document.getElementById('arrow');
+//     const content = document.getElementById('content');
+//     const tracklist = document.getElementById('tracklist');
 
    
 
     
     
-    if(panel.style.transform === ''){
-        alert('1')
-        panel.style.transform = 'translateX(5.5rem)';
-        // content.style.transform = 'translateX(5.5rem)'
-        if(tracklist.style.transform === 'translateX(0rem)'){
-            content.style.width =  '87.5vw'
-            alert('2')
-        }else{
-            content.style.width =  '100vw'
-            alert('3')
-        }
+//     if(panel.style.transform === ''){
+//         alert('1')
+//         panel.style.transform = 'translateX(5.5rem)';
+//         // content.style.transform = 'translateX(5.5rem)'
+//         if(tracklist.style.transform === 'translateX(0rem)'){
+//             content.style.width =  '87.5vw'
+//             alert('2')
+//         }else{
+//             content.style.width =  '100vw'
+//             alert('3')
+//         }
 
-    }else {
-        panel.style.transform = 'translateX(0rem)';
-        // content.style.transform = 'translateX(5.5rem)'
-        content.style.width =  '82.9vw'
-    }
+//     }else {
+//         panel.style.transform = 'translateX(0rem)';
+//         // content.style.transform = 'translateX(5.5rem)'
+//         content.style.width =  '82.9vw'
+//     }
     // }else{
     //     if (trackListGlobalState.tracklistExpanded && panel.style.transform === 'translateX(0rem)'){
 
@@ -145,7 +147,7 @@ const expandSettings = () => {
     // }
 
 
-}
+// }
 
 
 function openUploadModal() {
@@ -166,16 +168,17 @@ function openUploadModal() {
 
     <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
 
-        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)]  " :class="{'transform -translate-x-[98%]' : hideTracklistPanel}">
+        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)]  " :class="{'transform -translate-x-[96%] border border-black' : hideTracklistPanel}">
 
-            <div id="tracklist-divider" class="w-full h-full bg-white ">
+            <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
                 
                 <div id="tracklist-content" class="w-full h-[90%] pb-5 flex flex-col items-center gap-1 overflow-y-auto">
-                    <div v-for="trackName in currentTrackList.trackName">
+                    <div v-for="track in currentTrackList.trackState" :key="track.id">
                         <TrackToVisualize 
-                        v-if="trackName[1] == true"
-                        :key="trackName[0]"
-                        :name="trackName[0]"/>
+                        v-if="track.isTrackSelected == true"
+                        
+                        :name="track.trackName"
+                        :id="track.id"/>
                     </div>
                         <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
                             <button class="btn">Bars</button>
@@ -193,7 +196,7 @@ function openUploadModal() {
                 </div>
             
             </div>
-            <div id="tracklist-button" class="w-[1%] h-full ">
+            <div id="tracklist-button" class="w-[3%] h-full ">
                 <button @click="hideTracklistPanel = !hideTracklistPanel" id="arrow" class="h-50 border-black" 
                 :class="{' border-l-[0.5rem] border-r-[0rem]' : hideTracklistPanel, 'border-r-[0.5rem] border-l-[0rem]': !hideTracklistPanel}"></button>
             </div>
@@ -202,8 +205,8 @@ function openUploadModal() {
         </div>
         
         <div id="content" 
-        class="h-full w-83vw text-xl p-1 text-black ml-61 pr-4 bg-light-800 overflow-y-auto overflow-x-hidden "
-        :class="{'w-[87.5vw]' : hideSettingPanel,'transition duration-0' : hideSettingPanel, 'w-[95vw] ml-0 ' : hideTracklistPanel, 'w-[100vw] ml-0 ' : hideTracklistPanel && hideSettingPanel}"
+        class="h-full w-83vw text-xl pl-1 text-black ml-61 bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
+        :class="{'w-[87vw] pr-1' : hideSettingPanel && !hideTracklistPanel, 'w-[95.8vw] ml-0 pl-2.5 ' : hideTracklistPanel && !hideSettingPanel, 'w-[99.5vw] ml-0 pl-2' : hideTracklistPanel && hideSettingPanel}"
         >
       
             <!-- <div class="mb-7">
@@ -213,8 +216,16 @@ function openUploadModal() {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-                
-            <div v-for="(trackname, id) in trackFromStart" :key="trackname">
+            <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
+                <transition>
+                    <Waveform 
+                    v-if="track.isWaveform"  
+                     
+                    :id="track.id"  
+                    :trackname="track.trackName"/>
+                </transition>
+            </div>
+            <!-- <div v-for="(trackname, id) in trackFromStart" :key="trackname">
 
                 <transition>
                     <Waveform 
@@ -239,7 +250,7 @@ function openUploadModal() {
                     :id="id"
                     :trackname="trackname"/>
                 </transition>
-            </div>
+            </div> -->
         </div>
         <!-- <div id="tracklist-button" class="w-[1%] h-full">
                 <button @click="expandTracklist()" id="arrow" class="h-50"></button>
@@ -248,16 +259,34 @@ function openUploadModal() {
                 <button @click="expandTracklist()" id="arrow-left" class="h-50"></button>
             </div> -->
         <div id="visualization-settings" 
-            class="h-full w-20 absolute top-0 right-4 flex border border-gray-900 bg-gray-100 opacity-80 "
-            :class="{'transform translate-x-22' : hideSettingPanel}"
+            class="h-full w-41 absolute top-0 right-1 flex bg-gray-100 transform duration-400"
+            :class="{'transform translate-x-37 border border-black' : hideSettingPanel}"
             >
 
 
-            <div id="tracklist-button" class="w-[10%] h-full">
+            <div id="tracklist-button" class="w-[7%] h-full">
                 <button @click="hideSettingPanel = ! hideSettingPanel" id="arrow-left" class="h-50 border-black"
                 :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
             </div>
-            <div class="w-[97%] bg-red-900"></div>
+            <div v-for="track in currentTrackList.trackState" :key="track.id">
+            
+                <div v-if="track.id == globalTrackIndex.selTrackIndex" class="w-[99%] border-l border-gray-300 rounded-md flex flex-col gap-1">
+                    <div class="h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 flex ">
+                        
+                        <WaveformSetting v-if="track.isWaveform" :trackName="track.trackName" :id="track.id"/>
+                    
+                        
+                    </div>
+                    <div class="h-55 w-full p-2 bg-gray-200 rounded-md border border-gray-300 flex ">
+                        
+                        {{ track.trackName }}
+                    
+                        
+                    </div>
+                    <!-- <SpectrogramSetting/> -->
+                    
+                </div>
+            </div>
 
         </div>
         
@@ -332,8 +361,8 @@ function openUploadModal() {
     display: flex;
     flex-direction: column;
     align-items: left;
-    transition: transform 0.4s;
-    transition: margin-left 0.4s;
+    /* transition: transform 0.4s;
+    transition: margin-left 0.4s; */
     
 }
 #visualization-settings{

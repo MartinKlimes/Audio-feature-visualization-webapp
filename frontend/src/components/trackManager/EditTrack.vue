@@ -47,7 +47,7 @@ async function rename() {
   state.in_submission = false;
 
   setTimeout(() => {
-    currentTrackList.trackName[props.index][0] = modifiedName.value;
+    currentTrackList.trackState[props.index].trackName = modifiedName.value;
     state.showForm = false;
     state.showAlert = false;
   }, 1000);
@@ -65,11 +65,12 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, { modifiedName });
 
 const useTrack = () => {
+  
   api
-    .get("/change-track-status/" + props.name)
+    .get("/change-track-status/isTrackSelected/" + props.name)
     .then(
-      (currentTrackList.trackName[props.index][1] =
-        !currentTrackList.trackName[props.index][1])
+      (currentTrackList.trackState[props.index].isTrackSelected =
+        !currentTrackList.trackState[props.index].isTrackSelected)
     );
 };
 </script>
@@ -82,7 +83,7 @@ const useTrack = () => {
     :class="{
       'bg-gray-200 border-gray-400': state.showForm,
       'bg-yellow-100 border-2 border-yellow-400 border-dashed shadow-md shadow-gray-400 hover:bg-yellow-200 ':
-        currentTrackList.trackName[props.index][1] & !state.showForm,
+        currentTrackList.trackState[props.index].isTrackSelected & !state.showForm,
     }"
   >
     <div>
@@ -107,7 +108,7 @@ const useTrack = () => {
         v-show="state.showTextInstruction & !state.showForm"
         class="mt-1 mr-8 float-right text-gray-400 text-sm"
         >{{
-          !currentTrackList.trackName[props.index][1]
+          !currentTrackList.trackState[props.index].isTrackSelected
             ? "Click to use audio"
             : "Click to remove audio"
         }}</span

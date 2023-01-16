@@ -1,7 +1,7 @@
 <script setup>
-import {wavesurfer} from '../Waveform'
+import {wavesurfer} from '../../Waveform'
 import {ref} from 'vue'
-import { trackIndex } from '../globalStores';
+import { trackIndex } from '../../globalStores';
 
 const fftsamplesSelected = ref(12000)
 const globalTrackIndex = trackIndex()
@@ -30,8 +30,9 @@ const fixedSpecLabels = () => {
 </script>
 
 <template>
-<div class="absolute bg-blue-900 h-100% w-67 z-5 -mt-9.7rem ml-3.5rem pb-2 rounded-1xl border-1 border-black text-sm">
-    <div class="rounded border-b m-3">
+    
+<div class=" bg-blue-900 h-100% w-67 z-5 -mt-9.7rem   rounded-1xl border-1 border-black text-sm">
+    <div class="rounded border-b">
         <span class="spec-settings-text">Number of FFT samples:  </span>
         <select id="fftSamples-currentValue" class="spec-settings" @change="changeSpectrogramNumberOfSamples($event)">
             <option value="256">256</option>
