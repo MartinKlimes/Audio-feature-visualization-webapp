@@ -1,14 +1,13 @@
 from mos_backend import app, db, bcrypt, jwt
 from mos_backend.db_models import User, Recording
 
-
-# # from requests_toolbelt import MultipartEncoder
-import base64
-from io import BytesIO
-
-from music21 import  *
-import numpy as np
-import json
+#  from requests_toolbelt import MultipartEncoder
+# import base64
+# from io import BytesIO
+#
+# from music21 import  *
+# import numpy as np
+# import json
 
 from flask import render_template
 from flask import request, jsonify, send_from_directory, send_file
@@ -46,7 +45,7 @@ def refresh_expiring_jwts(response):
 
         exp_timestamp = get_jwt()['exp']
         now = datetime.now()
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=10))
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=20))
         # print(datetime.fromtimestamp(target_timestamp), datetime.fromtimestamp(exp_timestamp))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=current_user,

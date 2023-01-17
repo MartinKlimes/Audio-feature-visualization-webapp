@@ -85,12 +85,13 @@ export const trackList = defineStore('trackList',
             // currentTrackList.addToTrackList(response.data)
             })
         },
-        addTrack(name) {
-            this.trackState.push({id: 17, isTrackSelected: true, isWaveform: true, trackName: name })
-        }
+        // addTrack(name) {
+        //     this.trackState.push({id: 17, isTrackSelected: true, isWaveform: true, trackName: name })
+        // }
 
     },
     getters: {
+        
         selectTrack(state) {
             return (trackId) => state.trackState.find((track) => track.id == trackId)
         }

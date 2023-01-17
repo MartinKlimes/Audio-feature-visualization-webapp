@@ -9,6 +9,7 @@ import { trackList } from "../../globalStores";
 const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
+const trackToEdit = ref(currentTrackList.trackState[props.index])
 
 const state = reactive({
   in_submission: false,
@@ -47,7 +48,7 @@ async function rename() {
   state.in_submission = false;
 
   setTimeout(() => {
-    currentTrackList.trackState[props.index].trackName = modifiedName.value;
+    trackToEdit.value.trackName = modifiedName.value;
     state.showForm = false;
     state.showAlert = false;
   }, 1000);
@@ -65,13 +66,18 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, { modifiedName });
 
 const useTrack = () => {
-  
+ 
   api
     .get("/change-track-status/isTrackSelected/" + props.name)
-    .then(
-      (currentTrackList.trackState[props.index].isTrackSelected =
-        !currentTrackList.trackState[props.index].isTrackSelected)
-    );
+    .then(() => {
+      if(trackToEdit.value.isTrackSelected == false){
+        trackToEdit.value.isTrackSelected = true
+        currentTrackList.selectedTracks.push({trackName: trackToEdit.value.trackName, id: trackToEdit.value.id})
+      } else {
+        trackToEdit.value.isTrackSelected = false
+        const trackToRemove = currentTrackList.selectedTracks.find((track) => track.trackName == props.name)
+        currentTrackList.selectedTracks.splice(currentTrackList.selectedTracks.indexOf(trackToRemove), 1);
+      }});
 };
 </script>
 
@@ -82,13 +88,13 @@ const useTrack = () => {
     @mouseleave="state.showTextInstruction = false"
     :class="{
       'bg-gray-200 border-gray-400': state.showForm,
-      'bg-yellow-100 border-2 border-yellow-400 border-dashed shadow-md shadow-gray-400 hover:bg-yellow-200 ':
-        currentTrackList.trackState[props.index].isTrackSelected & !state.showForm,
+      'bg-yellow-100 border-1 border-blue-700  shadow-md shadow-gray-400 hover:bg-yellow-200 ':
+        trackToEdit.isTrackSelected & !state.showForm,
     }"
   >
     <div>
       <h4 class="inline-block font-bold">{{ name }}</h4>
-
+      <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ currentTrackList.selectedTracks.indexOf(currentTrackList.selectedTracks.find((track) => track.trackName == props.name)) }})</span>
       <button
         title="Delete song"
         class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
@@ -108,7 +114,7 @@ const useTrack = () => {
         v-show="state.showTextInstruction & !state.showForm"
         class="mt-1 mr-8 float-right text-gray-400 text-sm"
         >{{
-          !currentTrackList.trackState[props.index].isTrackSelected
+          !trackToEdit.isTrackSelected
             ? "Click to use audio"
             : "Click to remove audio"
         }}</span

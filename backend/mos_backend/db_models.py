@@ -18,9 +18,12 @@ class Recording(db.Model):
     filename = db.Column(db.String(128), unique=False, nullable=False)
     filepath = db.Column(db.String(128), unique=True, nullable=False)
     ground_truth = db.Column(db.String(128), unique=True, nullable=True)
+    isTrackSelected = db.Column(db.Boolean, unique=False,nullable=True)
+    isWaveform = db.Column(db.Boolean, unique=False,nullable=True)
+
     # optional parameters
-    year = db.Column(db.Integer, unique=False, nullable=True)
-    performer = db.Column(db.String(128), unique=False, nullable=True)
+    # year = db.Column(db.Integer, unique=False, nullable=True)
+    # performer = db.Column(db.String(128), unique=False, nullable=True)
     # a user who uploaded this recording
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

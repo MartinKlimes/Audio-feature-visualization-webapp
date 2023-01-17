@@ -29,5 +29,5 @@ app.config["JWT_COOKIE_SECURE"] = False
 jwt = JWTManager(app)
 
 from mos_backend.db_models import User, Recording
-from mos_backend import routes
+from mos_backend import routes_user, routes_recording, routes_parameters
 

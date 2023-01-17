@@ -173,12 +173,11 @@ function openUploadModal() {
             <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
                 
                 <div id="tracklist-content" class="w-full h-[90%] pb-5 flex flex-col items-center gap-1 overflow-y-auto">
-                    <div v-for="track in currentTrackList.trackState" :key="track.id">
-                        <TrackToVisualize 
-                        v-if="track.isTrackSelected == true"
-                        
+                    <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
+                        <TrackToVisualize      
                         :name="track.trackName"
-                        :id="track.id"/>
+                        :id="track.id"
+                        />
                     </div>
                         <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
                             <button class="btn">Bars</button>
@@ -208,7 +207,7 @@ function openUploadModal() {
         class="h-full w-83vw text-xl pl-1 text-black ml-61 bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
         :class="{'w-[87vw] pr-1' : hideSettingPanel && !hideTracklistPanel, 'w-[95.8vw] ml-0 pl-2.5 ' : hideTracklistPanel && !hideSettingPanel, 'w-[99.5vw] ml-0 pl-2' : hideTracklistPanel && hideSettingPanel}"
         >
-      
+            
             <!-- <div class="mb-7">
                 
                 <MainPanel 
@@ -216,7 +215,8 @@ function openUploadModal() {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-            <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
+            <div v-for="track in currentTrackList.trackState" :key="track.id">
+                
                 <transition>
                     <Waveform 
                     v-if="track.isWaveform"  
