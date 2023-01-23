@@ -9,6 +9,8 @@ import colormap from '../hot-colormap.json'
 import { api } from "../../custom";
 import { trackList } from "../globalStores";
 
+const currentTrackList = trackList()
+
 
 
 export var wavesurfer = []
@@ -46,9 +48,9 @@ export function createWavesurfer(audio,trackName, id){
         Markers.create({
             opacity: 1,
         }),
-        // TimelinePlugin.create({
-        //     container: `#timeline-${trackName.replace(/\.|\(|\)|\ /g, '')}`,
-        // }),
+        TimelinePlugin.create({
+            container: `#timeline-${id}`,
+        }),
         RegionsPlugin.create({}),
         Cursor.create({
             showTime: true,
@@ -68,6 +70,11 @@ export function createWavesurfer(audio,trackName, id){
     
 
     wavesurfer[id].load(audio)
+
+    wavesurfer[id].on('ready', function () {
+        currentTrackList.selectUsedTrack(id).iss 
+        console.log('object');
+    });
     // const currentTrackList = trackList()
 
     // api.get("/change-track-status/isWaveform/" + trackName)

@@ -3,19 +3,33 @@ import { api } from '../../../custom';
 import { makeWaveform } from '../../Waveform';
 import { trackList } from '../../globalStores';
 import { createWavesurfer } from '../../functions/waveform'
-
+import { wavesurfer } from '../../functions/waveform';
 const currentTrackList = trackList()
 
 
 const props = defineProps({
-    id: Number,
-    name: String,
+    track: Object,
 })
 
 
 const createWaveform = () => {
-    currentTrackList.selectTrack(props.id).isWaveform = !currentTrackList.selectTrack(props.id).isWaveform 
-    api.get("/change-track-status/isWaveform/" + props.name)
+    
+    // if(currentTrackList.selectTrack(props.id).isWaveform){
+    //     document.getElementById(`waveformContainer-${props.id}`).style.visibility = 'hidden'
+    // }else{ 
+    //     currentTrackList.selectTrack(props.id).isWaveform = !currentTrackList.selectTrack(props.id).isWaveform 
+    //     api.get("/change-track-status/isWaveform/" + props.name)
+
+    // }
+    if(!props.track.isWaveform){
+        props.track.isWaveform = true
+        props.track.isWaveformDisplayed = true
+        api.get("/change-track-status/isWaveform/" + props.track.trackName)
+        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName)
+    }else{
+        props.track.isWaveformDisplayed = !props.track.isWaveformDisplayed
+        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName)
+    }
 
 }
 
@@ -30,10 +44,13 @@ const createSpectrogram = () => {
 
 
 <template>
+ 
 
 <div class="h-[47%] w-full mt-5 p-2 border border-dashed border-gray-500 rounded-md ">
         <div class="grid grid-cols-2 gap-2">
-            <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100" @click="createWaveform">Waveform</button>
+            <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100" :class="{'bg-lime-500 hover:bg-lime-400': track.isWaveformDisplayed, 
+            'bg-yellow-100' : track.isWaveform && !track.isWaveformDisplayed
+         }" @click="createWaveform">Waveform</button>
             <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100" @click="createSpectrogram">Spectrogram</button>
             <button class="btn-hover-cursor  w-22 font-semibold shadow-sm shadow-dark-100">Pianoroll</button>
             <div class="flex w-22 h-max">

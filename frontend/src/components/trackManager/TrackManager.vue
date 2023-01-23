@@ -16,6 +16,7 @@ const deleteTrack = async(event) => {
     showAlert(response.data.message);
     setTimeout(closeAlert, 1500);
     currentTrackList.trackState.splice(event.index, 1);
+    currentTrackList.fill()
   })
 
 };

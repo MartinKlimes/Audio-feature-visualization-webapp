@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, onDeactivated, onActivated } from 'vue';
 import { changeBackground } from '../../filesFunctions';
 import { trackFromStart } from '../../Waveform';
 import { trackIndex, trackList} from '../../globalStores';
@@ -21,9 +21,22 @@ const props = defineProps({
 onMounted(() => {
     selectTime()
 })
-onUnmounted(() => {
+// onUnmounted(() => {
+//     wavesurfer[props.id].clearRegions()
+//     wavesurfer[props.id].disableDragSelection()
+// })
+
+onDeactivated(() => {
+  // called when removed from the DOM into the cache
+  // and also when unmounted
     wavesurfer[props.id].clearRegions()
     wavesurfer[props.id].disableDragSelection()
+})
+
+onActivated(() => {
+  // called on initial mount
+  // and every time it is re-inserted from the cache
+  selectTime()
 })
 
 function selectTime(){
@@ -58,6 +71,7 @@ function selectTime(){
 }
 
 const trimAudio = () => {
+    
     api.get('/trim-audio/' + props.trackName + '/' + from.value + '/' + to.value + '/undefined/undefined')
     .then((response) => {
         // console.log(response.data);

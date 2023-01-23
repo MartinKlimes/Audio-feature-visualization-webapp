@@ -343,7 +343,8 @@ input[type="file"] {
     background-position: -4000px 0;
   }
 }
-
+</style>
+<style>
 .spin {
   animation-name: spin;
   animation-duration: 2000ms;
@@ -358,4 +359,6 @@ input[type="file"] {
     transform: rotate(360deg);
   }
 }
+
 </style>
+

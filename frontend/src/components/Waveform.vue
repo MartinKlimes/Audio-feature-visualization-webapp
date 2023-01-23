@@ -35,17 +35,7 @@ const state = reactive({
     isVolumeBtnHide: false,
     isMuteBtnHide: false,
 })
-function clickOnWaveform(id){
-    if(globalTrackIndex.selTrackIndex == props.id){
-        return
-    } else{
-        globalTrackIndex.selTrackIndex = props.id
-    }
 
-    // window.eventBus.emit('select', id)
-    // globalTrackIndex.selTrackIndex = id
-  
-}
 
 let trackNameStorage = JSON.parse(localStorage.getItem('trackName'))
 
@@ -101,7 +91,7 @@ const playTrack = (id) => {
 <template>
     <!-- //vif -->
 <div justify="between" >
-<div class="relative mt-1 border border-gray-300" id="waveforms">
+<div class="relative mt-1 border border-gray-300" :id="`waveformContainer-${id}`" :class="{'shadow-md shadow-gray-500' : id==globalTrackIndex.selTrackIndex}">
     <div :class="{hide : !state.isWaveformHide}" :id="`showWaveBtn-${id}`" @click="state.isWaveformHide = false">
         <Icon icon="ep:arrow-down"  width="18" class="btn-hover-cursor"/>
         <div class="inline text-gray-400 text-sm ml-3">{{trackname}} (w)</div>
@@ -109,7 +99,8 @@ const playTrack = (id) => {
     <transition>
     
     
-    <div :id="`waveform-${id}`" v-show="!state.isWaveformHide" @click="clickOnWaveform(id)" :class="{'shadow-md shadow-gray-500' : id==globalTrackIndex.selTrackIndex}">
+    <div :id="`waveform-${id}`" v-show="!state.isWaveformHide" >
+        
         <Icon icon="bi:play" width="20"  :class="{hide : state.isPlayBtnHide}" :id="`playPause-btnOn-${id}`" @click="playTrack(id)" class="btn-hover-cursor" />
 
         <Icon icon="bi:pause" width="20"  :class="{hide : !state.isPlayBtnHide}" :id="`playPause-btnOff-${id}`" @click="wavesurfer[id].pause(); state.isPlayBtnHide = false"  class="btn-hover-cursor"/>
@@ -137,7 +128,7 @@ const playTrack = (id) => {
     </transition>
     <!-- <Icon icon="ci:close-small" v-show="!state.isWaveformHide" class="hover:bg-gray-300 transition cursor-pointer top-0 right-0 absolute -my-1  -mr-4.25 text-black" @click="deleteVisualization(id)"/> -->
 
-    <div :class="{hide : state.isWaveformHide}" :id="`timeline-${trackname.replace(/\.|\(|\)|\ /g, '')}`" ></div>
+    <div :class="{hide : state.isWaveformHide}" :id="`timeline-${id}`" ></div>
 
     </div>
 </div>

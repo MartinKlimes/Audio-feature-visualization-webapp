@@ -18,6 +18,9 @@ const state = reactive({
   alert_variant: "",
   alert_message: "",
   showTextInstruction: false,
+  indexSelectedTracks: computed(() => {
+    return currentTrackList.selectedTracks.indexOf(currentTrackList.selectedTracks.find((track) => track.trackName == props.name))
+  })
 });
 
 const props = defineProps({
@@ -26,6 +29,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["deleteTrack"]);
+
 
 async function rename() {
   state.in_submission = true;
@@ -75,8 +79,7 @@ const useTrack = () => {
         currentTrackList.selectedTracks.push({trackName: trackToEdit.value.trackName, id: trackToEdit.value.id})
       } else {
         trackToEdit.value.isTrackSelected = false
-        const trackToRemove = currentTrackList.selectedTracks.find((track) => track.trackName == props.name)
-        currentTrackList.selectedTracks.splice(currentTrackList.selectedTracks.indexOf(trackToRemove), 1);
+        currentTrackList.selectedTracks.splice(state.indexSelectedTracks, 1);
       }});
 };
 </script>
@@ -93,8 +96,9 @@ const useTrack = () => {
     }"
   >
     <div>
+    
       <h4 class="inline-block font-bold">{{ name }}</h4>
-      <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ currentTrackList.selectedTracks.indexOf(currentTrackList.selectedTracks.find((track) => track.trackName == props.name)) }})</span>
+      <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ state.indexSelectedTracks}})</span>
       <button
         title="Delete song"
         class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"

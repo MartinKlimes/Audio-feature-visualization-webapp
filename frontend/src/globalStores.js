@@ -72,10 +72,10 @@ export const trackList = defineStore('trackList',
             await api.get('http://127.0.0.1:5000/get-track-list')
             .then((response) => {   
                 this.trackState = response.data
-
+                this.selectedTracks = []
                 response.data.forEach((oneTrack)=> {
                     if(oneTrack.isTrackSelected == true){
-                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id})
+                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed})
                     }
                     
                     // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})
@@ -90,10 +90,14 @@ export const trackList = defineStore('trackList',
         // }
 
     },
+    
     getters: {
         
         selectTrack(state) {
             return (trackId) => state.trackState.find((track) => track.id == trackId)
+        },
+        selectUsedTrack(state) {
+            return (trackId) => state.selectedTracks.find((track) => track.id == trackId)
         }
     }
 

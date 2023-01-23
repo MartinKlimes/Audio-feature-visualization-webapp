@@ -1,16 +1,21 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref } from 'vue';
+import { ref, shallowRef } from 'vue';
 import BarSelection from '../MainPanel/BarSelection.vue';
 import TimeSelection from '../MainPanel/TimeSelection.vue';
+import { wavesurfer } from '../../functions/waveform';
 
 const showTimeSelection = ref(false)
 const showBarSeletion = ref(false)
+
+const currentSetting = shallowRef()
 
 const props = defineProps({
     trackName: String,
     id: Number,
 })
+
+
 
 </script>
 
@@ -28,15 +33,23 @@ const props = defineProps({
     </div>
     <span class="text-xs opacity-50 mt-3">Select part</span>
     <div class="flex  border border-dashed border-gray-400 rounded-md p-1 justify-center items-center" >
-        <button class=" p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex" @click="showBarSeletion = !showBarSeletion">Bars<Icon icon="material-symbols:content-cut-rounded" class="mt-1 ml-1" /></button>
-        <button class="p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex ml-3" @click="showTimeSelection = !showTimeSelection">Time<Icon icon="material-symbols:content-cut-rounded" class="mt-1 ml-1" /></button>
+        <button class=" p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex" @click="currentSetting === BarSelection ? currentSetting = '' : currentSetting = BarSelection">Bars<Icon icon="material-symbols:content-cut-rounded" class="mt-1 ml-1" /></button>
+        <button class="p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex ml-3" @click="currentSetting === TimeSelection ? currentSetting = '' : currentSetting = TimeSelection">Time<Icon icon="material-symbols:content-cut-rounded" class="mt-1 ml-1" /></button>
+        <Icon
+            icon="fa:spinner"
+            class="spin"
+           
+        />
     </div>
     <transition>
-        <TimeSelection v-if="showTimeSelection" :trackName="trackName" :id="id"/>
+        <KeepAlive>
+            <component :is="currentSetting" :trackName="trackName" :id="id"/>
+        </KeepAlive>
     </transition>
-    <transition>
+    <!-- <TimeSelection v-if="showTimeSelection" :trackName="trackName" :id="id"/> -->
+    <!-- <transition>
         <BarSelection v-if="showBarSeletion"/>
-    </transition>
+    </transition> -->
 
     <button class="p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex mt-3">Color<Icon icon="ic:outline-color-lens" class="mt-1 ml-1"/></button>
 

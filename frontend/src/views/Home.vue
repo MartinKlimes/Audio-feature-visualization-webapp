@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 
 import NavBar from '../components/NavBar.vue';
 import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
@@ -17,6 +17,7 @@ import { getCookie } from '../cookieHandling';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import WaveformSetting from '../components/VisualizationSetting/WaveformSetting.vue';
 import SpectrogramSetting from '../components/VisualizationSetting/SpectrogramSetting.vue';
+import RightPanel from '../components/RightPanel.vue';
 
 const trackListGlobalState = tracklistState();
 const currentTrackList = trackList();
@@ -39,124 +40,15 @@ const axiosConfig = {
 }
 
  const trackname = 'tap.mp3'
-// fetch('http://127.0.0.1:5000/test/' + trackname)
-// .then(response => {
-//     console.log(response)
-// })
-
-
-// const xhr = new XMLHttpRequest();
-// xhr.open('GET', 'http://127.0.0.1:5000/test/' + trackname, true);
-// xhr.withCredentials = true;
-// xhr.send(null);
-
-// api.get('/test/' + trackname)
-// .then(response => {
-//     console.log(response)
-// })
-
-
-// function expandTracklist() {
-    
-//     const tracklist = document.getElementById('tracklist');
-//     // const tracklistContent = document.getElementById('tracklist-content');
-//     const tracklistButton = document.getElementById('arrow');
-//     const addTrackBtn = document.getElementById('add-track-btn');
-//     const content = document.getElementById('content');
-//     const panel = document.getElementById('visualization-settings');
-
-//     if (trackListGlobalState.tracklistExpanded) {
-//         trackListGlobalState.tracklistExpanded = false;
-        
-//         tracklist.style.transform = 'translateX(0%)';
-//         tracklist.style.transition = 'transform 0s'
-//         content.style.transform = 'translateX(0rem)'
-//         content.style.transition = 'transform 0s'
-
-//         if(panel.style.transform === 'translateX(5.5rem)'){
-//             content.style.width = '87.5vw'
-//         }else{
-//             content.style.width = '82.9vw'
-            
-//         }
-//         // tracklistContent.style.paddingLeft = '15rem';        
-//         tracklistButton.style.borderRight = '0.5rem solid black';
-//         tracklistButton.style.borderLeft = '0rem'
-//         // addTrackBtn.style.marginLeft = '15rem';
-//     }
-//     else {
-//         trackListGlobalState.tracklistExpanded = true;
-//         tracklist.style.transform = 'translateX(-98.5%)';
-//         tracklist.style.transition = 'transform 0.4s'
-//         content.style.transform = 'translateX(-15rem)'
-//         content.style.transition = 'transform 0.4s'
-//         tracklistButton.style.borderLeft = '0.5rem solid black'
-//         tracklistButton.style.borderRight = '0rem';
-    
-//         if (panel.style.transform === ''){
-//             content.style.width = '95vw' 
-//             // alert('asfd')
-//         } else {
-//             content.style.width = '100vw' 
-//         }
-        
-        
-        
-//         // content.style.width = '100vw' 
-//         // content.style.width = currWidth + 1 + 'rem'
-//         // tracklistContent.style.paddingLeft = '0%';
-        
-//         // addTrackBtn.style.marginLeft = '0rem'
-//     }
-// }
-// const expandSettings = () => {
-//     const panel = document.getElementById('visualization-settings');
-//     const paneltButton = document.getElementById('arrow');
-//     const content = document.getElementById('content');
-//     const tracklist = document.getElementById('tracklist');
-
-   
-
-    
-    
-//     if(panel.style.transform === ''){
-//         alert('1')
-//         panel.style.transform = 'translateX(5.5rem)';
-//         // content.style.transform = 'translateX(5.5rem)'
-//         if(tracklist.style.transform === 'translateX(0rem)'){
-//             content.style.width =  '87.5vw'
-//             alert('2')
-//         }else{
-//             content.style.width =  '100vw'
-//             alert('3')
-//         }
-
-//     }else {
-//         panel.style.transform = 'translateX(0rem)';
-//         // content.style.transform = 'translateX(5.5rem)'
-//         content.style.width =  '82.9vw'
-//     }
-    // }else{
-    //     if (trackListGlobalState.tracklistExpanded && panel.style.transform === 'translateX(0rem)'){
-
-    //     }
-
-    //     panel.style.transform = 'translateX(5.5rem)';
-    //     // content.style.width =  '100vw'
-
-    // }
-
-
-// }
-
 
 function openUploadModal() {
     const uploadModalGlobalState = uploadModalState();
     uploadModalGlobalState.uploadModalVisible = true;
 }
 
-
-
+// const Waveform = defineAsyncComponent(() =>
+//   import('../components/Waveform.vue')
+// )
 
 </script>
 
@@ -175,8 +67,8 @@ function openUploadModal() {
                 <div id="tracklist-content" class="w-full h-[90%] pb-5 flex flex-col items-center gap-1 overflow-y-auto">
                     <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
                         <TrackToVisualize      
-                        :name="track.trackName"
-                        :id="track.id"
+                        :track="track"
+                        @click="globalTrackIndex.selTrackIndex = track.id"
                         />
                     </div>
                         <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
@@ -215,14 +107,17 @@ function openUploadModal() {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-            <div v-for="track in currentTrackList.trackState" :key="track.id">
+            <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
                 
                 <transition>
                     <Waveform 
                     v-if="track.isWaveform"  
+                    v-show="track.isWaveformDisplayed"
                      
                     :id="track.id"  
-                    :trackname="track.trackName"/>
+                    :trackname="track.trackName"
+                    @click="globalTrackIndex.selTrackIndex = track.id"/>
+                   
                 </transition>
             </div>
             <!-- <div v-for="(trackname, id) in trackFromStart" :key="trackname">
@@ -259,36 +154,19 @@ function openUploadModal() {
                 <button @click="expandTracklist()" id="arrow-left" class="h-50"></button>
             </div> -->
         <div id="visualization-settings" 
-            class="h-full w-41 absolute top-0 right-1 flex bg-gray-100 transform duration-400"
-            :class="{'transform translate-x-37 border border-black' : hideSettingPanel}"
-            >
-
-
-            <div id="tracklist-button" class="w-[7%] h-full">
-                <button @click="hideSettingPanel = ! hideSettingPanel" id="arrow-left" class="h-50 border-black"
-                :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
-            </div>
-            <div v-for="track in currentTrackList.trackState" :key="track.id">
-            
-                <div v-if="track.id == globalTrackIndex.selTrackIndex" class="w-[99%] border-l border-gray-300 rounded-md flex flex-col gap-1">
-                    <div class="h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 flex ">
-                        
-                        <WaveformSetting v-if="track.isWaveform" :trackName="track.trackName" :id="track.id"/>
-                    
-                        
-                    </div>
-                    <div class="h-55 w-full p-2 bg-gray-200 rounded-md border border-gray-300 flex ">
-                        
-                        {{ track.trackName }}
-                    
-                        
-                    </div>
-                    <!-- <SpectrogramSetting/> -->
-                    
-                </div>
-            </div>
-
+        class="h-full w-41 absolute top-0 right-1 flex bg-gray-100 transform duration-400"
+        :class="{'transform translate-x-37 border border-black' : hideSettingPanel}">
+        
+        
+        <div id="tracklist-button" class="w-[7%] h-full">
+            <button @click="hideSettingPanel = ! hideSettingPanel" id="arrow-left" class="h-50 border-black"
+            :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
         </div>
+        <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
+            <RightPanel :track="track"/>
+        </div>
+
+    </div>
         
 
     </div>
