@@ -15,7 +15,7 @@ const props = defineProps({
 
 <template>
 
-<div class=" h-57 w-full px-1 py-1 flex-col justify-center bg-light-700 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-white" :class="{'shadow-md shadow-gray-500  ' : track.id==globalTrackIndex.selTrackIndex}">
+<div class=" h-57 w-full px-1 py-1 flex-col justify-center bg-light-700 rounded-md border border-gray-300  hover:bg-gray-200" :class="{'shadow-md shadow-gray-500  ' : track.id==globalTrackIndex.selTrackIndex}">
     <div class="flex justify-center items-center relative ">
         <button class="absolute left-0 opacity-70 rounded-md hover:opacity-100">
             <Icon icon="ic:outline-color-lens" />

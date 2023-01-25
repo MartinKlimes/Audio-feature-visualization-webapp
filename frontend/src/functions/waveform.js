@@ -9,7 +9,6 @@ import colormap from '../hot-colormap.json'
 import { api } from "../../custom";
 import { trackList } from "../globalStores";
 
-const currentTrackList = trackList()
 
 
 
@@ -72,8 +71,9 @@ export function createWavesurfer(audio,trackName, id){
     wavesurfer[id].load(audio)
 
     wavesurfer[id].on('ready', function () {
-        currentTrackList.selectUsedTrack(id).iss 
-        console.log('object');
+        const currentTrackList = trackList()
+        currentTrackList.selectUsedTrack(id).isWaveformLoading = false
+        
     });
     // const currentTrackList = trackList()
 
@@ -160,4 +160,37 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
      })
  
  }
- 
+ export function marker(beatDuration, selectedTrackIndex){
+    // numberOfBars = beatDuration
+    console.log(selectedTrackIndex);
+    beatDuration.forEach(function(oneBeat, id){
+        wavesurfer[selectedTrackIndex].addMarker({
+            time: oneBeat,
+            label: id+1,
+            color: "black",
+        })
+    })
+    beatDuration.forEach(function(oneBeat, id){
+        if (id == beatDuration.length-1){
+            wavesurfer[selectedTrackIndex].addRegion({
+                id: id+1,
+                start: beatDuration[id],
+                end: wavesurfer[selectedTrackIndex].getDuration(),
+                drag: false,
+                resize: false,
+                color: "rgba(0, 0, 0, 0)"   
+            })
+        }
+
+        if(id > 0){       
+            wavesurfer[selectedTrackIndex].addRegion({
+                id: id,
+                start: beatDuration[id-1],
+                end: oneBeat,
+                drag: false,
+                resize: false,
+                color: "rgba(0, 0, 0, 0)"   
+            })
+        }
+    })
+}

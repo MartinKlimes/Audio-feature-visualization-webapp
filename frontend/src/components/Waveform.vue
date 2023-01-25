@@ -16,7 +16,7 @@ onMounted(() => {
         .then((response) => {
             const audioSrc = response.request.responseURL
             createWavesurfer(audioSrc ,props.trackname, props.id)
-            globalTrackIndex.selTrackIndex = props.id
+            
         })
 
 })

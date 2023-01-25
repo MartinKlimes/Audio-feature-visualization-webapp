@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import { ref, reactive, onMounted } from 'vue';
-import { wavesurfer,trackFromStart, marker } from '../../Waveform';
+import { wavesurfer,trackFromStart} from '../../Waveform';
 import { addTxtFilesToUpload } from '../../filesFunctions';
 import { trackIndex } from '../../globalStores';
 import clickAudio from '/public/click.mp3'

@@ -5,13 +5,13 @@ import { trackFromStart } from '../../Waveform';
 import { trackIndex, trackList} from '../../globalStores';
 import { api } from '../../../custom';
 import { wavesurfer, trimWaveform } from '../../functions/waveform';
-
+import { Icon } from '@iconify/vue';
 const globalTrackIndex = trackIndex()
 const currentTrackList = trackList()
 
-const isCheckTime = ref(true)
 const from = ref()
 const to = ref()
+const loading = ref(false)
 
 const props = defineProps({
     id: Number,
@@ -71,11 +71,12 @@ function selectTime(){
 }
 
 const trimAudio = () => {
-    
+    loading.value = true
     api.get('/trim-audio/' + props.trackName + '/' + from.value + '/' + to.value + '/undefined/undefined')
     .then((response) => {
         // console.log(response.data);
         currentTrackList.fill()
+        loading.value=false
     })
     // .then((response) => {  
     //     // getOnset(nameOfCuttedTrack + ' - ' +trackFromStart.value[selectedTrackIndex][0], trackFromStart.value[selectedTrackIndex][0] + nameOfCuttedTrack)
@@ -101,7 +102,14 @@ const trimAudio = () => {
     <input v-model="from" type="number" placeholder="from" class="input-field-nomargin w-15 border-2 border-blue-400" @change="selectTime()">
     <input v-model="to" type="number" placeholder="to"  class="input-field-nomargin w-15 ml-1 border-2 border-blue-400" @change="selectTime()">
     </div>
-    <button class="btn btn-blue hover:bg-blue-500 transition w-max mt-1" @click="trimAudio">Select</button>
+    <button class="btn btn-blue hover:bg-blue-500 transition w-max mt-1" :class="{'bg-blue-300 hover:bg-blue-300 ' : loading}" @click="trimAudio" :disabled="loading">Select<Icon
+            v-if="loading"
+            icon="fa:spinner"
+            class="spin ml-1"
+            :inline=true
+           />
+        
+    </button>
 </div>
 
 <!-- <button class="btn-hover" :class="{ picker : !isCheckTime}" @click=" isCheckTime=! isCheckTime; selectTime()">Select a section</button> -->

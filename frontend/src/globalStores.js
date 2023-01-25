@@ -75,7 +75,7 @@ export const trackList = defineStore('trackList',
                 this.selectedTracks = []
                 response.data.forEach((oneTrack)=> {
                     if(oneTrack.isTrackSelected == true){
-                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed})
+                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed, isWaveformLoading: false})
                     }
                     
                     // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})

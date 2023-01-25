@@ -153,8 +153,8 @@ function openUploadModal() {
         <!-- <div id="tracklist-button" class="w-[3%] h-full">
                 <button @click="expandTracklist()" id="arrow-left" class="h-50"></button>
             </div> -->
-        <div id="visualization-settings" 
-        class="h-full w-41 absolute top-0 right-1 flex bg-gray-100 transform duration-400"
+        <div 
+        class="h-full w-41 absolute top-0 right-1 flex bg-gray-200 transform duration-400"
         :class="{'transform translate-x-37 border border-black' : hideSettingPanel}">
         
         
@@ -243,9 +243,7 @@ function openUploadModal() {
     transition: margin-left 0.4s; */
     
 }
-#visualization-settings{
-    /* transform: translateX(0rem); */
-}
+
 
 #add-track-div{
     display: flex;

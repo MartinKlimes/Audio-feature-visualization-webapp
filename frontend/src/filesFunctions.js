@@ -2,7 +2,7 @@
 import { api } from '../custom';
 import {getCookie} from './cookieHandling'
 import { trackList } from './globalStores';
-import { track, makeWaveform, wavesurfer, marker, trackFromStart } from './Waveform'
+import { track, makeWaveform, wavesurfer, trackFromStart } from './Waveform'
 
 
 

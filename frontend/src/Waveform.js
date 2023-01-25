@@ -106,51 +106,51 @@ function trimWaveform(start,end, selectedTrackIndex, fromBar, toBar){
 }
 
 
-function marker(beatDuration, selectedTrackIndex){
-    numberOfBars = beatDuration
-    beatDuration.forEach(function(oneBeat, id){
-        wavesurfer[selectedTrackIndex].addMarker({
-            time: oneBeat,
-            label: id+1,
-            color: "black",
-        })
-    })
-    beatDuration.forEach(function(oneBeat, id){
-        if (id == beatDuration.length-1){
-            wavesurfer[selectedTrackIndex].addRegion({
-                id: id+1,
-                start: beatDuration[id],
-                end: wavesurfer[selectedTrackIndex].getDuration(),
-                drag: false,
-                resize: false,
-                color: "rgba(0, 0, 0, 0)"   
-            })
-        }
+// function marker(beatDuration, selectedTrackIndex){
+//     numberOfBars = beatDuration
+//     beatDuration.forEach(function(oneBeat, id){
+//         wavesurfer[selectedTrackIndex].addMarker({
+//             time: oneBeat,
+//             label: id+1,
+//             color: "black",
+//         })
+//     })
+//     beatDuration.forEach(function(oneBeat, id){
+//         if (id == beatDuration.length-1){
+//             wavesurfer[selectedTrackIndex].addRegion({
+//                 id: id+1,
+//                 start: beatDuration[id],
+//                 end: wavesurfer[selectedTrackIndex].getDuration(),
+//                 drag: false,
+//                 resize: false,
+//                 color: "rgba(0, 0, 0, 0)"   
+//             })
+//         }
 
-        if(id > 0){       
-            wavesurfer[selectedTrackIndex].addRegion({
-                id: id,
-                start: beatDuration[id-1],
-                end: oneBeat,
-                drag: false,
-                resize: false,
-                color: "rgba(0, 0, 0, 0)"   
-            })
-        }
-    })
-    // wavesurfer[selectedTrackIndex].on("region-dblclick", (region) => {  
-    //     // e.stopPropagation();
-    //     // wavesurfer.play(region.start, region.end)
-    //     axios.get('/get-trimmed-audio/' + track[selectedTrackIndex] + '/' + region.start + '/' + region.end + '/' + fromBar + '/' + toBar)
-    //     .then((response) => {   
-    //         console.log(response)
-    //         let audio = new Audio(response.request.responseURL);
-    //         makeWaveform(audio,track[selectedTrackIndex])    
-    //     })
-    // })
+//         if(id > 0){       
+//             wavesurfer[selectedTrackIndex].addRegion({
+//                 id: id,
+//                 start: beatDuration[id-1],
+//                 end: oneBeat,
+//                 drag: false,
+//                 resize: false,
+//                 color: "rgba(0, 0, 0, 0)"   
+//             })
+//         }
+//     })
+//     // wavesurfer[selectedTrackIndex].on("region-dblclick", (region) => {  
+//     //     // e.stopPropagation();
+//     //     // wavesurfer.play(region.start, region.end)
+//     //     axios.get('/get-trimmed-audio/' + track[selectedTrackIndex] + '/' + region.start + '/' + region.end + '/' + fromBar + '/' + toBar)
+//     //     .then((response) => {   
+//     //         console.log(response)
+//     //         let audio = new Audio(response.request.responseURL);
+//     //         makeWaveform(audio,track[selectedTrackIndex])    
+//     //     })
+//     // })
 
     
-}
+// }
 
 function createWavesurfer(audio,trackName){
 
@@ -235,5 +235,5 @@ function createWavesurfer(audio,trackName){
 }
 
 
-export { makeWaveform, marker, track, trackFromStart, wavesurfer, numberOfBars}
+export { makeWaveform, track, trackFromStart, wavesurfer, numberOfBars}
 
