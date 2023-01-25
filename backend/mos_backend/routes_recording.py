@@ -30,9 +30,6 @@ def upload_audio_file():
                                   isTrackSelected=False,
                                   isWaveform=False,
                                   isWaveformDisplayed=False,
-                                  waveformColor='',
-                                  waveformHeight=None,
-
                                  )
             db.session.add(recording)
             db.session.commit()
@@ -60,7 +57,9 @@ def get_audio_file():
                             'isWaveform': record.isWaveform,
                             'isWaveformDisplayed': record.isWaveformDisplayed,
                             'waveformColor': record.waveformColor,
-                            'waveformHeight': record.waveformHeight
+                            'waveformHeight': record.waveformHeight,
+                            'txtFileName': record.txtFileName,
+                            'MIDIFileName': record.MIDIFileName
                             })
     return jsonify(record_list)
 
@@ -136,20 +135,20 @@ def upload_text_file(record_name):
     if request.files:
         file = request.files['file']
         filename = secure_filename(file.filename)
-        filepath = f'./user_uploads/{user.username}/ground_truth/{filename}'
+        filepath = f'./user_uploads/{user.username}/{filename}'
         file.save(filepath)
-        record.ground_truth = filepath
+        record.txtFileName = filename
         db.session.commit()
-    else:
-        filepath = record.ground_truth
-
-    lines = []
-
-    if filepath:
-        f = open(filepath, 'r')
-        for line in f:
-            lines.append(line.strip())
-    return jsonify(lines)
+    # else:
+    #     filepath = record.ground_truth
+    #
+    # lines = []
+    #
+    # if filepath:
+    #     f = open(filepath, 'r')
+    #     for line in f:
+    #         lines.append(line.strip())
+    return jsonify('File Uploaded')
 
 
 @app.route('/trim-audio/<record_name>/<start>/<end>/<fromBar>/<toBar>', methods=['POST', 'GET'])

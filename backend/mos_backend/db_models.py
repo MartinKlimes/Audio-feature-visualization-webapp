@@ -24,6 +24,8 @@ class Recording(db.Model):
     isWaveformDisplayed = db.Column(db.Boolean,nullable=True)
     waveformColor = db.Column(db.String(128), nullable=True)
     waveformHeight = db.Column(db.Integer,nullable=True)
+    txtFileName = db.Column(db.String(128), nullable=True)
+    MIDIFileName = db.Column(db.String(128), nullable=True)
     # optional parameters
     # year = db.Column(db.Integer, unique=False, nullable=True)
     # performer = db.Column(db.String(128), unique=False, nullable=True)

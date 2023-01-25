@@ -8,6 +8,8 @@ import EditBars from "./EditBars.vue"
 import EditMIDI from "./EditMIDI.vue"
 import { ref, reactive } from "vue";
 import { marker } from "../../functions/waveform"
+import SelButtons from "./SelButttons.vue"
+
 
 const currentTrackList = trackList();
 const state = reactive ({
@@ -43,6 +45,18 @@ const getTxt = () => {
   <div class="bg-white rounded border border-b-gray-200 relative flex flex-col">
     <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
 
+    <SelButtons @click="state.isEditTrack = true,state.isEditBars = false, state.isEditMIDI = false" :active="state.isEditTrack">
+      Audio <Icon icon="material-symbols:audio-file-outline" class=" text-lg" :inline="true" />
+    </SelButtons>
+    <SelButtons @click="state.isEditBars = true,state.isEditTrack = false, state.isEditMIDI = false" :active="state.isEditBars">
+      Bars <Icon icon="clarity:bars-line" :rotate="1" class=" text-lg" :inline="true" />
+    </SelButtons>
+    <SelButtons @click="state.isEditMIDI = true,state.isEditTrack = false, state.isEditBars= false" :active="state.isEditMIDI">
+      MIDI <Icon icon="mdi:midi-port" class=" text-lg" :inline="true" />
+    </SelButtons>
+<!-- 
+
+    
         <button class="btn btn-blue mr-1" :class="{'bg-blue-500 shadow-inner drop-shadow-sm shadow-dark-50 hover:bg-blue-500' : state.isEditTrack}" @click="state.isEditTrack = true,state.isEditBars = false, state.isEditMIDI = false">Audio <Icon
           icon="material-symbols:audio-file-outline"
           class=" text-lg"
@@ -58,7 +72,8 @@ const getTxt = () => {
           icon="fad:midiplug"
           class="ml-3 text-lg"
           :inline="true"
-        /> </button>
+        /> </button> -->
+
     </div>
     
     <div class="p-6 h-150 overflow-y-auto">
