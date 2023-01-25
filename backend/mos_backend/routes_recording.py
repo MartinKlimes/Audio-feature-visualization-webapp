@@ -29,6 +29,10 @@ def upload_audio_file():
                                   user=user,
                                   isTrackSelected=False,
                                   isWaveform=False,
+                                  isWaveformDisplayed=False,
+                                  waveformColor='',
+                                  waveformHeight=None,
+
                                  )
             db.session.add(recording)
             db.session.commit()
@@ -47,14 +51,16 @@ def get_audio_file():
     # path = f'./user_uploads/{user.username}'
     # records_only = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    records = Recording.query.filter_by( user=user).all()
+    records = Recording.query.filter_by(user=user).all()
     record_list = []
     for record in records:
         record_list.append({'id': record.id,
                             'trackName': record.filename,
                             'isTrackSelected': record.isTrackSelected,
                             'isWaveform': record.isWaveform,
-
+                            'isWaveformDisplayed': record.isWaveformDisplayed,
+                            'waveformColor': record.waveformColor,
+                            'waveformHeight': record.waveformHeight
                             })
     return jsonify(record_list)
 
@@ -70,8 +76,11 @@ def change_track_status(action_name, record_name):
     if action_name == 'isWaveform':
         record.isWaveform = not record.isWaveform
 
+    if action_name == 'isWaveformDisplayed':
+        record.isWaveformDisplayed = not record.isWaveformDisplayed
 
     db.session.commit()
+
     return jsonify({'message': 'Status succesfully changed'})
 
 @app.route('/rename-track/<record_name>/<modified_name>', methods=['GET'])
@@ -157,7 +166,7 @@ def trim_audio(record_name, start, end, fromBar, toBar):
     else:
         end = float(end)
     if fromBar == 'undefined':
-        record_name_trimmed = f' {record_name} ({"{:.2f}".format(round(start, 2))}s - {"{:.2f}".format(round(end, 2))}s)'
+        record_name_trimmed = f' {record_name} ({"{:.2f}".format(round(start, 2))} - {"{:.2f}".format(round(end, 2))})'
     else:
         record_name_trimmed = f' - bars ({fromBar} - {toBar}) - {record_name}'
 
@@ -182,6 +191,7 @@ def trim_audio(record_name, start, end, fromBar, toBar):
                               user=user,
                               isTrackSelected=True,
                               isWaveform=True,
+                              isWaveformDisplayed=True,
                               )
         db.session.add(recording)
         db.session.commit()
