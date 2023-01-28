@@ -5,10 +5,15 @@ import BarSelection from '../MainPanel/BarSelection.vue';
 import TimeSelection from '../MainPanel/TimeSelection.vue';
 import { wavesurfer } from '../../functions/waveform';
 import { api } from '../../../custom';
+import { trackIndex, trackList } from '../../globalStores';
+import { marker } from '../../functions/waveform';
+
 const showTimeSelection = ref(false)
 const showBarSeletion = ref(false)
-
+const showFileInfo = ref(false)
+const globalTrackIndex = trackIndex()
 const currentSetting = shallowRef()
+const currentTrackList = trackList()
 
 const props = defineProps({
     track: Object,
@@ -18,23 +23,46 @@ const removeWaveform = () => {
     wavesurfer[props.track.id].destroy()
     props.track.isWaveform = false
     props.track.isWaveformDisplayed = false
-    api.get("/change-track-status/isWaveform/" + props.track.trackName)
-    api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName)
+    api.get("/change-track-status/isWaveform/" + props.track.trackName + "/''")
+    api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
 }
+const showBars = () => {
 
+  api.get('/get-file/' + currentTrackList.selectTrack(props.track.id).txtFileName)
+    .then((response) => {
+      let bars = response.data.split('\n');
+      marker(response.data.split('\n'), globalTrackIndex.selTrackIndex);
+    }
+  )
+}
+const fn = (params) => {
+    console.log(wavesurfer[props.track.id].markers.markers[0].color)
+    wavesurfer[props.track.id].markers.markers[0].color = 'red'
+    console.log(wavesurfer[props.track.id].markers)
+}
 </script>
 
 
 
 
 <template>
+<button @click="fn">dfs</button>
 <div class=" flex flex-col items-center relative">
   
    
-    <div class="flex mt-2">
-        <button class="p-1 buttons btn-hover-cursor font-semibold w-max  shadow-sm shadow-dark-100 flex">Bars <Icon icon="mdi:eye-off-outline" class="mt-1 ml-1"/></button>
-        <span class="text-xs opacity-50 ml-3">Name of file</span>
+    <div class="flex flex-col items-center " >
+
+        <button 
+        class="p-1 buttons btn font-semibold w-max   flex" 
+        :class="{'bg-yellow-100 shadow-sm shadow-dark-100 hover:bg-yellow-200' : currentTrackList.selectTrack(track.id).txtFileName}" @mouseover="showFileInfo=true" 
+        @mouseleave="showFileInfo=false" 
+        @click="showBars">
+        Bars <Icon icon="mdi:eye-off-outline" class="mt-1 ml-1" />
+        </button>
     </div>
+    <Transition>
+    <div v-if="showFileInfo && currentTrackList.selectTrack(track.id).txtFileName" class="absolute bg-yellow-200 z-1 rounded-md  text-xs px-1 py-0.5 shadow-inner shadow-gray-500 mt-9 ">{{currentTrackList.selectTrack(track.id).txtFileName}}</div>
+    </Transition>
     <span class="text-xs opacity-50 mt-3">Select part</span>
     <div class="flex  border border-dashed border-gray-400 rounded-md p-1 justify-center items-center" >
         <button class=" p-1 btn-hover-cursor font-semibold w-max shadow-sm shadow-dark-100 flex" @click="currentSetting === BarSelection ? currentSetting = '' : currentSetting = BarSelection">Bars<Icon icon="material-symbols:content-cut-rounded" class="mt-1 ml-1" /></button>

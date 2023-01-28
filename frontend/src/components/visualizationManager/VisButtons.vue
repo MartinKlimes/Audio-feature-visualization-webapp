@@ -26,11 +26,11 @@ const createWaveform = () => {
         props.track.isWaveformLoading = true
         props.track.isWaveform = true
         props.track.isWaveformDisplayed = true
-        api.get("/change-track-status/isWaveform/" + props.track.trackName)
-        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName)
+        api.get("/change-track-status/isWaveform/" + props.track.trackName + "/''")
+        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
     }else{
         props.track.isWaveformDisplayed = !props.track.isWaveformDisplayed
-        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName)
+        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
     }
 
 }

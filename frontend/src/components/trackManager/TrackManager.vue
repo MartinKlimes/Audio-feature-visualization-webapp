@@ -4,12 +4,10 @@ import { trackList } from "../../globalStores";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
 import EditTrack from "./EditTrack.vue";
-import EditBars from "./EditBars.vue"
-import EditMIDI from "./EditMIDI.vue"
 import { ref, reactive } from "vue";
 import { marker } from "../../functions/waveform"
 import SelButtons from "./SelButttons.vue"
-
+import EditBarsMIDI from "./EditBarsMIDI.vue";
 
 const currentTrackList = trackList();
 const state = reactive ({
@@ -19,16 +17,18 @@ const state = reactive ({
 })
 
 const deleteTrack = async(event) => {
-  
-  await api.get('/delete-audio-file/'+event.name)
+  console.log(event)
+  await api.get('/delete-audio-file/'+event)
   .then((response) => {
     showAlert(response.data.message);
     setTimeout(closeAlert, 1500);
-    currentTrackList.trackState.splice(event.index, 1);
+    // currentTrackList.trackState.splice(event.index, 1);
     currentTrackList.fill()
-  })
 
+  })
 };
+
+
 const getTxt = () => {
   api.get('/get-audio-file/' + 'chopin1_gt.txt')
     .then((response) => {
@@ -86,12 +86,26 @@ const getTxt = () => {
         :index="i"
         @deleteTrack="deleteTrack($event)"
       />
-      <EditBars
+      <EditBarsMIDI
         v-if="state.isEditBars"
-      />
-      <EditMIDI
+        v-for="(track, i) in currentTrackList.barsList"
+        :key="i"
+        :name="track"
+        type="bars/"
+        @deleteTrack="deleteTrack($event)"
+        ></EditBarsMIDI>
+      
+
+      <EditBarsMIDI
         v-if="state.isEditMIDI"
-      />
+        v-for="(track, i) in currentTrackList.midiList"
+        :key="i"
+        :name="track"
+        type="midi/"
+        @deleteTrack="deleteTrack($event)"
+        ></EditBarsMIDI>
+  
+
 
       <!-- <div v-for="(trackname, i) in currentTrackList.trackName[0]">
         <div class="border border-gray-200 p-3 mb-4 rounded mt-4">

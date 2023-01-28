@@ -162,7 +162,6 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
  }
  export function marker(beatDuration, selectedTrackIndex){
     // numberOfBars = beatDuration
-    console.log(selectedTrackIndex);
     beatDuration.forEach(function(oneBeat, id){
         wavesurfer[selectedTrackIndex].addMarker({
             time: oneBeat,

@@ -52,6 +52,9 @@ async function rename() {
   state.in_submission = false;
 
   setTimeout(() => {
+    if(currentTrackList.selectUsedTrack(trackToEdit.value.id)){
+      currentTrackList.selectUsedTrack(trackToEdit.value.id).trackName = modifiedName.value
+    }
     trackToEdit.value.trackName = modifiedName.value;
     state.showForm = false;
     state.showAlert = false;
@@ -72,7 +75,7 @@ const v$ = useVuelidate(rules, { modifiedName });
 const useTrack = () => {
  
   api
-    .get("/change-track-status/isTrackSelected/" + props.name)
+    .get("/change-track-status/isTrackSelected/" + props.name + "/''")
     .then(() => {
       if(trackToEdit.value.isTrackSelected == false){
         trackToEdit.value.isTrackSelected = true
@@ -86,12 +89,12 @@ const useTrack = () => {
 
 <template>
   <div
-    class="border border-gray-200 p-3 mb-4 rounded md:text-2xl hover:bg-gray-200 relative"
+    class="border border-gray-200 p-3 mb-4 rounded md:text-2xl hover:bg-gray-200 relative shadow-md shadow-gray-400"
     @mouseover="state.showTextInstruction = true"
     @mouseleave="state.showTextInstruction = false"
     :class="{
       'bg-gray-200 border-gray-400': state.showForm,
-      'bg-yellow-100 border-1 border-blue-700  shadow-md shadow-gray-400 hover:bg-yellow-200 ':
+      'bg-yellow-100 border-1 border-blue-700 hover:bg-yellow-200 shadow-inner shadow-gray-800':
         trackToEdit.isTrackSelected & !state.showForm,
     }"
   >
@@ -102,7 +105,7 @@ const useTrack = () => {
       <button
         title="Delete song"
         class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
-        @click="$emit('deleteTrack', props)"
+        @click="$emit('deleteTrack', 'audio/'+name)"
       >
         <Icon icon="fa:times" />
       </button>
@@ -126,7 +129,7 @@ const useTrack = () => {
     </div>
     <div
       v-show="!state.showForm"
-      class="absolute -mt-11 ml-3 w-[90%] h-full rounded cursor-pointer"
+      class="absolute -mt-11 ml-3 w-[85%] h-full rounded cursor-pointer"
       @click="useTrack"
     ></div>
     <div v-show="state.showForm">

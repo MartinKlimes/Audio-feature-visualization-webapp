@@ -60,7 +60,7 @@ function openUploadModal() {
 
     <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
 
-        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)]  " :class="{'transform -translate-x-[96%] border border-black' : hideTracklistPanel}">
+        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)] " :class="{'transform -translate-x-[96%] border border-black' : hideTracklistPanel}">
 
             <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
                 

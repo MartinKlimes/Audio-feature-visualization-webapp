@@ -66,14 +66,19 @@ export const trackList = defineStore('trackList',
     state: () => ({ 
         trackState: [],
         selectedTracks: [],
+        barsList: [],
+        midiList: []
     }),
     actions: {
        async fill(){
             await api.get('http://127.0.0.1:5000/get-track-list')
             .then((response) => {   
-                this.trackState = response.data
+                this.trackState = response.data[0]
+                this.barsList = response.data[1]
+                this.midiList = response.data[2]
+
                 this.selectedTracks = []
-                response.data.forEach((oneTrack)=> {
+                response.data[0].forEach((oneTrack)=> {
                     if(oneTrack.isTrackSelected == true){
                         this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed, isWaveformLoading: false})
                     }

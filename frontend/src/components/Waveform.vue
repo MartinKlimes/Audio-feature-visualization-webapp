@@ -12,11 +12,11 @@ const currentTrackList = trackList()
 const globalTrackIndex = trackIndex()
 
 onMounted(() => {
-    api.get('/get-audio-file/' + props.trackname)
+    api.get('/get-file/' + props.trackname)
         .then((response) => {
             const audioSrc = response.request.responseURL
             createWavesurfer(audioSrc ,props.trackname, props.id)
-            
+            globalTrackIndex.selTrackIndex = props.id
         })
 
 })

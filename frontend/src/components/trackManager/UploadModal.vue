@@ -83,9 +83,16 @@ function uploadOneFile(file, id) {
       },
       onUploadProgress: fileUploadProgress,
     };
+    
     // axios.post(url, data, config)
+    // let type
+    // if (file.type.match("audio/*")) {
+    //   type = 'audio'
+    // } else if (file.type == 'text/plain'){
+    //   type = 'txt'
+    // } else if (file.type == 'audio')
     api
-      .post("upload-audio-file", formData, axiosConfig)
+      .post("upload-audio-file/" + file.type.split('/'), formData, axiosConfig)
       .then(function (response) {
         // uploadCheck.style.visibility = "visible";
         isUploaded.value[id] = true;
@@ -99,19 +106,23 @@ const upload = ($event) => {
   const files = $event.dataTransfer
     ? [...$event.dataTransfer.files]
     : [...$event.target.files];
+    let audioTypes = "audio/*";
 
-  let audioTypes = "audio/*";
-  for (let i = 0; i < files.length; i++) {
-    if (files[i].type.match(audioTypes)) {
-      if (!currentTrackList.trackState.includes(files[i].name)) {
+    for (let i = 0; i < files.length; i++) {
+
+      if ((files[i].type.match(audioTypes) && !currentTrackList.trackState.includes(files[i].name))
+        || (files[i].type == 'text/plain' && !currentTrackList.barsList.includes(files[i].name))
+        || (files[i].type == 'audio/mid' && !currentTrackList.midiList.includes(files[i].name))
+      ) {
         fileNameList.push(files[i].name);
         fileList.push(files[i]);
         isUploaded.value.push(false);
-      } else {
+        }
+      else {
         showAlert(`${files[i].name} is already uploaded`);
         setTimeout(closeAlert, 1500);
-      }
-    }
+      } 
+
   }
   setTimeout(() => {
     uploadAllFiles();
@@ -169,7 +180,7 @@ const upload = ($event) => {
                     id="added-files"
                     type="file"
                     class="hidden"
-                    accept="audio/*"
+                    accept="audio/*, .txt"
                     multiple
                     @change="upload($event), ($event.target.value = '')"
                   />

@@ -11,31 +11,44 @@ from flask import request, jsonify, send_from_directory
 
 
 
-@app.route('/upload-audio-file', methods=['POST'])
+@app.route('/upload-audio-file/<file_type>', methods=['POST'])
 @jwt_required()
-def upload_audio_file():
+def upload_audio_file(file_type):
+
     user = current_user
     file = request.files['file']
     if file:
         filename = secure_filename(file.filename)
-        filepath = f'./user_uploads/{user.username}/{filename}'
-        # check if a recording already exists in the database (for a given user)
-        # multiple users can upload recordings with the same filename
-        recording_exists = Recording.query.filter_by(filename=filename, user=user).first()
-        if not recording_exists:
-            file.save(filepath)
-            recording = Recording(filename=filename,
-                                  filepath=filepath,
-                                  user=user,
-                                  isTrackSelected=False,
-                                  isWaveform=False,
-                                  isWaveformDisplayed=False,
-                                 )
-            db.session.add(recording)
-            db.session.commit()
+        if file_type in ['audio,mpeg', 'audio,x-m4a', 'audio,wav', 'audio,flac']:
+            filepath = f'./user_uploads/{user.username}/{filename}'
+            # check if a recording already exists in the database (for a given user)
+            # multiple users can upload recordings with the same filename
+            recording_exists = Recording.query.filter_by(filename=filename, user=user).first()
+            if not recording_exists:
+                file.save(filepath)
+                recording = Recording(filename=filename,
+                                      filepath=filepath,
+                                      user=user,
+                                      isTrackSelected=False,
+                                      isWaveform=False,
+                                      isWaveformDisplayed=False,
+                                     )
+                db.session.add(recording)
+                db.session.commit()
 
-        # return jsonify({'message': 'file succesfully uploaded'})
-        return jsonify(filename)
+            # return jsonify({'message': 'file succesfully uploaded'})
+            return jsonify(filename)
+
+        elif file_type == 'text,plain':
+            filepath = f'./user_uploads/{user.username}/ground_truth/{filename}'
+            file.save(filepath)
+            return jsonify(filename)
+
+        elif file_type == 'audio,mid':
+            filepath = f'./user_uploads/{user.username}/MIDI/{filename}'
+            file.save(filepath)
+            return jsonify(filename)
+
     else:
         return jsonify({'message': 'file could not be uploaded'})
 
@@ -43,10 +56,14 @@ def upload_audio_file():
 @app.route('/get-track-list', methods=['GET'])
 @jwt_required()
 def get_audio_file():
+
     user = current_user
 
-    # path = f'./user_uploads/{user.username}'
+    ground_truth_path = f'./user_uploads/{user.username}/ground_truth'
+    midi_path = f'./user_uploads/{user.username}/MIDI'
+
     # records_only = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
 
     records = Recording.query.filter_by(user=user).all()
     record_list = []
@@ -61,11 +78,12 @@ def get_audio_file():
                             'txtFileName': record.txtFileName,
                             'MIDIFileName': record.MIDIFileName
                             })
-    return jsonify(record_list)
 
-@app.route('/change-track-status/<action_name>/<record_name>')
+    return jsonify(record_list, os.listdir((ground_truth_path)), os.listdir((midi_path)))
+
+@app.route('/change-track-status/<action_name>/<record_name>/<file_name>')
 @jwt_required()
-def change_track_status(action_name, record_name):
+def change_track_status(action_name, record_name, file_name):
     user = current_user
     record = Recording.query.filter_by(filename=record_name, user=user).first()
 
@@ -77,6 +95,12 @@ def change_track_status(action_name, record_name):
 
     if action_name == 'isWaveformDisplayed':
         record.isWaveformDisplayed = not record.isWaveformDisplayed
+
+    if action_name == 'txtFileName':
+        record.txtFileName = file_name
+
+    if action_name == 'MIDIFileName':
+        record.MIDIFileName = file_name
 
     db.session.commit()
 
@@ -95,21 +119,44 @@ def rename_track(record_name, modified_name):
 
     return jsonify({'message': 'Succesfully renamed'})
 
-@app.route('/delete-audio-file/<record_name>', methods=['POST', 'GET'])
+@app.route('/delete-audio-file/<type>/<event_name>', methods=['POST', 'GET'])
 @jwt_required()
-def delete_audio_fil(record_name):
+def delete_audio_fil(event_name, type):
     user = current_user
-    os.remove(f'./user_uploads/{user.username}/{record_name}')
-    Recording.query.filter_by(filename=record_name).delete()
+
+    if type == 'audio':
+        record = Recording.query.filter_by(filename=event_name)
+        os.remove(f'./user_uploads/{user.username}/{event_name}')
+        record.delete()
+
+    elif type == 'bars':
+        os.remove(f'./user_uploads/{user.username}/ground_truth/{event_name}')
+        records = Recording.query.filter_by(txtFileName=event_name).all()
+        for record in records:
+            record.txtFileName = None
+
+    elif type == 'midi':
+        os.remove(f'./user_uploads/{user.username}/MIDI/{event_name}')
+        records = Recording.query.filter_by(MIDIFileName=event_name).all()
+        for record in records:
+            record.MIDIFileName = None
+
     db.session.commit()
-    return jsonify({'message': f'{record_name} successfully deleted'})
+
+    return jsonify({'message': f'{event_name} successfully deleted'})
 
 
-@app.route('/get-audio-file/<record_name>')
+@app.route('/get-file/<record_name>')
 @jwt_required()
 def get_filepath(record_name):
     user = current_user
-    filepath = os.path.realpath(f'./user_uploads/{user.username}')
+    if record_name.endswith('.txt'):
+        filepath = os.path.realpath(f'./user_uploads/{user.username}/ground_truth')
+    elif record_name.endswith('.mid'):
+        filepath = os.path.realpath(f'./user_uploads/{user.username}/MIDI')
+    else:
+        filepath = os.path.realpath(f'./user_uploads/{user.username}')
+
     record_name.translate(str.maketrans('', '', string.punctuation))
     return send_from_directory(
         filepath,
