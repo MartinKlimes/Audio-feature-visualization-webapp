@@ -1,6 +1,6 @@
 <script setup>
 import TrackManager from "./TrackManager.vue";
-import { trackList, uploadModalState } from "../../globalStores";
+import { trackList} from "../../globalStores";
 import { storeToRefs } from "pinia";
 import { Icon } from "@iconify/vue";
 import { onMounted, reactive } from "vue";
@@ -9,23 +9,16 @@ import { getCookie } from "../../cookieHandling";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
 
-// import { useDraggable } from '@vueuse/core'
-// import { ref } from 'vue'
-import { getAudioFile } from "../../filesFunctions";
 
-const uploadModalGlobalState = uploadModalState();
-const { uploadModalVisible } = storeToRefs(uploadModalGlobalState);
 const currentTrackList = trackList();
 
-function closeUploadModal() {
-  uploadModalGlobalState.uploadModalVisible = false;
-  // getTrackList();
-  clearFileList();
-}
+const emits = defineEmits(['closeUploadModal'])
+
 
 let fileNameList = reactive([]);
 let fileList = [];
 let isUploaded = ref([]);
+const target = ref(null);
 
 const isDragover = ref(false);
 
@@ -129,6 +122,7 @@ const upload = ($event) => {
   }, 0);
 };
 
+
 // const uploadModalElement = ref(null);
 // const { x, y, style } = useDraggable(uploadModalElement, {
 //    initialValue: { x: 40, y: 40 },
@@ -136,11 +130,7 @@ const upload = ($event) => {
 </script>
 
 <template>
-  <section
-    v-if="uploadModalVisible"
-    class="flex justify-center items-center absolute top-0 left-0 w-full h-full z-22 bg-dark-600 bg-opacity-50"
-   
-  >
+  <section  class="flex justify-center items-center absolute top-0 left-0 w-full h-full z-22 bg-dark-600 bg-opacity-50" @click="$emit('closeUploadModal')">
     <section class="container mx-auto mt-6">
       <div class="md:grid md:grid-cols-3 md:gap-4">
         <div class="col-span-2">
@@ -155,7 +145,7 @@ const upload = ($event) => {
               <Icon
                 icon="material-symbols:close"
                 class="float-right text-2xl -m-3 hover:bg-gray-300 transition cursor-pointer"
-                @click="closeUploadModal"
+                @click="$emit('closeUploadModal')"
               />
             </div>
             <div class="p-6">

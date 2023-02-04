@@ -7,8 +7,8 @@ import { trackList, trackIndex } from '../../globalStores';
 import { api } from '../../../custom';
 import {getCookie} from '../../cookieHandling'
 
-import TimeSelection from './TimeSelection.vue';
-import BarSelection from './BarSelection.vue';
+
+
 import InterMeasureInterval from './InterMeasureInterval.vue';
 import OnsetBeatsIntervals from './OnsetBeatsIntervals.vue';
 import MIDI from './MIDI.vue';

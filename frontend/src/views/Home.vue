@@ -1,33 +1,21 @@
 <script setup>
-import { Icon } from '@iconify/vue';
-import { ref, onMounted, defineAsyncComponent } from 'vue';
-
-import NavBar from '../components/NavBar.vue';
+import { ref } from 'vue';
+import NavBar from '../components/MainPanel/NavBar.vue';
 import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
 import UploadModal from '../components/trackManager/UploadModal.vue';
-import MainPanel from '../components/MainPanel/MainPanel.vue';
 import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
 import Waveform from '../components/Waveform.vue';
-import Spectrogram from '../components/Spectrogram.vue';
-import {trackFromStart} from '../Waveform.js'
-import PianoRoll from '../components/PianoRoll.vue';
-import { api } from '../../custom';
 import { getCookie } from '../cookieHandling';
 
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
-import WaveformSetting from '../components/VisualizationSetting/WaveformSetting.vue';
-import SpectrogramSetting from '../components/VisualizationSetting/SpectrogramSetting.vue';
 import RightPanel from '../components/RightPanel.vue';
 
-const trackListGlobalState = tracklistState();
 const currentTrackList = trackList();
-const isWaveform = ref(false)
-const isSpectrogram = ref(true)
-const isPianoRoll = ref(false)
+
 const hideSettingPanel = ref(false)
 const hideTracklistPanel = ref(false)
 const globalTrackIndex = trackIndex()
-
+const uploadModalVisible = ref(false)
 
 currentTrackList.fill()
 
@@ -39,24 +27,14 @@ const axiosConfig = {
     },
 }
 
- const trackname = 'tap.mp3'
-
-function openUploadModal() {
-    const uploadModalGlobalState = uploadModalState();
-    uploadModalGlobalState.uploadModalVisible = true;
-}
-
-// const Waveform = defineAsyncComponent(() =>
-//   import('../components/Waveform.vue')
-// )
 
 </script>
 
 <template>
 
 <div class="min-h-full">
-    <NavBar/>
-    <UploadModal/>
+    <NavBar @open-upload-modal="uploadModalVisible = true" :uploadModalVisible="uploadModalVisible"/>
+    <UploadModal v-if="uploadModalVisible"  @close-upload-modal="uploadModalVisible = false"/>
 
     <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
 
@@ -65,10 +43,12 @@ function openUploadModal() {
             <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
                 
                 <div id="tracklist-content" class="w-full h-[90%] pb-5 flex flex-col items-center gap-1 overflow-y-auto">
-                    <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
+                    <div v-for="track in currentTrackList.trackState" :key="track.id">
                         <TrackToVisualize      
+                        v-if="track.isTrackSelected"
                         :track="track"
                         @click="globalTrackIndex.selTrackIndex = track.id"
+                        
                         />
                     </div>
                         <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
@@ -82,9 +62,7 @@ function openUploadModal() {
 
                 </div>
                 
-                <div id="add-track-div" class="w-full h-[10%]">
-                    <button @click="openUploadModal()" id="add-track-btn" class="btn btn-blue ml-60">Add tracks</button>
-                </div>
+                
             
             </div>
             <div id="tracklist-button" class="w-[3%] h-full ">
@@ -107,15 +85,12 @@ function openUploadModal() {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-            <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
-                
+            <div v-for="track in currentTrackList.trackState" :key="track.id">
                 <transition>
                     <Waveform 
                     v-if="track.isWaveform"  
                     v-show="track.isWaveformDisplayed"
-                     
-                    :id="track.id"  
-                    :trackname="track.trackName"
+                    :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
                    
                 </transition>
@@ -162,8 +137,8 @@ function openUploadModal() {
             <button @click="hideSettingPanel = ! hideSettingPanel" id="arrow-left" class="h-50 border-black"
             :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
         </div>
-        <div v-for="track in currentTrackList.selectedTracks" :key="track.id">
-            <RightPanel :track="track"/>
+        <div v-for="track in currentTrackList.trackState" :key="track.id">
+            <RightPanel v-if="track.isTrackSelected" :track="track"/>
         </div>
 
     </div>
@@ -277,6 +252,20 @@ function openUploadModal() {
 }
 
 
+
+
+</style>
+<style>
+.v-enter-active,
+.v-leave-active {
+    transition: all 0.2s;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+    transform: scale(0.75);
+}
 
 
 </style>

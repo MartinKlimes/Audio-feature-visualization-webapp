@@ -13,12 +13,13 @@ import { trackList } from "../globalStores";
 
 
 export var wavesurfer = []
-export function createWavesurfer(audio,trackName, id){
+export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', setprogressColor = 'purple', isSplitChannels = false){
     wavesurfer[id] = WaveSurfer.create({
     container: `#waveform-${id}`,
     backend: 'WebAudio',
-    waveColor: 'violet',
-    progressColor: 'purple',
+    splitChannels: isSplitChannels,
+    waveColor: setwaveColor,
+    progressColor: setprogressColor,
     backgroundColor: 'white',
     loopSelection: true,
     scrollParent: true,
@@ -72,7 +73,7 @@ export function createWavesurfer(audio,trackName, id){
 
     wavesurfer[id].on('ready', function () {
         const currentTrackList = trackList()
-        currentTrackList.selectUsedTrack(id).isWaveformLoading = false
+        currentTrackList.selectTrack(id).isWaveformLoading = false
         
     });
     // const currentTrackList = trackList()
@@ -167,12 +168,12 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
             time: oneBeat,
             label: id+1,
             color: "black",
+
         })
     })
     beatDuration.forEach(function(oneBeat, id){
         if (id == beatDuration.length-1){
             wavesurfer[selectedTrackIndex].addRegion({
-                id: id+1,
                 start: beatDuration[id],
                 end: wavesurfer[selectedTrackIndex].getDuration(),
                 drag: false,
@@ -192,4 +193,6 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
             })
         }
     })
+
+
 }

@@ -5,6 +5,7 @@ import { trackList } from '../../globalStores';
 import { createWavesurfer } from '../../functions/waveform'
 import { wavesurfer } from '../../functions/waveform';
 import { Icon } from '@iconify/vue';
+import BlueButttons from '../buttons/BlueButttons.vue';
 const currentTrackList = trackList()
 
 
@@ -48,9 +49,9 @@ const createSpectrogram = () => {
 <template>
  
 
-<div class="h-[47%] w-full mt-5 p-2 border border-dashed border-gray-500 rounded-md ">
+<div class="h-[47%] w-full mt-5 p-2 border  shadow-md  border-gray-500 rounded-md bg-white ">
         <div class="grid grid-cols-2 gap-2">
-            <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100" :class="{'bg-lime-500 hover:bg-lime-400': track.isWaveformDisplayed && !track.isWaveformLoading, 
+            <!-- <button class="btn-hover-cursor font-semibold w-22 shadow-sm shadow-dark-100" :class="{'bg-lime-500 hover:bg-lime-400': track.isWaveformDisplayed && !track.isWaveformLoading, 
             'bg-yellow-100 hover:bg-yellow-50' : track.isWaveform && !track.isWaveformDisplayed || track.isWaveformLoading,
          }" @click="createWaveform">Waveform <Icon
             v-if="track.isWaveformLoading == true"
@@ -59,7 +60,10 @@ const createSpectrogram = () => {
             :inline=true
             
            />
-        </button>
+        </button> -->
+
+        <BlueButttons :is-btn-clicked="track.isWaveformDisplayed " :isDisabled="!track.isWaveform" :icon="(track.isWaveformLoading ? 'fa:spinner' : '')" :icon-class="(track.isWaveformLoading ? 'spin' : 'hidden')" @click="createWaveform" :class="{'text-xs' : track.isWaveformLoading}" class="h-6">Waveform</BlueButttons>
+
             <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100" :class="{'text-xs bg-yellow-100 hover:bg-yellow-50' : track.isSpectrogramLoading == true}"
             @click="createSpectrogram">Spectrogram<Icon
             v-if="track.isSpectrogramLoading == true"

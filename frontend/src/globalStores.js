@@ -65,7 +65,7 @@ export const trackList = defineStore('trackList',
 {
     state: () => ({ 
         trackState: [],
-        selectedTracks: [],
+        // selectedTracks: [],
         barsList: [],
         midiList: []
     }),
@@ -77,14 +77,14 @@ export const trackList = defineStore('trackList',
                 this.barsList = response.data[1]
                 this.midiList = response.data[2]
 
-                this.selectedTracks = []
-                response.data[0].forEach((oneTrack)=> {
-                    if(oneTrack.isTrackSelected == true){
-                        this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed, isWaveformLoading: false})
-                    }
+                // this.selectedTracks = []
+                // response.data[0].forEach((oneTrack)=> {
+                //     if(oneTrack.isTrackSelected == true){
+                //         this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed, isWaveformLoading: false})
+                //     }
                     
-                    // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})
-                });
+                //     // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})
+                // });
 
             // currentTrackList.trackName = trackName
             // currentTrackList.addToTrackList(response.data)
@@ -101,9 +101,9 @@ export const trackList = defineStore('trackList',
         selectTrack(state) {
             return (trackId) => state.trackState.find((track) => track.id == trackId)
         },
-        selectUsedTrack(state) {
-            return (trackId) => state.selectedTracks.find((track) => track.id == trackId)
-        }
+        // selectUsedTrack(state) {
+        //     return (trackId) => state.selectedTracks.find((track) => track.id == trackId)
+        // }
     }
 
 })
@@ -112,6 +112,7 @@ export const trackIndex = defineStore('trackIndex',
 {
     state: () => ({ 
         selTrackIndex: '',
+        selTracksToPlay: [],
     }),
 })
 

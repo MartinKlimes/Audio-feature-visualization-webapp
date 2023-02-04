@@ -1,16 +1,22 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import { api } from '../../../custom';
 import { trackIndex, trackList } from '../../globalStores';
 import VisButtons from './VisButtons.vue';
-import SelectFiles from './SelectFiles.vue'
+import SelectFiles from '../buttons/SelectFiles.vue'
+import { wavesurfer } from '../../functions/waveform';
+import ColorsPicker from './ColorsPicker.vue'
+import { storeToRefs } from 'pinia';
 
 const globalTrackIndex = trackIndex()
+const {selTrackIndex, selTracksToPlay} = storeToRefs(globalTrackIndex)
 const currentTrackList = trackList()
-
+const showColors = ref(false)
 const isBarsUploaded = ref(false)
 const isMIDIUploaded = ref(false)
+
+
 
 onMounted(() => {;
     globalTrackIndex.selTrackIndex = props.track.id
@@ -32,21 +38,29 @@ const selectMIDI = (event) => {
         currentTrackList.selectTrack(props.track.id).MIDIFileName = event
     })
 }
+
+
+
 </script>
 
 
 
 <template>
 
-<div class="relative h-57 w-full px-1 py-1 flex-col justify-center bg-light-700 rounded-md border border-gray-300  hover:bg-gray-200" :class="{'shadow-md shadow-gray-500  ' : track.id==globalTrackIndex.selTrackIndex}">
+<div :id="`trackToVisualize-${track.id}`" class="relative h-57 w-full px-1 py-1 flex-col justify-center  rounded-md border border-gray-300 " :class="[{'shadow-md shadow-gray-500  ' : track.id==selTrackIndex}, track.backgroundColor]" >
     <div class="flex justify-center items-center relative ">
-        <button class="absolute left-0 opacity-70 rounded-md hover:opacity-100">
-            <Icon icon="ic:outline-color-lens" />
+        <button class="absolute left-0  bg-white px-1 rounded-md hover:opacity-100" :class="{'shadow-inner shadow-dark-100' : showColors}" @click="showColors=!showColors">
+            <Icon icon="ic:outline-color-lens" :inline="true"/>
         </button>
+        <Transition>
+            <ColorsPicker v-if="showColors" :track="track"/>
+        </Transition>
+     
         <span class="font-bold font-serif text-gray-500 text-sm max-w-30 text-center h-8 overflow-hidden" :class="{'text-xs': track.trackName.length >20}">{{track.trackName}}</span>
-        <div class="w-4 h-4 bg-gray-100 border border-gray-400 hover:bg-gray-400 duration-200 rounded-sm absolute right-0 cursor-pointer" title="Select"></div>
+    <div class="w-4 h-4 bg-white border border-gray-400 hover:bg-gray-400 duration-200 rounded-sm absolute right-0 cursor-pointer" :class="{'shadow-inner bg-gray-500 shadow-dark-400 duration-0' :  selTracksToPlay.includes(track.id)}" title="Select" 
+        @click="!selTracksToPlay.includes(track.id) ? selTracksToPlay.push(track.id) : selTracksToPlay.splice(selTracksToPlay.indexOf(track.id), 1)"></div>
     </div>
-    <div class="mt-1 player-buttons h-7 w-full bg-gray-400 flex items-center justify-between px-2 rounded-md">
+    <div class="mt-1 player-buttons h-7 w-full bg-white border border-gray-300 flex items-center justify-between px-2 rounded-md">
         <Icon icon="material-symbols:volume-up-outline" width="20" />
         <input type="range" class="slider appearance-none  rounded-lg cursor-pointer w-28">
         <div class="inline-flex rounded-md shadow-sm bg-gray-600 text-white " >
@@ -59,8 +73,8 @@ const selectMIDI = (event) => {
     
     <VisButtons :track="track" />
     
-    <Icon icon="mdi:midi-port" width="18" class="w-8 float-right mt-2 shadow-sm shadow-gray-500 rounded-md hover:bg-gray-300 cursor-pointer" :class="{'shadow-inner' : isMIDIUploaded}"  @click="isMIDIUploaded =! isMIDIUploaded, isBarsUploaded = false"/>
-    <Icon icon="clarity:bars-line" :rotate="1" width="18" class="w-8 mr-1 float-right mt-2 shadow-sm shadow-gray-500 rounded-md hover:bg-gray-300 cursor-pointer" :class="{'shadow-inner' : isBarsUploaded}" @click="isBarsUploaded = !isBarsUploaded, isMIDIUploaded = false"/>
+    <Icon icon="mdi:midi-port" width="18" class="w-8 float-right mt-2 shadow-sm shadow-gray-500 rounded-md bg-white hover:bg-gray-300 cursor-pointer" :class="{'shadow-inner' : isMIDIUploaded}"  @click="isMIDIUploaded =! isMIDIUploaded, isBarsUploaded = false"/>
+    <Icon icon="clarity:bars-line" :rotate="1" width="18" class="w-8 mr-1 float-right mt-2 shadow-sm shadow-gray-500 rounded-md bg-white hover:bg-gray-300 cursor-pointer" :class="{'shadow-inner' : isBarsUploaded}" @click="isBarsUploaded = !isBarsUploaded, isMIDIUploaded = false"/>
 
     <Transition>
         <SelectFiles v-if="isBarsUploaded" :id="track.id" :files="currentTrackList.barsList" @select-file="selectBars($event)"/>
@@ -106,15 +120,6 @@ input[type=range]:focus {
 input[type=range]:focus::-webkit-slider-runnable-track {
     background: #ccc;
 }
-.v-enter-active,
-.v-leave-active {
-    transition: all 0.2s;
-}
 
-.v-enter-from,
-.v-leave-to {
-    opacity: 0;
-    transform: scale(0.5);
-}
 
 </style>

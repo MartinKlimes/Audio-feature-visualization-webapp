@@ -1,15 +1,16 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { trackList } from "../../globalStores";
+import { trackIndex, trackList } from "../../globalStores";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
 import EditTrack from "./EditTrack.vue";
 import { ref, reactive } from "vue";
 import { marker } from "../../functions/waveform"
-import SelButtons from "./SelButttons.vue"
+import SelButtons from "../buttons/BlueButttons.vue"
 import EditBarsMIDI from "./EditBarsMIDI.vue";
 
 const currentTrackList = trackList();
+const globalTrackIndex = trackIndex()
 const state = reactive ({
   isEditTrack: true,
   isEditBars: false,
@@ -24,7 +25,7 @@ const deleteTrack = async(event) => {
     setTimeout(closeAlert, 1500);
     // currentTrackList.trackState.splice(event.index, 1);
     currentTrackList.fill()
-
+    setTimeout(() => {globalTrackIndex.selTrackIndex = currentTrackList.trackState[0].id}, 100);
   })
 };
 
@@ -43,16 +44,16 @@ const getTxt = () => {
 
 <template>
   <div class="bg-white rounded border border-b-gray-200 relative flex flex-col">
-    <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
+    <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200 flex">
 
-    <SelButtons @click="state.isEditTrack = true,state.isEditBars = false, state.isEditMIDI = false" :active="state.isEditTrack">
-      Audio <Icon icon="material-symbols:audio-file-outline" class=" text-lg" :inline="true" />
+    <SelButtons @click="state.isEditTrack = true,state.isEditBars = false, state.isEditMIDI = false" :isBtnClicked="state.isEditTrack" :icon="'material-symbols:audio-file-outline'" class="mr-1">
+      Audio
     </SelButtons>
-    <SelButtons @click="state.isEditBars = true,state.isEditTrack = false, state.isEditMIDI = false" :active="state.isEditBars">
-      Bars <Icon icon="clarity:bars-line" :rotate="1" class=" text-lg" :inline="true" />
+    <SelButtons @click="state.isEditBars = true,state.isEditTrack = false, state.isEditMIDI = false" :isBtnClicked="state.isEditBars" :icon="'clarity:bars-line'" class="mr-1">
+      Bars
     </SelButtons>
-    <SelButtons @click="state.isEditMIDI = true,state.isEditTrack = false, state.isEditBars= false" :active="state.isEditMIDI">
-      MIDI <Icon icon="mdi:midi-port" class=" text-lg" :inline="true" />
+    <SelButtons @click="state.isEditMIDI = true,state.isEditTrack = false, state.isEditBars= false" :isBtnClicked="state.isEditMIDI" :icon="'mdi:midi-port'">
+      MIDI
     </SelButtons>
 <!-- 
 

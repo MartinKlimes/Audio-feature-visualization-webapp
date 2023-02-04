@@ -3,11 +3,9 @@ import { Icon } from '@iconify/vue';
 import { ref, onMounted } from 'vue';
 import { trackIndex, trackList } from '../../globalStores';
 import { wavesurfer } from '../../Waveform';
-import IOISound from '/public/beepIOI.mp3'
-import IBISound from '/public/beepIBI.mp3'
 
-var IOIAudio = new Audio(IOISound);
-var IBIAudio = new Audio(IBISound);
+// var IOIAudio = new Audio(IOISound);
+// var IBIAudio = new Audio(IBISound);
 
 
 const globalTrackIndex = trackIndex()

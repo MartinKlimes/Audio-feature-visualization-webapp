@@ -32,6 +32,9 @@ def upload_audio_file(file_type):
                                       isTrackSelected=False,
                                       isWaveform=False,
                                       isWaveformDisplayed=False,
+                                      splitChannels=False,
+                                      waveformColor="violet, purple"
+
                                      )
                 db.session.add(recording)
                 db.session.commit()
@@ -73,10 +76,12 @@ def get_audio_file():
                             'isTrackSelected': record.isTrackSelected,
                             'isWaveform': record.isWaveform,
                             'isWaveformDisplayed': record.isWaveformDisplayed,
+                            'backgroundColor': record.backgroundColor,
                             'waveformColor': record.waveformColor,
                             'waveformHeight': record.waveformHeight,
                             'txtFileName': record.txtFileName,
-                            'MIDIFileName': record.MIDIFileName
+                            'MIDIFileName': record.MIDIFileName,
+                            'splitChannels': record.splitChannels
                             })
 
     return jsonify(record_list, os.listdir((ground_truth_path)), os.listdir((midi_path)))
@@ -101,6 +106,15 @@ def change_track_status(action_name, record_name, file_name):
 
     if action_name == 'MIDIFileName':
         record.MIDIFileName = file_name
+
+    if action_name == 'backgroundColor':
+        record.backgroundColor = file_name
+        
+    if action_name == 'waveformColor':
+        record.waveformColor = file_name
+
+    if action_name == 'splitChannels':
+        record.splitChannels = not record.splitChannels
 
     db.session.commit()
 
@@ -214,10 +228,11 @@ def trim_audio(record_name, start, end, fromBar, toBar):
     if fromBar == 'undefined':
         record_name_trimmed = f' {record_name} ({"{:.2f}".format(round(start, 2))} - {"{:.2f}".format(round(end, 2))})'
     else:
-        record_name_trimmed = f' - bars ({fromBar} - {toBar}) - {record_name}'
+
+        record_name_trimmed = f' {record_name} - bars ({fromBar} - {toBar})'
 
     recording_exists = Recording.query.filter_by(filename=record_name_trimmed, user=user).first()
-
+    record = Recording.query.filter_by(filename=record_name, user=user).first()
     if not recording_exists:
         filepath = os.path.realpath(f'./user_uploads/{user.username}')
         sound = AudioSegment.from_file(f'{filepath}/{record_name}')
@@ -238,6 +253,9 @@ def trim_audio(record_name, start, end, fromBar, toBar):
                               isTrackSelected=True,
                               isWaveform=True,
                               isWaveformDisplayed=True,
+                              splitChannels=False,
+                              waveformColor=record.waveformColor,
+                              backgroundColor=record.backgroundColor
                               )
         db.session.add(recording)
         db.session.commit()

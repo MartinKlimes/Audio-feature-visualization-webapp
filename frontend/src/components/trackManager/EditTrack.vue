@@ -18,9 +18,9 @@ const state = reactive({
   alert_variant: "",
   alert_message: "",
   showTextInstruction: false,
-  indexSelectedTracks: computed(() => {
-    return currentTrackList.selectedTracks.indexOf(currentTrackList.selectedTracks.find((track) => track.trackName == props.name))
-  })
+  // indexSelectedTracks: computed(() => {
+  //   return currentTrackList.selectedTracks.indexOf(currentTrackList.selectedTracks.find((track) => track.trackName == props.name))
+  // })
 });
 
 const props = defineProps({
@@ -52,9 +52,9 @@ async function rename() {
   state.in_submission = false;
 
   setTimeout(() => {
-    if(currentTrackList.selectUsedTrack(trackToEdit.value.id)){
-      currentTrackList.selectUsedTrack(trackToEdit.value.id).trackName = modifiedName.value
-    }
+    // if(currentTrackList.selectUsedTrack(trackToEdit.value.id)){
+    //   currentTrackList.selectUsedTrack(trackToEdit.value.id).trackName = modifiedName.value
+    // }
     trackToEdit.value.trackName = modifiedName.value;
     state.showForm = false;
     state.showAlert = false;
@@ -79,10 +79,11 @@ const useTrack = () => {
     .then(() => {
       if(trackToEdit.value.isTrackSelected == false){
         trackToEdit.value.isTrackSelected = true
-        currentTrackList.selectedTracks.push({trackName: trackToEdit.value.trackName, id: trackToEdit.value.id})
+        // currentTrackList.selectedTracks.push({trackName: trackToEdit.value.trackName, id: trackToEdit.value.id})
       } else {
         trackToEdit.value.isTrackSelected = false
-        currentTrackList.selectedTracks.splice(state.indexSelectedTracks, 1);
+        trackToEdit.value.isWaveform = false
+        // currentTrackList.selectedTracks.splice(state.indexSelectedTracks, 1);
       }});
 };
 </script>
@@ -101,7 +102,7 @@ const useTrack = () => {
     <div>
     
       <h4 class="inline-block font-bold">{{ name }}</h4>
-      <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ state.indexSelectedTracks}})</span>
+      <!-- <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ state.indexSelectedTracks}})</span> -->
       <button
         title="Delete song"
         class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
