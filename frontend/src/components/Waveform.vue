@@ -61,11 +61,13 @@ const state = reactive({
         <Icon icon="ep:arrow-down"  width="18" class="btn-hover-cursor"/>
         <div class="inline text-gray-400 text-sm ml-3">{{track.trackName}} (w)</div>
     </div> -->
+    
     <transition>
     
     
     <div :id="`waveform-${props.track.id}`" v-show="!state.isWaveformHide">
-        
+        <div class=" text-gray-400 ml-2 text-sm">{{props.track.trackName}}</div> 
+
         <!-- <Icon icon="bi:play" width="20"  :class="{'hidden' : state.isPlayBtnHide}" :id="`playPause-btnOn-${track.id}`" @click="playTrack(track.id)" class="btn-hover-cursor" />
 
         <Icon icon="bi:pause" width="20"  :class="{'hidden' : !state.isPlayBtnHide}" :id="`playPause-btnOff-${track.id}`" @click="wavesurfer[track.id].pause(); state.isPlayBtnHide = false"  class="btn-hover-cursor"/>
@@ -84,8 +86,8 @@ const state = reactive({
             
         </div>
         
-        <Icon icon="ep:arrow-up" width="18" @click="state.isWaveformHide = true" :id="`hideWaveBtn-${track.id}`" class="btn-hover-cursor"/>
-        <div class="inline text-gray-400 text-sm">{{props.track.trackName}}</div> -->
+        <Icon icon="ep:arrow-up" width="18" @click="state.isWaveformHide = true" :id="`hideWaveBtn-${track.id}`" class="btn-hover-cursor"/>-->
+        
         
         
         

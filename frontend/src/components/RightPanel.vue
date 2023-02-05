@@ -26,12 +26,12 @@ const props = defineProps({
     
         
     </div>
-    <div class="h-55 w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md flex ">
+    <!-- <div class="h-55 w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md flex ">
         
         {{ track.trackName }}
     
         
-    </div>
+    </div> -->
     <!-- <SpectrogramSetting/> -->
     
 </div>

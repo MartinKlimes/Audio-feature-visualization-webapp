@@ -16,7 +16,7 @@ const playSoundClick = ref(false)
 const props = defineProps({
     id: Number,
     backgroundColor: String,
-    markersList: String
+    markersList: Array
     
 })
 

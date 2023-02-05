@@ -101,7 +101,9 @@ const splitChannels = () => {
     <Icon  class="absolute -left-1 -top-1 rounded"  :class="track.backgroundColor" icon="mdi:waveform" />
 
     <BlueButtons @click="showBars" :is-btn-clicked="isBtnClicked" :icon="(isBtnClicked ? 'mdi:eye-outline' : 'mdi:eye-off-outline')" @mouseover="track.showFileInfo=true" @mouseleave="track.showFileInfo=false"  :class="{'bg-transparent text-black shadow-sm shadow-dark-50 hover:bg-transparent'  : !track.txtFileName}">Bars</BlueButtons>
-    
+
+    <button v-if="!isBtnClicked" class="absolute top-0 right-0 opacity-50 hover:opacity-100"><Icon icon="entypo:export" @click="wavesurfer[track.id].exportImage()"/></button>
+
     <ClickSoundBtn v-if="isBtnClicked" :id="track.id" :backgroundColor="track.backgroundColor" :markers-list="bars"/>
 
     <Transition>

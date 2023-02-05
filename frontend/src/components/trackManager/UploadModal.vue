@@ -8,7 +8,7 @@ import { ref } from "vue";
 import { getCookie } from "../../cookieHandling";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
-
+import { onClickOutside } from "@vueuse/core";
 
 const currentTrackList = trackList();
 
@@ -127,11 +127,16 @@ const upload = ($event) => {
 // const { x, y, style } = useDraggable(uploadModalElement, {
 //    initialValue: { x: 40, y: 40 },
 // })
+onClickOutside(target, () => 
+{
+    emits('closeUploadModal')
+  
+})
 </script>
 
 <template>
-  <section  class="flex justify-center items-center absolute top-0 left-0 w-full h-full z-22 bg-dark-600 bg-opacity-50" @click="$emit('closeUploadModal')">
-    <section class="container mx-auto mt-6">
+  <section  class="flex justify-center items-center absolute top-0 left-0 w-full h-full z-22 bg-dark-600 bg-opacity-50" >
+    <section class="container mx-auto mt-6" ref="target">
       <div class="md:grid md:grid-cols-3 md:gap-4">
         <div class="col-span-2">
           <TrackManager />

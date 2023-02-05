@@ -38,7 +38,7 @@ const axiosConfig = {
 
     <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
 
-        <div id="tracklist" class="w-62 h-[calc(100vh-4.5rem)] " :class="{'transform -translate-x-[96%] border border-black' : hideTracklistPanel}">
+        <div id="tracklist" class="w-62 h-[calc(100vh-12.5rem)] " :class="{'transform -translate-x-[97%] border border-black' : hideTracklistPanel}">
 
             <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
                 
@@ -74,8 +74,8 @@ const axiosConfig = {
         </div>
         
         <div id="content" 
-        class="h-full w-83vw text-xl pl-1 text-black ml-61 bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
-        :class="{'w-[87vw] pr-1' : hideSettingPanel && !hideTracklistPanel, 'w-[95.8vw] ml-0 pl-2.5 ' : hideTracklistPanel && !hideSettingPanel, 'w-[99.5vw] ml-0 pl-2' : hideTracklistPanel && hideSettingPanel}"
+        class="h-full  text-xl text-black  bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
+        :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
             
             <!-- <div class="mb-7">
@@ -130,7 +130,7 @@ const axiosConfig = {
             </div> -->
         <div 
         class="h-full w-41 absolute top-0 right-1 flex bg-gray-200 transform duration-400"
-        :class="{'transform translate-x-37 border border-black' : hideSettingPanel}">
+        :class="{'transform translate-x-39.5 border border-black w-0' : hideSettingPanel}">
         
         
         <div id="tracklist-button" class="w-[7%] h-full">
@@ -266,6 +266,22 @@ const axiosConfig = {
     opacity: 0;
     transform: scale(0.75);
 }
+
+::-webkit-scrollbar{
+  width: 8px;
+}
+::-webkit-scrollbar-track{
+  background-color: rgba(194, 194, 194, 0.685);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb{
+  background: #999797;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover{
+  background: #747474;
+}
+ 
 
 
 </style>
