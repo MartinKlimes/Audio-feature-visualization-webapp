@@ -2,18 +2,26 @@
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import Cursor from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
+import Cursor from '../functions/cursor/index';
 import Markers from 'wavesurfer.js/dist/plugin/wavesurfer.markers.min.js';
-import Spectrogram from 'wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js';
-import colormap from '../hot-colormap.json'
+import Spectrogram from '../functions/index';
+
+// import colormapJSON from '../hot-colormap.json'
 import { api } from "../../custom";
 import { trackList } from "../globalStores";
+import colormap from "colormap"
 
 
-
+let colors = colormap({
+    colormap: 'jet',
+    nshades: 256,
+    format: 'float',
+    alpha: 1
+})
 
 export var wavesurfer = []
 export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', setprogressColor = 'purple', isSplitChannels = false){
+   
     wavesurfer[id] = WaveSurfer.create({
     container: `#waveform-${id}`,
     backend: 'WebAudio',
@@ -32,19 +40,21 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
  
     plugins: [
 
-        // Spectrogram.create({
+        Spectrogram.create({
             
-        //     container: `#spectrogram-${trackName.replace(/\.|\(|\)|\ /g, '')}`,
-        //     colorMap: colormap,
-        //     fftSamples: 1024,
-        //     height: 256,
-        //     labels: true,
-        //     frequencyMax: 12000,
-        //     windowFunc: 'hann'
-            
+            container: `#spectrogram`,
+            colorMap: colors,
+            fftSamples: 2048,
+            height: 256,
+            labels: true,
+            frequencyMax: 12000,
+            windowFunc: 'hann',
+            splitChannels: false,
+            frequenciesDataUrl: 'http://127.0.0.1:5000/get-spectrogram/9904__snoman__grass1.wav',
+        
             
         
-        //     }),
+            }),
         Markers.create({
             opacity: 1,
         }),
@@ -74,8 +84,23 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
     wavesurfer[id].on('ready', function () {
         const currentTrackList = trackList()
         currentTrackList.selectTrack(id).isWaveformLoading = false
+        // console.log(wavesurfer[id].getDuration(), wavesurfer[id].drawer.width)
         
     });
+
+    wavesurfer[id].on('scroll', function (e) {
+        const visualizer = document.querySelector('.piano-roll-visualizer')
+        // const visualizer = document.getElementById('myVisualizer')
+       
+        visualizer.scrollLeft = e.target.scrollLeft
+        
+    });
+    wavesurfer[id].on('interaction', () => {
+        const cursorPiano = document.getElementById('cursor-piano-roll')
+        // console.log(wavesurfer[id].drawer.lastPos);
+    })
+    
+
     // const currentTrackList = trackList()
 
     // api.get("/change-track-status/isWaveform/" + trackName)

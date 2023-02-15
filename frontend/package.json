@@ -8,13 +8,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@arction/lcjs": "^4.0.0",
+    "@magenta/music": "^1.23.1",
     "@vuelidate/core": "^2.0.0-alpha.41",
     "@vuelidate/validators": "^2.0.0-alpha.29",
     "@vueuse/components": "^8.8.1",
     "@vueuse/core": "^8.8.1",
     "axios": "^0.27.2",
     "chart.js": "^3.9.1",
+    "colormap": "^2.3.2",
     "cors": "^2.8.5",
+    "html-midi-player": "^1.5.0",
     "mitt": "^3.0.0",
     "pinia": "^2.0.13",
     "vue": "^3.2.25",

@@ -7,7 +7,8 @@ import string
 from pydub import AudioSegment
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify, send_from_directory
-
+import librosa
+import numpy as np
 
 
 
@@ -275,5 +276,16 @@ def get_trimmed_audio(record_name):
         record_name,
         as_attachment=False, environ=request.environ
     )
+@app.route('/get-spectrogram/<record_name>', methods=['POST', 'GET'])
+@jwt_required()
+def createSpectrogram(record_name):
+    user = current_user
+    filepath = os.path.realpath(f'./user_uploads/{user.username}/{record_name}')
 
+    x, Fs = librosa.load(filepath)
+    N = 2048
+    H = 2036
+    Y_stft = librosa.stft(x, hop_length=H, n_fft=N)
+    Y = np.abs(Y_stft) ** 2
 
+    return jsonify(Y.tolist())

@@ -1,21 +1,39 @@
 <script setup>
-import { changeBackground} from '../filesFunctions';
-import { trackList } from '../globalStores';
-import { ref} from 'vue';
-import { Icon } from '@iconify/vue';
-const globalTrackIndex = trackList()
+import 'html-midi-player'
+import { onMounted } from 'vue';
+import { wavesurfer } from '../functions/waveform';
+
+// import '@magenta/music/node/music_vae'
+
+// console.log(core);
 
 const props = defineProps({
-    id: Number,
-    trackname: Array
+    track: Object
 })
 
-const clickOnPianoRoll = (id) => {
-    window.eventBus.emit('select', id)
-    globalTrackIndex.selTrackIndex = id
-}
+onMounted(() => {
+    const visualizer = document.getElementById('myVisualizer')
+    // const player = document.getElementById('myPlayer')
+    // player.addVisualizer(document.getElementById('myVisualizer'));
+    visualizer.config = {pixelsPerTimeStep: 20.8971}
+    // console.log(visualizer.note);
+  
+    setTimeout(() => {
+        const notes = document.querySelectorAll('.note')
+        // notes.setAttributeNS(null, 'fill', '#f06')
+        
+        notes.forEach((note) => {
+            // note.setAttributeNS(null, 'fill', '#f06')
+            // console.log(note.getAttributeNS(null, 'x',));
 
-const isPianorollHidden = ref(false)
+        })
+    }, 500);
+    
+
+    
+ 
+})
+
 
 </script>
 
@@ -25,17 +43,23 @@ const isPianorollHidden = ref(false)
 
 <template>
 
-<div  @click="changeBackground(trackname[0]); clickOnPianoRoll(id)">
-    <div v-show="isPianorollHidden"  :id="`showPianorollBtn-${id}`" @click="isPianorollHidden = false">
-        <Icon icon="ep:arrow-down" :inline="true" width="18" class="btn-hover-cursor" :id="`showPianorollBtn-${id}`"/>
-        <div class="inline text-gray-400 text-sm ml-3">{{trackname[0]}} (pr)</div>
-    </div>
-    <div v-show="!isPianorollHidden" :id="`pianoroll-${id}`" class="relative h-300px" >
-        <Icon icon="ep:arrow-up" :inline="true" width="18" class="btn-hover-cursor" @click="isPianorollHidden = true" :id="`hidePianorollBtn-${id}`"/>
-        <div class="inline text-gray-400 text-sm ml-3">{{trackname[0]}}</div>
-        <div :id="`pianoroll-cursor-${id}`" class="h-70  absolute border-l-1 border-white z-10 "></div>
-        <img :id="`IMGpianoroll-${id}`" class="imagePR overflow-hidden">
-    </div>
-</div>
+    <!-- <midi-player id="myPlayer" src="chopin_02.mid" ></midi-player> -->
+    <midi-visualizer  src="chopin_02.mid" type="piano-roll" id="myVisualizer" class="relative">
+        <div id="cursor-piano-roll" 
+        class="h-full w-1 bg-black absolute bottom-5"
 
+        >
+    </div></midi-visualizer>
 </template>
+
+<style>
+svg rect.note.active {
+  stroke: black;
+  stroke-width: 5;
+  stroke-opacity: 0.5;
+}
+
+.piano-roll-visualizer {
+   
+}
+</style>

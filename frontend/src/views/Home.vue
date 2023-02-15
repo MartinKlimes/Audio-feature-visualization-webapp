@@ -9,6 +9,7 @@ import { getCookie } from '../cookieHandling';
 
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
+import PianoRoll from '../components/PianoRoll.vue';
 
 const currentTrackList = trackList();
 
@@ -78,23 +79,34 @@ const axiosConfig = {
         :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
             
-            <!-- <div class="mb-7">
-                
+        <!-- <div class="mb-7">
+            
                 <MainPanel 
                 @showWaveform="isWaveform =! isWaveform"
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-            <div v-for="track in currentTrackList.trackState" :key="track.id">
+                <div v-for="track in currentTrackList.trackState" :key="track.id">
                 <transition>
                     <Waveform 
                     v-if="track.isWaveform"  
                     v-show="track.isWaveformDisplayed"
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
-                   
+                    
                 </transition>
+
+                <!-- <transition>
+                    <PianoRoll
+                    :track="track"
+                    @click="globalTrackIndex.selTrackIndex = track.id"
+                    />
+                </transition> -->
+
             </div>
+            <div id="spectrogram"></div>
+
+  
             <!-- <div v-for="(trackname, id) in trackFromStart" :key="trackname">
 
                 <transition>
@@ -154,7 +166,13 @@ const axiosConfig = {
 
 
 
-
+canvas{
+    display: block;
+    height: 200px;
+    width: 800px;
+    
+   
+}
 
 #tracklist{
     top: 0;

@@ -18,31 +18,39 @@ const getCurrentTime = () => {
 }
 
 
+
 const play = (index) => {
+    const player = document.getElementById('myPlayer')
+    player.start()
+    player.volume = 0
+
     wavesurfer[index].play()
     isPlaying.value.push(index)
     
     wavesurfer[index].on('audioprocess', getCurrentTime);
-
+    
     globalTrackIndex.selTracksToPlay.forEach((id) => {
         if(!isPlaying.value.includes(id)){
             console.log(wavesurfer);
             wavesurfer[id].play()
             isPlaying.value.push(id)
             // wavesurfer[id].on('finish', function() {
-            //     isPlaying.value.splice(isPlaying.value.indexOf(id), 1)
-            // })
-        }
+                //     isPlaying.value.splice(isPlaying.value.indexOf(id), 1)
+                // })
+            }
+            
+            
+        })
         
-    
-    })
-    
-    wavesurfer[index].on('finish', function() {
-        isPlaying.value.splice(isPlaying.value.indexOf(index), 1)
-    })
-    
+        wavesurfer[index].on('finish', function() {
+            isPlaying.value.splice(isPlaying.value.indexOf(index), 1)
+        })
+        
 }
 const pause = () => {
+    const player = document.getElementById('myPlayer')
+
+    player.stop()
     wavesurfer[globalTrackIndex.selTrackIndex].pause()
     isPlaying.value.splice(isPlaying.value.indexOf(globalTrackIndex.selTrackIndex), 1)
     globalTrackIndex.selTracksToPlay.forEach((id) => {
@@ -88,6 +96,7 @@ const skipBackward = () => {
 // const activeLoops = (params) => {
     
 // }
+
 </script>
 
 
