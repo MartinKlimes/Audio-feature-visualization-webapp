@@ -12,22 +12,60 @@ const isPlaying = ref([])
 const currentTime = ref(0)
 
 
-const getCurrentTime = () => {
-    currentTime.value = wavesurfer[globalTrackIndex.selTrackIndex].getCurrentTime()
+const getCurrentTime = (id) => {
+    const xpos = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`
+    currentTime.value = wavesurfer[id].getCurrentTime()
+
+    const liveCursorSpec = document.getElementById(`spectrogram-liveCursor-${id}`)
+    const liveCursorpiano = document.getElementById(`pianoroll-liveCursor-${id}`)
+
+    if (liveCursorSpec) {
+        liveCursorSpec.style.left = xpos
+    }
+    if (liveCursorpiano) {
+        liveCursorpiano.style.left = xpos
+    }
     
 }
 
 
 
-const play = (index) => {
-    const player = document.getElementById('myPlayer')
-    player.start()
-    player.volume = 0
-
-    wavesurfer[index].play()
-    isPlaying.value.push(index)
+const play = (id) => {
+    // const pianoroll = document.getElementById(`pianoroll-${id}`)
+    // var svg = pianoroll.getElementsByTagName('div')[2].getElementsByTagName('svg')[0];
+    // const notes = Array.from(svg.querySelectorAll('.note'));
+    // var element = notes[1];
+    // var startTime = element.x.baseVal.value
+    // var endTime = element.x.baseVal.value + element.width.baseVal.value
+    // console.log(startTime,endTime );
     
-    wavesurfer[index].on('audioprocess', getCurrentTime);
+    // for (var i = 0; i < notes.length; i++) {
+    //     // console.log(notes[i].width.baseVal.value);
+    //     var element = notes[i];
+    //     var startTime = element.x.baseVal.value
+    //     var endTime = element.x.baseVal.value + element.width.baseVal.value
+    //     // if (wavesurfer[id].drawer.lastPos >= startTime && wavesurfer[id].drawer.lastPos < endTime) {
+    //     //     element.classList.add('highlighted');
+    //     // } else {
+    //     //     element.classList.remove('highlighted');
+    //     // }
+    // }
+
+    const cursorSpec = document.getElementById(`spectrogram-cursor-${id}`)
+    const cursorpiano = document.getElementById(`pianoroll-cursor-${id}`)
+
+    if(cursorSpec){
+        cursorSpec.style.visibility = 'hidden'
+    }
+    if(cursorpiano){
+        cursorpiano.style.visibility = 'hidden'
+    }
+
+
+    wavesurfer[id].play()
+    isPlaying.value.push(id)
+    
+    wavesurfer[id].on('audioprocess', getCurrentTime.bind(this, id));
     
     globalTrackIndex.selTracksToPlay.forEach((id) => {
         if(!isPlaying.value.includes(id)){
@@ -42,37 +80,44 @@ const play = (index) => {
             
         })
         
-        wavesurfer[index].on('finish', function() {
-            isPlaying.value.splice(isPlaying.value.indexOf(index), 1)
+        wavesurfer[id].on('finish', function() {
+            isPlaying.value.splice(isPlaying.value.indexOf(id), 1)
         })
         
 }
-const pause = () => {
-    const player = document.getElementById('myPlayer')
+const pause = (id) => {
+    const cursorSpec = document.getElementById(`spectrogram-cursor-${id}`)
+    const cursorpiano = document.getElementById(`pianoroll-cursor-${id}`)
 
-    player.stop()
-    wavesurfer[globalTrackIndex.selTrackIndex].pause()
-    isPlaying.value.splice(isPlaying.value.indexOf(globalTrackIndex.selTrackIndex), 1)
+    if(cursorSpec){
+        cursorSpec.style.visibility = ''
+    }
+    if(cursorpiano){
+        cursorpiano.style.visibility = ''
+    }
+
+    wavesurfer[id].pause()
+    isPlaying.value.splice(isPlaying.value.indexOf(id), 1)
     globalTrackIndex.selTracksToPlay.forEach((id) => {
-        isPlaying.value.splice(isPlaying.value.indexOf(globalTrackIndex.selTrackIndex), 1)
+        isPlaying.value.splice(isPlaying.value.indexOf(id), 1)
         wavesurfer[id].pause()})
 }
 
-const stop = () => {
-    pause()
-    wavesurfer[globalTrackIndex.selTrackIndex].seekTo(0)
+const stop = (id) => {
+    pause(id)
+    wavesurfer[id].seekTo(0)
     globalTrackIndex.selTracksToPlay.forEach((id) => {
         wavesurfer[id].seekTo(0)
     })
 }
 
-const skipForward = () => {
-    wavesurfer[globalTrackIndex.selTrackIndex].skipForward(wavesurfer[globalTrackIndex.selTrackIndex].getDuration()/100)
+const skipForward = (id) => {
+    wavesurfer[id].skipForward(wavesurfer[id].getDuration()/100)
     globalTrackIndex.selTracksToPlay.forEach((id) => {wavesurfer[id].skipForward(wavesurfer[id].getDuration()/100)})
     
 }
 const skipBackward = () => {
-    wavesurfer[globalTrackIndex.selTrackIndex].skipBackward(wavesurfer[globalTrackIndex.selTrackIndex].getDuration()/100)
+    wavesurfer[id].skipBackward(wavesurfer[id].getDuration()/100)
     globalTrackIndex.selTracksToPlay.forEach((id) => {wavesurfer[id].skipBackward(wavesurfer[id].getDuration()/100)})
 }
 
@@ -107,11 +152,11 @@ const skipBackward = () => {
 
 <div class="flex gap-2 ml-40 mt-0.5 rounded-2xl bg-gray-300 h-9 px-3 ">
 
-<PlayBtn :icon="'tabler:player-track-prev-filled'" @click="skipBackward"/>
-<PlayBtn :icon="'tabler:player-track-next-filled'" @click="skipForward"/>
+<PlayBtn :icon="'tabler:player-track-prev-filled'" @click="skipBackward(selTrackIndex)"/>
+<PlayBtn :icon="'tabler:player-track-next-filled'" @click="skipForward(selTrackIndex)"/>
 <PlayBtn v-if="!isPlaying.includes(selTrackIndex)" :icon="'tabler:player-play-filled'" @click="play(selTrackIndex)"/>
-<PlayBtn v-if="isPlaying.includes(selTrackIndex)" :icon="'tabler:player-pause-filled'" @click="pause"/>
-<PlayBtn :icon="'tabler:player-stop-filled'" @click="stop"/>
+<PlayBtn v-if="isPlaying.includes(selTrackIndex)" :icon="'tabler:player-pause-filled'" @click="pause(selTrackIndex)"/>
+<PlayBtn :icon="'tabler:player-stop-filled'" @click="stop(selTrackIndex)"/>
 
 <!-- <PlayBtn :icon="'teenyicons:loop-outline'" @click="loop"/>
 <PlayBtn :icon="'teenyicons:loop-outline'" @click="stopLoop"/> -->
@@ -138,3 +183,12 @@ const skipBackward = () => {
 
 
 </template>
+
+
+<style scoped>
+.highlighted {
+    background-color: brown;
+}
+
+
+</style>

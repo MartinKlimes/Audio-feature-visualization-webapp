@@ -11,6 +11,7 @@ import { ColorPicker } from 'vue-accessible-color-picker'
 import BlueButtons from '../../buttons/BlueButttons.vue'
 import ClickSoundBtn from '../../buttons/ClickSoundBtn.vue';
 import { createWavesurfer } from '../../../functions/waveform';
+import {updateRecording} from '../../../../custom'
 
 const currentSetting = shallowRef()
 const loading = ref(false)
@@ -27,10 +28,14 @@ const props = defineProps({
 
 const removeWaveform = () => {
     wavesurfer[props.track.id].destroy()
-    props.track.isWaveform = false
-    props.track.isWaveformDisplayed = false
-    api.get("/change-track-status/isWaveform/" + props.track.trackName + "/''")
-    api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
+    props.track.waveform.isWaveform = false
+    props.track.waveform.isWaveformDisplayed = false
+    props.track.spectrogram.isSpectrogram = false
+    props.track.spectrogram.isSpectrogramDisplayed = false
+    updateRecording(props.track.trackName,'isWaveform', false)
+    updateRecording(props.track.trackName,'isWaveformDisplayed', false)
+    updateRecording(props.track.trackName,'isSpectrogram', false)
+    updateRecording(props.track.trackName,'isSpectrogramDisplayed', false)
 }
 
 const showBars = () => {
@@ -74,7 +79,7 @@ const trimAudio = (event) => {
     api.get('/trim-audio/' + props.track.trackName + '/' + event[0] + '/' + event[1] + '/' + event[2] + '/' + event[3])
     .then((response) => {
         // console.log(response.data);
-        currentTrackList.fill()
+        currentTrackList.fetchRecordings()
         loading.value=false
     })
 
@@ -86,11 +91,11 @@ const changeColorStatus = () => {
 }
 
 const splitChannels = () => {
-    props.track.splitChannels = !props.track.splitChannels
-    props.track.isWaveform = false
+    props.track.waveform.splitChannels = !props.track.waveform.splitChannels
+    props.track.waveform.isWaveform = false
     api.get("/change-track-status/splitChannels/" + props.track.trackName + "/''")
     setTimeout(() => {
-        props.track.isWaveform = true
+        props.track.waveform.isWaveform = true
     }, 500);
 }
 

@@ -8,6 +8,7 @@ import SelectFiles from '../buttons/SelectFiles.vue'
 import { wavesurfer } from '../../functions/waveform';
 import ColorsPicker from './ColorsPicker.vue'
 import { storeToRefs } from 'pinia';
+import { updateRecording } from '../../../custom';
 
 const globalTrackIndex = trackIndex()
 const {selTrackIndex, selTracksToPlay} = storeToRefs(globalTrackIndex)
@@ -27,16 +28,12 @@ const props = defineProps({
 })
 
 const selectBars = (event) => {
-    api.get("/change-track-status/txtFileName/" + props.track.trackName + "/" + event)
-    .then(() => {
-        currentTrackList.selectTrack(props.track.id).txtFileName = event
-    })
+    updateRecording(props.track.trackName,'txtFileName', event)
+    currentTrackList.selectTrack(props.track.id).txtFileName = event
 }
 const selectMIDI = (event) => {
-    api.get("/change-track-status/MIDIFileName/" + props.track.trackName + "/" + event)
-    .then(() => {
-        currentTrackList.selectTrack(props.track.id).MIDIFileName = event
-    })
+    updateRecording(props.track.trackName,'MIDIFileName', event)
+    currentTrackList.selectTrack(props.track.id).MIDIFileName = event
 }
 
 

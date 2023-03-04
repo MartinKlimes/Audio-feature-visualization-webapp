@@ -144,18 +144,21 @@ export default class CursorPlugin {
         this.displayTime = null;
 
         this.params = Object.assign({}, this.defaultParams, params);
+        this.id = this.wavesurfer.container.id.replace(/\D/g, "")
     }
 
     _onReady() {
+        
         this.wrapper = this.wavesurfer.drawer.wrapper;
-        const pianoroll = document.getElementById('myVisualizer')
+        // const pianoroll = document.getElementById('myVisualizer')
+        
         this.cursor = this.util.withOrientation(this.wrapper.appendChild(
             document.createElement('cursor'),
             ), this.wavesurfer.params.vertical);
         
         this.style(this.cursor,
             Object.assign(
-                {
+                {   
                     position: 'absolute',
                     zIndex: this.params.zIndex,
                     left: 0,
@@ -172,6 +175,7 @@ export default class CursorPlugin {
                 this.params.customStyle
             )
         );
+        this.cursor.id = `waveform-cursor-${this.id}`
             
         if (this.params.showTime) {
             this.showTime = this.util.withOrientation(this.wrapper.appendChild(
@@ -195,6 +199,7 @@ export default class CursorPlugin {
                     this.params.customStyle
                 )
             );
+           
 
             this.displayTime = this.util.withOrientation(this.showTime.appendChild(
                 document.createElement('div'),
@@ -217,6 +222,7 @@ export default class CursorPlugin {
         }
         
         this.wrapper.addEventListener('mousemove', this._onMousemove);
+       
         // pianoroll.addEventListener('mousemove', this._onMousemove);
 
         if (this.params.hideOnBlur) {
@@ -267,8 +273,15 @@ export default class CursorPlugin {
         this.style(this.cursor, {
             left: `${xpos}px`
         });
-        const cursorPiano = document.getElementById('cursor-piano-roll')
-        cursorPiano.style.left = `${xpos}px`
+        
+        if(this.wavesurfer.spectrogram){
+            document.getElementById(`spectrogram-cursor-${this.id}`).style.left = `${xpos - this.wrapper.scrollLeft}px`
+
+        }
+        if(document.getElementById(`pianoroll-cursor-${this.id}`)){
+
+            document.getElementById(`pianoroll-cursor-${this.id}`).style.left = `${xpos - this.wrapper.scrollLeft}px`
+        }
 
         if (this.params.showTime) {
             const duration = this.wavesurfer.getDuration();
@@ -316,9 +329,9 @@ export default class CursorPlugin {
      * Hide the cursor
      */
     hideCursor() {
-        this.style(this.cursor, {
-            display: 'none'
-        });
+        // this.style(this.cursor, {
+        //     display: 'none'
+        // });
         if (this.params.showTime) {
             this.style(this.showTime, {
                 display: 'none'

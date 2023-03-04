@@ -139,7 +139,8 @@ export default function FFT(bufferSize, sampleRate, windowFunc, alpha) {
             rval,
             ival,
             mag,
-            spectrum = new Float32Array(bufferSize / 2);
+            spectrum = new Float32Array(bufferSize / 2),
+            logSpectrum = new Float32Array(bufferSize / 2);
 
         var k = Math.floor(Math.log(bufferSize) / Math.LN2);
 
@@ -208,7 +209,9 @@ export default function FFT(bufferSize, sampleRate, windowFunc, alpha) {
 
             halfSize = halfSize << 1;
         }
-
+       
+        
+    
         for (var i = 0, N = bufferSize / 2; i < N; i++) {
             rval = real[i];
             ival = imag[i];
@@ -218,9 +221,11 @@ export default function FFT(bufferSize, sampleRate, windowFunc, alpha) {
                 this.peakBand = i;
                 this.peak = mag;
             }
-            spectrum[i] = mag;
+            
+            spectrum[i] = mag
+            logSpectrum[i] = Math.log10(mag+1);
         }
-        
+   
        
         return spectrum;
     };

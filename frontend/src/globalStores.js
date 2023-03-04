@@ -70,30 +70,17 @@ export const trackList = defineStore('trackList',
         midiList: []
     }),
     actions: {
-       async fill(){
-            await api.get('http://127.0.0.1:5000/get-track-list')
-            .then((response) => {   
-                this.trackState = response.data[0]
-                this.barsList = response.data[1]
-                this.midiList = response.data[2]
-
-                // this.selectedTracks = []
-                // response.data[0].forEach((oneTrack)=> {
-                //     if(oneTrack.isTrackSelected == true){
-                //         this.selectedTracks.push({trackName: oneTrack.trackName, id: oneTrack.id, isWaveform: oneTrack.isWaveform, isWaveformDisplayed: oneTrack.isWaveformDisplayed, isWaveformLoading: false})
-                //     }
-                    
-                //     // this.selectedTracks.push({id: id++,trackName : oneTrack[0], isTrackSelected : oneTrack[1], isWaveform : oneTrack[2], wavesurfer : null})
-                // });
-
-            // currentTrackList.trackName = trackName
-            // currentTrackList.addToTrackList(response.data)
-            })
-        },
-        // addTrack(name) {
-        //     this.trackState.push({id: 17, isTrackSelected: true, isWaveform: true, trackName: name })
-        // }
-
+        async fetchRecordings() {
+            try {
+                const response = await api.get('/get-track-list')
+                const recordings = response.data
+                this.trackState = recordings[0]
+                this.barsList = recordings[1]
+                this.midiList = recordings[2]
+              } catch (error) {
+                console.error(error)
+            }
+        }
     },
     
     getters: {

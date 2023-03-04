@@ -6,6 +6,7 @@ import { required, minLength } from "@vuelidate/validators";
 import { useI18n } from "vue-i18n";
 import { api } from "../../../custom";
 import { trackList } from "../../globalStores";
+import { updateRecording } from "../../../custom";
 const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
@@ -73,18 +74,17 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, { modifiedName });
 
 const useTrack = () => {
- 
-  api
-    .get("/change-track-status/isTrackSelected/" + props.name + "/''")
-    .then(() => {
-      if(trackToEdit.value.isTrackSelected == false){
-        trackToEdit.value.isTrackSelected = true
-        // currentTrackList.selectedTracks.push({trackName: trackToEdit.value.trackName, id: trackToEdit.value.id})
-      } else {
-        trackToEdit.value.isTrackSelected = false
-        trackToEdit.value.isWaveform = false
-        // currentTrackList.selectedTracks.splice(state.indexSelectedTracks, 1);
-      }});
+  updateRecording(trackToEdit.value.trackName,'isTrackSelected', !trackToEdit.value.isTrackSelected)
+  if(trackToEdit.value.isTrackSelected == false){
+    trackToEdit.value.isTrackSelected = true
+  } else {
+    trackToEdit.value.isTrackSelected = false
+    trackToEdit.value.waveform.isWaveform = false
+    trackToEdit.value.waveform.isWaveformDisplayed = false
+    updateRecording(trackToEdit.value.trackName,'isWaveform', false)
+      updateRecording(trackToEdit.value.trackName,'isWaveformDisplayed', false)
+  }
+
 };
 </script>
 

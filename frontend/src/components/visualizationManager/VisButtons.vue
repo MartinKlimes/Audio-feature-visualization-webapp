@@ -6,7 +6,8 @@ import { createWavesurfer } from '../../functions/waveform'
 import { wavesurfer } from '../../functions/waveform';
 import { Icon } from '@iconify/vue';
 import BlueButttons from '../buttons/BlueButttons.vue';
-
+import {updateRecording} from '../../../custom'
+import Plotly from 'plotly.js-dist'
 
 
 const currentTrackList = trackList()
@@ -17,39 +18,63 @@ const props = defineProps({
 })
 
 
+
 const createWaveform = () => {
-
-    // if(currentTrackList.selectTrack(props.id).isWaveform){
-    //     document.getElementById(`waveformContainer-${props.id}`).style.visibility = 'hidden'
-    // }else{ 
-    //     currentTrackList.selectTrack(props.id).isWaveform = !currentTrackList.selectTrack(props.id).isWaveform 
-    //     api.get("/change-track-status/isWaveform/" + props.name)
-
-    // }
-    if(!props.track.isWaveform){
-        props.track.isWaveformLoading = true
-        props.track.isWaveform = true
-        props.track.isWaveformDisplayed == true
-        api.get("/change-track-status/isWaveform/" + props.track.trackName + "/''")
-        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
+    updateRecording(props.track.trackName,'isWaveformDisplayed', !props.track.waveform.isWaveformDisplayed)
+    if(!props.track.waveform.isWaveform){
+        props.track.waveform.isWaveformLoading = true
+        props.track.waveform.isWaveform = true
+        props.track.waveform.isWaveformDisplayed = true
+        updateRecording(props.track.trackName,'isWaveform', true)
     }else{
-        props.track.isWaveformDisplayed = !props.track.isWaveformDisplayed
-        api.get("/change-track-status/isWaveformDisplayed/" + props.track.trackName + "/''")
+        props.track.waveform.isWaveformDisplayed = !props.track.waveform.isWaveformDisplayed
     }
+}
+
+const createSpectrogram = () => {
+    if (!wavesurfer[props.track.id]) {
+        props.track.waveform.isWaveform = true
+        updateRecording(props.track.trackName,'isWaveform', true)
+
+    }
+    createVisualization(props.track.spectrogram, 'isSpectrogram', 'isSpectrogramDisplayed')
 
 }
 
-const createSpectrogram = (trackName) => {
-    api.get("/get-spectrogram/" + props.track.trackName)
-    .then((response) => {
+const createPianoroll = () => {
+    updateRecording(props.track.trackName,'isPianorollDisplayed', !props.track.pianoroll.isPianorollDisplayed)
+
+    if(!props.track.pianoroll.isPianoroll){
+        props.track.pianoroll.isPianorollLoading = true
+        props.track.pianoroll.isPianoroll = true
+        props.track.pianoroll.isPianorollDisplayed = true
+        updateRecording(props.track.trackName,'isPianoroll', true)
+    }else{
+        props.track.pianoroll.isPianorollDisplayed = !props.track.pianoroll.isPianorollDisplayed
         
+
+    }
     
-    })
-    
+}
+const createVisualization = (visualization, isVisualization, isVisualizationDisplayed) => {
+    updateRecording(props.track.trackName, isVisualizationDisplayed, !visualization[isVisualizationDisplayed])
+
+    if(!visualization[isVisualization]){
+        visualization[isVisualization + 'Loading'] = true
+        visualization[isVisualization] = true
+        visualization[isVisualizationDisplayed] = true
+        updateRecording(props.track.trackName,isVisualization, true)
+    }else {
+        visualization[isVisualizationDisplayed] = !visualization[isVisualizationDisplayed]
+    }
 }
 
 
 
+const plotSpectrogram = () => {
+    updateRecording(props.track.trackName,'isPianoroll', false)
+
+}
 
 </script>
 
@@ -70,14 +95,17 @@ const createSpectrogram = (trackName) => {
            />
         </button> -->
 
-        <BlueButttons :is-btn-clicked="track.isWaveformDisplayed " :isDisabled="!track.isWaveform" :icon="(track.isWaveformLoading ? 'fa:spinner' : '')" :icon-class="(track.isWaveformLoading ? 'spin' : 'hidden')" @click="createWaveform" :class="{'text-xs' : track.isWaveformLoading}" class="h-6">Waveform</BlueButttons>
+        <BlueButttons :is-btn-clicked="track.waveform.isWaveformDisplayed " :isDisabled="!track.waveform.isWaveform" :icon="(track.waveform.isWaveformLoading ? 'fa:spinner' : '')" :icon-class="(track.waveform.isWaveformLoading ? 'spin' : 'hidden')" @click="createVisualization(track.waveform, 'isWaveform', 'isWaveformDisplayed')" :class="{'text-xs' : track.waveform.isWaveformLoading}" class="h-6">Waveform</BlueButttons>
 
-        <BlueButttons   @click="createSpectrogram(track.trackName)" class="h-6">Spectrogram</BlueButttons>
+        <BlueButttons :is-btn-clicked="track.spectrogram.isSpectrogramDisplayed " :isDisabled="!track.spectrogram.isSpectrogram" :icon="(track.spectrogram.isSpectrogramLoading ? 'fa:spinner' : '')" :icon-class="(track.spectrogram.isSpectrogramLoading ? 'spin' : 'hidden')" @click="createSpectrogram" :class="{'text-xs' : track.spectrogram.isSpectrogramLoading}" class="h-6">Spectrogram</BlueButttons>
+
+        <!-- <BlueButttons   @click="createSpectrogram()" class="h-6">Spectrogram</BlueButttons> -->
 
        
-            <button class="btn-hover-cursor  w-22 font-semibold shadow-sm shadow-dark-100" @click="createSpectrogramWS">Pianoroll</button>
+        <BlueButttons :is-btn-clicked="track.pianoroll.isPianorollDisplayed" :isDisabled="!track.pianoroll.isPianoroll" :icon="(track.pianoroll.isPianorollLoading ? 'fa:spinner' : '')" :icon-class="(track.pianoroll.isPianorollLoading  ? 'spin' : 'hidden')" @click="createVisualization(track.pianoroll, 'isPianoroll', 'isPianorollDisplayed')" :class="{'text-xs' : track.pianoroll.isPianorollLoading }" class="h-6">Pianoroll</BlueButttons>
+
             <div class="flex w-22 h-max">
-                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none">IOI</button>
+                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none" @click="plotSpectrogram">IOI</button>
                 <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-l-none">IBI</button>
             </div>
             

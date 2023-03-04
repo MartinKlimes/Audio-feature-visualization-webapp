@@ -5,7 +5,7 @@ import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Cursor from '../functions/cursor/index';
 import Markers from 'wavesurfer.js/dist/plugin/wavesurfer.markers.min.js';
 import Spectrogram from '../functions/index';
-
+import {createVerticalKeyboard} from './useMidiPianoroll'
 // import colormapJSON from '../hot-colormap.json'
 import { api } from "../../custom";
 import { trackList } from "../globalStores";
@@ -40,21 +40,21 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
  
     plugins: [
 
-        Spectrogram.create({
+        // Spectrogram.create({
             
-            container: `#spectrogram`,
-            colorMap: colors,
-            fftSamples: 2048,
-            height: 256,
-            labels: true,
-            frequencyMax: 12000,
-            windowFunc: 'hann',
-            splitChannels: false,
-            frequenciesDataUrl: 'http://127.0.0.1:5000/get-spectrogram/9904__snoman__grass1.wav',
+        //     container: `#spectrogram`,
+        //     colorMap: colors,
+        //     fftSamples: 2048,
+        //     height: 256,
+        //     labels: true,
+        //     frequencyMax: 12000,
+        //     windowFunc: 'hann',
+        //     splitChannels: false,
+        //     frequenciesDataUrl: 'http://127.0.0.1:5000/get-spectrogram/9904__snoman__grass1.wav',
         
             
         
-            }),
+        //     }),
         Markers.create({
             opacity: 1,
         }),
@@ -83,23 +83,47 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
 
     wavesurfer[id].on('ready', function () {
         const currentTrackList = trackList()
-        currentTrackList.selectTrack(id).isWaveformLoading = false
-        // console.log(wavesurfer[id].getDuration(), wavesurfer[id].drawer.width)
+        currentTrackList.selectTrack(id).waveform.isWaveformLoading = false
+        currentTrackList.selectTrack(id).spectrogram.plotSpectrogram = true
+
+        if(document.getElementById(`pianoroll-${id}`)){
+            const width = wavesurfer[id].drawer.width / document.getElementById(`pianoroll-player-${id}`).duration
+            createVerticalKeyboard(id, width)
+            // pianorollPlayer.addVisualizer(pianoroll);
+        }
         
     });
 
-    wavesurfer[id].on('scroll', function (e) {
-        const visualizer = document.querySelector('.piano-roll-visualizer')
-        // const visualizer = document.getElementById('myVisualizer')
-       
-        visualizer.scrollLeft = e.target.scrollLeft
-        
-    });
-    wavesurfer[id].on('interaction', () => {
-        const cursorPiano = document.getElementById('cursor-piano-roll')
-        // console.log(wavesurfer[id].drawer.lastPos);
-    })
-    
+    // wavesurfer[id].on('scroll', function (e) {
+    //     const pianoroll = document.getElementById(`pianoroll-${id}`)
+    //     const xpos = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`
+
+    //     if(pianoroll){
+    //         pianoroll.getElementsByTagName('div')[2].scrollLeft = e.target.scrollLeft
+    //         document.getElementById(`pianoroll-liveCursor-${id}`).style.left = xpos
+
+    //     }
+    //     if(wavesurfer[id].spectrogram){
+    //         document.getElementById(`spectrogram-liveCursor-${id}`).style.left = xpos
+    //         document.querySelector(`.spec-labels-${id}`).style.marginLeft  = `${(e.target.scrollLeft)}px` 
+    //         document.querySelector(`.spec-legend-${id}`).style.marginRight  = `${-(e.target.scrollLeft)}px` 
+    //     }
+
+    // });
+   
+    // wavesurfer[id].on('interaction', () => {
+    //     setTimeout(() => {
+    //         const xpos = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`
+    //         if (document.getElementById(`spectrogram-liveCursor-${id}`)) {
+    //             document.getElementById(`spectrogram-liveCursor-${id}`).style.left = xpos
+    //         }
+    //         if (document.getElementById(`pianoroll-liveCursor-${id}`)) {
+    //             document.getElementById(`pianoroll-liveCursor-${id}`).style.left = xpos
+    //         }
+    //     }, 0);
+    // })
+    wavesurfer[id].on('scroll', updateCursorPosition.bind(this, id));
+wavesurfer[id].on('interaction', () => setTimeout(updateCursorPosition.bind(this, id), 0));
 
     // const currentTrackList = trackList()
 
@@ -133,7 +157,22 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
     // index += 1  
     
 }
-
+const updateCursorPosition = (id) => {
+    const xpos = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`;
+    const liveCursorSpec = document.getElementById(`spectrogram-liveCursor-${id}`);
+    
+    const liveCursorPiano = document.getElementById(`pianoroll-liveCursor-${id}`);
+    const pianoroll = document.getElementById(`pianoroll-${id}`)
+    if (liveCursorSpec) {
+      liveCursorSpec.style.left = xpos;
+      document.querySelector(`.spec-labels-${id}`).style.marginLeft = `${wavesurfer[id].drawer.wrapper.scrollLeft}px`;
+      document.querySelector(`.spec-legend-${id}`).style.marginRight = `${-wavesurfer[id].drawer.wrapper.scrollLeft}px`;
+    }
+    if (liveCursorPiano) {
+      liveCursorPiano.style.left = xpos;
+      pianoroll.getElementsByTagName('div')[2].scrollLeft = wavesurfer[id].drawer.wrapper.scrollLeft;
+    }
+  }
 export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, toBar){
     
     var nameOfCuttedTrack

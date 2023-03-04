@@ -89,7 +89,7 @@ function uploadOneFile(file, id) {
       .then(function (response) {
         // uploadCheck.style.visibility = "visible";
         isUploaded.value[id] = true;
-        currentTrackList.fill();
+        currentTrackList.fetchRecordings();
       });
   }
 }

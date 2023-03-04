@@ -16,7 +16,8 @@ onMounted(() => {
     api.get('/get-file/' + props.track.trackName)
     .then((response) => {
         const audioSrc = response.request.responseURL
-        createWavesurfer(audioSrc ,props.track.trackName, props.track.id, props.track.waveformColor.split(',')[1], props.track.waveformColor.split(',')[0], props.track.splitChannels)
+        createWavesurfer(audioSrc ,props.track.trackName, props.track.id, props.track.waveform.waveformColor.split(',')[1], props.track.waveform.waveformColor.split(',')[0], props.track.waveform.splitChannels)
+        
         globalTrackIndex.selTrackIndex = props.track.id
     })
 
@@ -55,7 +56,7 @@ const state = reactive({
 
 <template>
       <!-- //vif -->
-<div justify="between" class=" rounded-sm px-1 py-0.5 " :class="props.track.backgroundColor">
+<div justify="between" class=" rounded-sm py-0.5 " :class="props.track.backgroundColor">
 <div class="relative mt-1  " :id="`waveformContainer-${props.track.id}`" :class="[{'shadow-md shadow-gray-500' : props.track.id==globalTrackIndex.selTrackIndex}]">
     <!-- <div :class="{'hidden' : !state.isWaveformHide}" :id="`showWaveBtn-${props.track.id}`" @click="state.isWaveformHide = false">
         <Icon icon="ep:arrow-down"  width="18" class="btn-hover-cursor"/>
@@ -65,7 +66,7 @@ const state = reactive({
     <transition>
     
     
-    <div :id="`waveform-${props.track.id}`" v-show="!state.isWaveformHide">
+    <div :id="`waveform-${props.track.id}`" >
         <div class=" text-gray-400 ml-2 text-sm">{{props.track.trackName}}</div> 
 
         <!-- <Icon icon="bi:play" width="20"  :class="{'hidden' : state.isPlayBtnHide}" :id="`playPause-btnOn-${track.id}`" @click="playTrack(track.id)" class="btn-hover-cursor" />

@@ -6,11 +6,11 @@ import UploadModal from '../components/trackManager/UploadModal.vue';
 import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
 import Waveform from '../components/Waveform.vue';
 import { getCookie } from '../cookieHandling';
-
+import Cursor from '../components/Cursor.vue';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/PianoRoll.vue';
-
+import Spectrogram from '../components/Spectrogram.vue';
 const currentTrackList = trackList();
 
 const hideSettingPanel = ref(false)
@@ -18,7 +18,7 @@ const hideTracklistPanel = ref(false)
 const globalTrackIndex = trackIndex()
 const uploadModalVisible = ref(false)
 
-currentTrackList.fill()
+currentTrackList.fetchRecordings()
 
 
 const axiosConfig = {
@@ -27,6 +27,7 @@ const axiosConfig = {
         'Content-Type': 'multipart/form-data',     
     },
 }
+
 
 
 </script>
@@ -78,7 +79,10 @@ const axiosConfig = {
         class="h-full  text-xl text-black  bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
         :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
-            
+        
+    
+
+        
         <!-- <div class="mb-7">
             
                 <MainPanel 
@@ -87,24 +91,38 @@ const axiosConfig = {
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
                 <div v-for="track in currentTrackList.trackState" :key="track.id">
+       
+                
                 <transition>
                     <Waveform 
-                    v-if="track.isWaveform"  
-                    v-show="track.isWaveformDisplayed"
+                    v-if="track.waveform.isWaveform"  
+                    v-show="track.waveform.isWaveformDisplayed"
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
                     
                 </transition>
-
-                <!-- <transition>
+                <transition>
+                    <Spectrogram
+                    v-if="track.spectrogram.isSpectrogram && track.spectrogram.plotSpectrogram"   
+                    v-show="track.spectrogram.isSpectrogramDisplayed"
+                    :track="track"
+                    @click="globalTrackIndex.selTrackIndex = track.id"/>
+                    
+                </transition>
+                <transition>
                     <PianoRoll
+                    v-if="track.pianoroll.isPianoroll"  
+                    v-show="track.pianoroll.isPianorollDisplayed"  
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"
                     />
-                </transition> -->
+                </transition>
+                
 
+                
             </div>
-            <div id="spectrogram"></div>
+            
+        
 
   
             <!-- <div v-for="(trackname, id) in trackFromStart" :key="trackname">
