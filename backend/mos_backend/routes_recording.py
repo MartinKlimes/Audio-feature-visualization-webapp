@@ -47,7 +47,7 @@ def upload_audio_file(file_type):
                 db.session.commit()
 
                 # vytvoření nového záznamu v třídě Pianoroll
-                pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor="rainbow",
+                pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,
                                       pianorollHeight=128, recording_id=recording.id)
                 db.session.add(pianoroll)
                 db.session.commit()
@@ -150,31 +150,6 @@ def update_recording():
         setattr(pianoroll, column, new_value)
         db.session.commit()
 
-    # if action_name == 'isTrackSelected':
-    #     record.isTrackSelected = not record.isTrackSelected
-    #
-    # if action_name == 'isWaveform':
-    #     waveform.isWaveform = not waveform.isWaveform
-    #
-    # if action_name == 'isWaveformDisplayed':
-    #     waveform.isWaveformDisplayed = not waveform.isWaveformDisplayed
-    #
-    # if action_name == 'txtFileName':
-    #     record.txtFileName = file_name
-    #
-    # if action_name == 'MIDIFileName':
-    #     record.MIDIFileName = file_name
-    #
-    # if action_name == 'backgroundColor':
-    #     record.backgroundColor = file_name
-    #
-    # if action_name == 'waveformColor':
-    #     waveform.waveformColor = file_name
-    #
-    # if action_name == 'splitChannels':
-    #     waveform.splitChannels = not waveform.splitChannels
-    #
-    # db.session.commit()
 
     return 'Status succesfully changed'
 
@@ -197,10 +172,16 @@ def delete_audio_fil(event_name, type):
     user = current_user
 
     if type == 'audio':
-        record = Recording.query.filter_by(filename=event_name)
+        record = Recording.query.filter_by(filename=event_name).first()
+        print(record)
+        waveform = Waveform.query.filter_by(recording_id=record.id).first()
+        pianoroll = Pianoroll.query.filter_by(recording_id=record.id).first()
+        spectrogram = Spectrogram.query.filter_by(recording_id=record.id).first()
+        db.session.delete(waveform)
+        db.session.delete(pianoroll)
+        db.session.delete(spectrogram)
         os.remove(f'./user_uploads/{user.username}/{event_name}')
-        record.delete()
-
+        db.session.delete(record)
     elif type == 'bars':
         os.remove(f'./user_uploads/{user.username}/ground_truth/{event_name}')
         records = Recording.query.filter_by(txtFileName=event_name).all()

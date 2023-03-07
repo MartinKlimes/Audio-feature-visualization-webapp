@@ -3,12 +3,10 @@ import { ref, reactive, onMounted} from 'vue';
 import { Icon } from '@iconify/vue';
 import { trackIndex } from '../globalStores';
 import { api } from '../../custom';
-import { trackList } from '../globalStores';
 import { createWavesurfer } from '../functions/waveform';
 import { wavesurfer } from '../functions/waveform';
 
 
-const currentTrackList = trackList()
 const globalTrackIndex = trackIndex()
 
 
@@ -25,7 +23,8 @@ onMounted(() => {
 
 
 const props = defineProps({
-    track: Object
+    track: Object,
+    isSelected: Boolean
 })
 const state = reactive({
     isWaveformHide: false,
@@ -57,7 +56,7 @@ const state = reactive({
 <template>
       <!-- //vif -->
 <div justify="between" class=" rounded-sm py-0.5 " :class="props.track.backgroundColor">
-<div class="relative mt-1  " :id="`waveformContainer-${props.track.id}`" :class="[{'shadow-md shadow-gray-500' : props.track.id==globalTrackIndex.selTrackIndex}]">
+<div class="relative mt-1  " :id="`waveformContainer-${props.track.id}`" :class="[{'shadow-md shadow-gray-500' : props.isSelected}]">
     <!-- <div :class="{'hidden' : !state.isWaveformHide}" :id="`showWaveBtn-${props.track.id}`" @click="state.isWaveformHide = false">
         <Icon icon="ep:arrow-down"  width="18" class="btn-hover-cursor"/>
         <div class="inline text-gray-400 text-sm ml-3">{{track.trackName}} (w)</div>

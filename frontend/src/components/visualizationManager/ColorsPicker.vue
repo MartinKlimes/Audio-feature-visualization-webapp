@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { api } from '../../../custom';
+import {updateRecording } from '../../../custom';
 import { wavesurfer } from '../../functions/waveform';
 
 const props = defineProps({
@@ -14,11 +14,9 @@ const colors = ['bg-red-400', 'bg-yellow-300', 'bg-lime-500', 'bg-emerald-300', 
 
 
 const updateColor = (color) => {
-
     props.track.backgroundColor = color
-    api.get("/change-track-status/backgroundColor/" + props.track.trackName + "/" + color)
-    
-    // wavesurfer[props.track.id].setBackgroundColor('red')
+    updateRecording(props.track.trackName,'backgroundColor', color)
+
 }
 </script>
 

@@ -86,7 +86,9 @@ const trimAudio = (event) => {
 }
 const changeColorStatus = () => {
     // console.log([wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor()]);
-    api.get("/change-track-status/waveformColor/" + props.track.trackName + "/" + [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor(), splitChannelsStatus.value])
+    updateRecording(props.track.trackName,'waveformColor', [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor()])
+    
+    // api.get("/change-track-status/waveformColor/" + props.track.trackName + "/" + [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor(), splitChannelsStatus.value])
     
 }
 

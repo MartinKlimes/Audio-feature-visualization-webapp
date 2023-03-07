@@ -58,7 +58,7 @@ class Pianoroll(db.Model):
     isPianoroll = db.Column(db.Boolean, nullable=True)
     isPianorollDisplayed = db.Column(db.Boolean, nullable=True)
 
-    pianorollColor = db.Column(db.String(128), nullable=True)
+    pianorollColor = db.Column(db.String(256), nullable=True)
     pianorollHeight = db.Column(db.Integer, nullable=True)
 
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
