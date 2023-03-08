@@ -10,38 +10,39 @@ import {createVerticalKeyboard} from '../functions/useMidiPianoroll'
 // console.log(core);
 const pianoroll = ref(null)
 const pianorollSrc = ref(null)
+
 const props = defineProps({
     track: Object
 })
 
-api.get('/get-file/' + props.track.MIDIFileName)
-.then((response) => {
-    pianorollSrc.value = response.request.responseURL
-        console.log(response);
-    })
+// api.get('/get-file/' + props.track.MIDIFileName)
+// .then((response) => {
+//     const url = window.URL.createObjectURL(new Blob([response.data]));
+//     pianorollSrc.value = url
+// })
    
 onMounted(() => {
     
-    pianoroll.value.getElementsByTagName('div')[2].addEventListener('scroll', (e) => {
-        if(wavesurfer[props.track.id]){
-            wavesurfer[props.track.id].drawer.wrapper.scrollLeft = e.target.scrollLeft
-        }
-    });
+    // pianoroll.value.getElementsByTagName('div')[2].addEventListener('scroll', (e) => {
+    //     if(wavesurfer[props.track.id]){
+    //         wavesurfer[props.track.id].drawer.wrapper.scrollLeft = e.target.scrollLeft
+    //     }
+    // });
    
-    pianoroll.value.getElementsByTagName('div')[2].addEventListener('mousemove', (e) => {
-        const wave = wavesurfer[props.track.id].drawer.wrapper
-        const x = wave.scrollLeft + e.clientX - pianoroll.value.getBoundingClientRect().left
-        const waveformCursor =document.getElementById(`waveform-cursor-${props.track.id}`)
-        if(waveformCursor){
-            waveformCursor.style.left = `${x }px`
-        }
-        const spectrogramCursor = document.getElementById(`spectrogram-cursor-${props.track.id}`)
-        if(spectrogramCursor){
-            spectrogramCursor.style.left = `${x - wavesurfer[props.track.id].drawer.wrapper.scrollLeft }px`
-        }
-        document.getElementById(`pianoroll-cursor-${props.track.id}`).style.left = `${x - wavesurfer[props.track.id].drawer.wrapper.scrollLeft}px`
+    // pianoroll.value.getElementsByTagName('div')[2].addEventListener('mousemove', (e) => {
+    //     const wave = wavesurfer[props.track.id].drawer.wrapper
+    //     const x = wave.scrollLeft + e.clientX - pianoroll.value.getBoundingClientRect().left
+    //     const waveformCursor =document.getElementById(`waveform-cursor-${props.track.id}`)
+    //     if(waveformCursor){
+    //         waveformCursor.style.left = `${x }px`
+    //     }
+    //     const spectrogramCursor = document.getElementById(`spectrogram-cursor-${props.track.id}`)
+    //     if(spectrogramCursor){
+    //         spectrogramCursor.style.left = `${x - wavesurfer[props.track.id].drawer.wrapper.scrollLeft }px`
+    //     }
+    //     document.getElementById(`pianoroll-cursor-${props.track.id}`).style.left = `${x - wavesurfer[props.track.id].drawer.wrapper.scrollLeft}px`
 
-    });
+    // });
 
   
     setTimeout(() => {
@@ -89,11 +90,11 @@ const setInstrumentColor = (notes, instruments, numberOfInstrument, color) => {
 
 
 <template>
-    {{ pianorollSrc }}
+    nbbhb
 <div class="relative">
 
-    <midi-player :id="`pianoroll-player-${track.id}`"  class="hidden" >UpUpAndAway</midi-player>
-    <midi-visualizer type="piano-roll" :src="pianorollSrc" :id="`pianoroll-${track.id}`"  ref="pianoroll" @click="positionCursor">
+    <midi-player :id="`pianoroll-player-${track.id}`" src="chopin_02.mid" class="hidden" >UpUpAndAway</midi-player>
+    <midi-visualizer type="piano-roll" src="chopin_02.mid" :id="`pianoroll-${track.id}`"  ref="pianoroll" @click="positionCursor">
         <Cursor :id="`pianoroll-cursor-${track.id}`" :color="'gray-500'" :width="3" style="pointer-events: none;"/>
         <Cursor :id="`pianoroll-liveCursor-${track.id}`" :color="'dark-800'"/>
         
