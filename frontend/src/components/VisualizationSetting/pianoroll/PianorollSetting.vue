@@ -41,15 +41,15 @@ const removePianoroll = () => {
 
 
 <template>
-<div class=" flex flex-col items-center relative">
+<div class=" flex flex-col items-center relative ">
     <BlueButttons @click="sizeSet = !sizeSet" class="px-2" :icon-class="'hidden'">Size</BlueButttons>
     <Transition>
-        <SizeSize :track="track" v-if="sizeSet" @close="sizeSet = false"/>
+        <SizeSize :track="track" v-if="sizeSet" @close-size-setter="sizeSet = false"/>
     </Transition>
 
     <BlueButttons :is-btn-clicked="setColor"  @click="setColor = !setColor" class="px-2 mt-2" :icon-class="'hidden'">Set color</BlueButttons>
     <Transition>
-        <SetColor :track="track"  v-if="setColor"/>
+        <SetColor :track="track"  v-if="setColor" @close-color-picker="setColor = false"/>
     </Transition>
 
     <BlueButttons  @click="noteNamesHide" class="px-2 mt-2" :icon-class="'hidden'">noteNames</BlueButttons>

@@ -4,6 +4,7 @@
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 export const createVerticalKeyboard = (id,height, width,paddingRight, colors) => {
+  console.log(width);
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
   pianoroll.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
@@ -115,14 +116,14 @@ export const setInstrumentColor = (id, numberOfInstrument, color) => {
   const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
   const uniqueInstruments = Array.from(new Set(instruments));
 
-  if(numberOfInstrument && color){
+  if(color){
     notes.forEach((element, id) => {
         if(instruments[id] == numberOfInstrument){
-      
+        
             element.setAttributeNS(null, 'fill', color)
         }
     });
-  }
+ }
   return uniqueInstruments
 }
 

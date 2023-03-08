@@ -14,7 +14,8 @@ onMounted(() => {
     api.get('/get-file/' + props.track.trackName)
     .then((response) => {
         const audioSrc = response.request.responseURL
-        createWavesurfer(audioSrc ,props.track.trackName, props.track.id, props.track.waveform.waveformColor.split(',')[1], props.track.waveform.waveformColor.split(',')[0], props.track.waveform.splitChannels)
+        const colors = props.track.waveform.waveformColor.slice(2, -2).split('","')
+        createWavesurfer(audioSrc ,props.track.trackName, props.track.id, colors[1], colors[0], props.track.waveform.splitChannels)
         
         globalTrackIndex.selTrackIndex = props.track.id
     })

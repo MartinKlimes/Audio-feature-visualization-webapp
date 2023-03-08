@@ -69,6 +69,13 @@ onMounted(() => {
             watchEffect(() =>{
                 props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)               
             })
+            watch(
+                () => props.track.MIDIFileName,
+                () =>  {
+                    setTimeout(() => {
+                    props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)               
+                }, 1000);
+            })
 
             wavesurfer[props.track.id].on('interaction', () => {
                 if(props.track.pianoroll.isPianorollDisplayed){

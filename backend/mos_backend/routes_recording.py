@@ -36,7 +36,7 @@ def upload_audio_file(file_type):
                 db.session.commit()
 
                 # vytvoření nového záznamu v třídě Waveform
-                waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor="violet, purple", recording_id=recording.id)
+                waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor="{violet, purple}", recording_id=recording.id)
                 db.session.add(waveform)
                 db.session.commit()
 

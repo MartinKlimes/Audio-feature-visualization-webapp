@@ -12,6 +12,7 @@ import BlueButtons from '../../buttons/BlueButttons.vue'
 import ClickSoundBtn from '../../buttons/ClickSoundBtn.vue';
 import { createWavesurfer } from '../../../functions/waveform';
 import {updateRecording} from '../../../../custom'
+import ColorWaveform from './ColorWaveform.vue';
 
 const currentSetting = shallowRef()
 const loading = ref(false)
@@ -19,7 +20,6 @@ const currentTrackList = trackList()
 const showColorPicker = ref(false)
 const isBtnClicked = ref(false)
 const bars = ref()
-const setWaveformColor = ref('setProgressColor')
 const splitChannelsStatus = ref(false)
 
 const props = defineProps({
@@ -84,13 +84,6 @@ const trimAudio = (event) => {
     })
 
 }
-const changeColorStatus = () => {
-    // console.log([wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor()]);
-    updateRecording(props.track.trackName,'waveformColor', [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor()])
-    
-    // api.get("/change-track-status/waveformColor/" + props.track.trackName + "/" + [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor(), splitChannelsStatus.value])
-    
-}
 
 const splitChannels = () => {
     props.track.waveform.splitChannels = !props.track.waveform.splitChannels
@@ -100,6 +93,7 @@ const splitChannels = () => {
         props.track.waveform.isWaveform = true
     }, 500);
 }
+
 
 </script>
 
@@ -130,13 +124,17 @@ const splitChannels = () => {
         </KeepAlive>
     </transition>
 
-    <BlueButtons :icon="'ic:outline-color-lens'" @click="showColorPicker =! showColorPicker, changeColorStatus()" :is-btn-clicked="showColorPicker" class="mt-3">Color</BlueButtons>
+    <BlueButtons :icon="'ic:outline-color-lens'" @click="showColorPicker =! showColorPicker" :is-btn-clicked="showColorPicker"  class="mt-3">Color</BlueButtons>
 
+    <Transition>
+        <ColorWaveform v-if="showColorPicker" :id="track.id" :trackName="track.trackName" :waveformColor="track.waveform.waveformColor" @close-waveform-color-picker="showColorPicker=false"/>
+    </Transition>
+ 
     <BlueButtons title="Split channels" class="mt-3 items-center opacity-90 " :is-btn-clicked="track.splitChannels" @click="splitChannels()" :icon-class="'ml-0 '" :rotate="1"  :icon="'carbon:split-screen'"></BlueButtons>
 
     <button title="reload waveform" class="mt-4 opacity-50 hover:opacity-100 absolute right-0 -bottom-2" @click="removeWaveform"> <Icon icon="mingcute:delete-2-line" /> </button>
 
-        <Transition>
+        <!-- <Transition>
     <div v-if="showColorPicker"  class="flex flex-col w-10 p-1  rounded-md gap-1 bg-white absolute z-5 -bottom-51 -right-2">
         <BlueButtons :icon="'material-symbols:line-end-arrow-notch'" class="items-center justify-center h-4" 
         :is-btn-clicked="setWaveformColor == 'setProgressColor'" 
@@ -146,11 +144,9 @@ const splitChannels = () => {
         :is-btn-clicked="setWaveformColor == 'setWaveColor'" 
         @click="setWaveformColor = 'setWaveColor'"></BlueButtons>
     </div>
-    </Transition>
+    </Transition> -->
 
-    <Transition>
-        <ColorPicker v-if="showColorPicker"  @color-change="setWaveformColor == 'setProgressColor' ? wavesurfer[track.id].setProgressColor($event.cssColor) : wavesurfer[track.id].setWaveColor($event.cssColor)" class= " absolute -right-3 -left-3 top-35 right-0 overflow-hidden max-h-60 rounded-md " :class="track.backgroundColor" alpha-channel="hide"  />
-    </Transition>
+    
 
   
 

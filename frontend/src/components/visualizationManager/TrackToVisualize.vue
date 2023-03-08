@@ -37,20 +37,24 @@ const selectMIDI = (event) => {
     currentTrackList.selectTrack(props.track.id).MIDIFileName = event
 }
 
-
-
+const updateBackgroundColor = (color) => {
+    props.track.backgroundColor = color
+    updateRecording(props.track.trackName,'backgroundColor', color)
+}
 </script>
 
 
 
 <template>
+
 <div :id="`trackToVisualize-${track.id}`" class="relative h-57 w-full px-1 py-1 flex-col justify-center  rounded-md border border-gray-300 " :class="[{'shadow-md shadow-gray-500  ' : track.id==selTrackIndex}, track.backgroundColor]" >
+
     <div class="flex justify-center items-center relative ">
         <button class="absolute left-0  bg-white px-1 rounded-md hover:opacity-100" :class="{'shadow-inner shadow-dark-100' : showColors}" @click="showColors=!showColors">
             <Icon icon="ic:outline-color-lens" :inline="true"/>
         </button>
         <Transition>
-            <ColorsPicker v-if="showColors" :track="track"/>
+            <ColorsPicker class=" h-27 top-20" v-if="showColors" :selected-color="track.backgroundColor"  @close-color-picker="showColors = false" @update-color="updateBackgroundColor($event)" />
         </Transition>
      
         <span class="font-bold font-serif text-gray-500 text-sm max-w-30 text-center h-8 overflow-hidden" :class="{'text-xs': track.trackName.length >20}">{{track.trackName}}</span>
