@@ -95,13 +95,12 @@ const axiosConfig = {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-                <div v-for="track in currentTrackList.trackState" :key="track.id">
-       
+                <div v-for="track in currentTrackList.trackState" :key="track.id" >
                 
                 <transition>
                     <Waveform 
-                    v-if="track.waveform.isWaveform"  
                     v-show="track.waveform.isWaveformDisplayed"
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
                     
@@ -110,6 +109,8 @@ const axiosConfig = {
                     <Spectrogram
                     v-if="track.spectrogram.isSpectrogram && track.spectrogram.plotSpectrogram"   
                     v-show="track.spectrogram.isSpectrogramDisplayed"
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
                     
@@ -118,6 +119,7 @@ const axiosConfig = {
                     <PianoRoll
                     v-if="track.pianoroll.isPianoroll"  
                     v-show="track.pianoroll.isPianorollDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"
                     />

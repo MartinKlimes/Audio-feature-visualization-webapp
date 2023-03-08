@@ -1,5 +1,5 @@
 from mos_backend import app, db
-from mos_backend.db_models import Recording
+from mos_backend.db_models import Recording, Waveform, Spectrogram, Pianoroll
 from werkzeug.utils import secure_filename
 import os
 import string
@@ -8,8 +8,11 @@ from pydub import AudioSegment
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify, send_from_directory
 import librosa
+import librosa.display
+
 import numpy as np
 
+import matplotlib.pyplot as plt
 
 
 @app.route('/upload-audio-file/<file_type>', methods=['POST'])
@@ -27,19 +30,27 @@ def upload_audio_file(file_type):
             recording_exists = Recording.query.filter_by(filename=filename, user=user).first()
             if not recording_exists:
                 file.save(filepath)
-                recording = Recording(filename=filename,
-                                      filepath=filepath,
-                                      user=user,
-                                      isTrackSelected=False,
-                                      isWaveform=False,
-                                      isWaveformDisplayed=False,
-                                      splitChannels=False,
-                                      waveformColor="violet, purple"
 
-                                     )
+                recording = Recording(filename=filename, filepath=filepath,isTrackSelected=False, user_id=user.id)
                 db.session.add(recording)
                 db.session.commit()
 
+                # vytvoření nového záznamu v třídě Waveform
+                waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor="{violet, purple}", recording_id=recording.id)
+                db.session.add(waveform)
+                db.session.commit()
+
+                # vytvoření nového záznamu v třídě Spectrogram
+                spectrogram = Spectrogram(isSpectrogram=False, isSpectrogramDisplayed=False, spectrogramColormap="jet",
+                                          spectrogramHeight=256, recording_id=recording.id)
+                db.session.add(spectrogram)
+                db.session.commit()
+
+                # vytvoření nového záznamu v třídě Pianoroll
+                pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,
+                                      pianorollHeight=128, recording_id=recording.id)
+                db.session.add(pianoroll)
+                db.session.commit()
             # return jsonify({'message': 'file succesfully uploaded'})
             return jsonify(filename)
 
@@ -62,64 +73,85 @@ def upload_audio_file(file_type):
 def get_audio_file():
 
     user = current_user
-
     ground_truth_path = f'./user_uploads/{user.username}/ground_truth'
     midi_path = f'./user_uploads/{user.username}/MIDI'
+    recordings = Recording.query.filter_by(user=user).all()
 
-    # records_only = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-
-    records = Recording.query.filter_by(user=user).all()
     record_list = []
-    for record in records:
-        record_list.append({'id': record.id,
-                            'trackName': record.filename,
-                            'isTrackSelected': record.isTrackSelected,
-                            'isWaveform': record.isWaveform,
-                            'isWaveformDisplayed': record.isWaveformDisplayed,
-                            'backgroundColor': record.backgroundColor,
-                            'waveformColor': record.waveformColor,
-                            'waveformHeight': record.waveformHeight,
-                            'txtFileName': record.txtFileName,
-                            'MIDIFileName': record.MIDIFileName,
-                            'splitChannels': record.splitChannels
-                            })
+    for recording in recordings:
+        waveform = Waveform.query.filter_by(recording_id=recording.id).first()
+        spectrogram = Spectrogram.query.filter_by(recording_id=recording.id).first()
+        pianoroll = Pianoroll.query.filter_by(recording_id=recording.id).first()
+
+        record_list.append({
+            'id': recording.id,
+            'trackName': recording.filename,
+            'filepath': recording.filepath,
+            'ground_truth': recording.ground_truth,
+            'isTrackSelected': recording.isTrackSelected,
+            'backgroundColor': recording.backgroundColor,
+            'txtFileName': recording.txtFileName,
+            'MIDIFileName': recording.MIDIFileName,
+            'splitChannels': recording.splitChannels,
+            'waveform': {
+                'id': waveform.id,
+                'isWaveform': waveform.isWaveform,
+                'isWaveformDisplayed': waveform.isWaveformDisplayed,
+                'waveformColor': waveform.waveformColor,
+                'waveformHeight': waveform.waveformHeight
+            } if waveform else {},
+            'spectrogram': {
+                'id': spectrogram.id,
+                'isSpectrogram': spectrogram.isSpectrogram,
+                'isSpectrogramDisplayed': spectrogram.isSpectrogramDisplayed,
+                'spectrogramColormap': spectrogram.spectrogramColormap,
+                'spectrogramHeight': spectrogram.spectrogramHeight
+            } if spectrogram else {},
+            'pianoroll': {
+                'id': pianoroll.id,
+                'isPianoroll': pianoroll.isPianoroll,
+                'isPianorollDisplayed': pianoroll.isPianorollDisplayed,
+                'pianorollColor': pianoroll.pianorollColor,
+                'pianorollHeight': pianoroll.pianorollHeight
+            } if pianoroll else {}
+        })
 
     return jsonify(record_list, os.listdir((ground_truth_path)), os.listdir((midi_path)))
 
-@app.route('/change-track-status/<action_name>/<record_name>/<file_name>')
+@app.route('/update-recording', methods=['POST'])
 @jwt_required()
-def change_track_status(action_name, record_name, file_name):
+def update_recording():
+    data = request.get_json()
+    record_name = data.get('record_name')
+    column = data.get('column')
+    new_value = data.get('new_value')
+
+
     user = current_user
-    record = Recording.query.filter_by(filename=record_name, user=user).first()
+    recording = Recording.query.filter_by(filename=record_name, user=user).first()
+    waveform = Waveform.query.filter_by(recording_id=recording.id).first()
+    spectrogram = Spectrogram.query.filter_by(recording_id=recording.id).first()
+    pianoroll = Pianoroll.query.filter_by(recording_id=recording.id).first()
+    print(recording)
+    if not recording:
+        return "Nahrávka nenalezena"
 
-    if action_name == 'isTrackSelected':
-        record.isTrackSelected = not record.isTrackSelected
-
-    if action_name == 'isWaveform':
-        record.isWaveform = not record.isWaveform
-
-    if action_name == 'isWaveformDisplayed':
-        record.isWaveformDisplayed = not record.isWaveformDisplayed
-
-    if action_name == 'txtFileName':
-        record.txtFileName = file_name
-
-    if action_name == 'MIDIFileName':
-        record.MIDIFileName = file_name
-
-    if action_name == 'backgroundColor':
-        record.backgroundColor = file_name
-        
-    if action_name == 'waveformColor':
-        record.waveformColor = file_name
-
-    if action_name == 'splitChannels':
-        record.splitChannels = not record.splitChannels
-
+    setattr(recording, column, new_value)
     db.session.commit()
 
-    return jsonify({'message': 'Status succesfully changed'})
+    if waveform:
+        setattr(waveform, column, new_value)
+        db.session.commit()
+    if spectrogram:
+        setattr(spectrogram, column, new_value)
+        db.session.commit()
+    if pianoroll:
+        setattr(pianoroll, column, new_value)
+        db.session.commit()
+
+
+    return 'Status succesfully changed'
 
 @app.route('/rename-track/<record_name>/<modified_name>', methods=['GET'])
 @jwt_required()
@@ -140,10 +172,16 @@ def delete_audio_fil(event_name, type):
     user = current_user
 
     if type == 'audio':
-        record = Recording.query.filter_by(filename=event_name)
+        record = Recording.query.filter_by(filename=event_name).first()
+        print(record)
+        waveform = Waveform.query.filter_by(recording_id=record.id).first()
+        pianoroll = Pianoroll.query.filter_by(recording_id=record.id).first()
+        spectrogram = Spectrogram.query.filter_by(recording_id=record.id).first()
+        db.session.delete(waveform)
+        db.session.delete(pianoroll)
+        db.session.delete(spectrogram)
         os.remove(f'./user_uploads/{user.username}/{event_name}')
-        record.delete()
-
+        db.session.delete(record)
     elif type == 'bars':
         os.remove(f'./user_uploads/{user.username}/ground_truth/{event_name}')
         records = Recording.query.filter_by(txtFileName=event_name).all()
@@ -282,10 +320,39 @@ def createSpectrogram(record_name):
     user = current_user
     filepath = os.path.realpath(f'./user_uploads/{user.username}/{record_name}')
 
-    x, Fs = librosa.load(filepath)
-    N = 2048
-    H = 2036
-    Y_stft = librosa.stft(x, hop_length=H, n_fft=N)
-    Y = np.abs(Y_stft) ** 2
+    y, sr = librosa.load(filepath)
 
-    return jsonify(Y.tolist())
+    print(y)
+    # N = 2048
+    # H = 2036
+    # Y_stft = librosa.stft(x)
+    # # S_db = np.abs(Y_stft) ** 2
+    # # D = librosa.stft(x)
+    # S_db_hr = librosa.amplitude_to_db(np.abs(Y_stft), ref=np.max)
+    #
+    # # plt.figure(figsize=(60, 4))
+    # # librosa.display.specshow(S_db_hr, hop_length=256, x_axis='time', y_axis='log')
+    # # plt.colorbar()
+    # # plt.show()
+    # return jsonify(S_db_hr.tolist())
+@app.route('/spectrogram/<record_name>', methods=['POST', 'GET'])
+@jwt_required()
+def spectrogram(record_name):
+    user = current_user
+    filepath = os.path.realpath(f'./user_uploads/{user.username}/{record_name}')
+
+    x, sr = librosa.load(filepath, duration=5)
+
+    # M = librosa.feature.melspectrogram(y=x, sr=sr, n_fft=1024)
+    # M_db = librosa.power_to_db(M, ref=np.max)
+
+
+    Y_stft = librosa.stft(x,n_fft=512)
+    S_db_hr = librosa.power_to_db(np.abs(Y_stft), ref=np.max)
+    librosa.display.specshow(S_db_hr, y_axis='log', x_axis='time')
+    plt.colorbar()
+    plt.show()
+    librosa.display.specshow(S_db_hr, y_axis='linear', x_axis='time')
+    plt.colorbar()
+    plt.show()
+    return jsonify(S_db_hr.tolist())

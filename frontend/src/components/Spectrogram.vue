@@ -5,7 +5,7 @@ import Spectrogram from '../functions/index';
 import colormap from "colormap"
 import { wavesurfer } from '../functions/waveform';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
-import { trackList } from "../globalStores";
+
 
 
 let colors = colormap({
@@ -37,7 +37,9 @@ onMounted(() => {
 })
 
 const props = defineProps({
-  track: Object
+  track: Object,
+  isSelected: Boolean
+
 })
 
 
@@ -55,7 +57,8 @@ const positionCursor = ($e) => {
 
 
 <template>
-<div>
+
+<div :class="[{'shadow-md shadow-gray-500' : isSelected}]" >
  
 
   <div :id="`spectrogram-${track.id}`" class="relative" @click="positionCursor()">
@@ -63,7 +66,7 @@ const positionCursor = ($e) => {
     <Cursor :id="`spectrogram-liveCursor-${track.id}`"  :color="'dark-800'" :width="1"/>
     
   </div>
-  <div :id="`timeline-spectrogram-${track.id}`"></div>
+  <div :id="`timeline-spectrogram-${track.id}`" :class="track.backgroundColor"></div>
 
 </div>
 

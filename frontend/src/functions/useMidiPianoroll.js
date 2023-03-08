@@ -1,20 +1,21 @@
-import { trackList } from "../globalStores";
+
 
 
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-// let pianoroll
-let maxMidiNumber
-let minMidiNumber
-export const createVerticalKeyboard = (id, width = null) => {
-  const currentTrackList = trackList()
-  const height = currentTrackList.selectTrack(id).pianoroll.pianorollHeight
+
+export const createVerticalKeyboard = (id,height, width,paddingRight, colors) => {
+  console.log(width);
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
+  pianoroll.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
   
   const notes = Array.from(svgElements.querySelectorAll('.note'));
   const pitches = notes.map(note => Number(note.getAttributeNS(null, 'data-pitch'))); // získání všech hodnot 'data-pitch' jako pole čísel
-  maxMidiNumber = Math.max(...pitches)
-  minMidiNumber = Math.min(...pitches)
+  const maxMidiNumber = Math.max(...pitches)
+  const minMidiNumber = Math.min(...pitches)
+
+  
+  
   // const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
   // const uniqueInstruments = Array.from(new Set(instruments));
 
@@ -23,7 +24,7 @@ export const createVerticalKeyboard = (id, width = null) => {
   //   const color = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
   //   colors.push(color);
   // }
-  // uniqueInstrumentsNum.forEach((instNum, index) => {setInstrumentColor(notes, instruments, instNum, colors[index]);});
+  // colors.forEach((instNum, index) => {setInstrumentColor(notes, instruments, index, colors[index]);});
 
     const pitchAccidentals = {};
     for (let i = minMidiNumber; i <= maxMidiNumber; i++) {
@@ -31,15 +32,10 @@ export const createVerticalKeyboard = (id, width = null) => {
         pitchAccidentals[i] = hasAccidentalNote;
     }
 
-
   const numOfKeys = Object.keys(pitchAccidentals).length;
   const keyHeight = Math.round(height / numOfKeys)
+  pianoroll.config = {pixelsPerTimeStep: width, noteHeight: keyHeight}
 
-  //Set height of pianoroll element
-  pianoroll.config = {noteHeight: keyHeight}
-  if(width){
-    pianoroll.config = {pixelsPerTimeStep: width, noteHeight: keyHeight}
-  }
  
   const keyboard = document.createElement("div");
   keyboard.style.display = "flex";
@@ -61,24 +57,26 @@ export const createVerticalKeyboard = (id, width = null) => {
   key.style.height = keyHeight + "px";
   key.style.borderBottom = "1px solid gray ";
   key.style.borderRight = "1px solid gray ";
-
+  key.id = `key-${currentMaxMidiNumber}`
   keyboard.appendChild(key);
+
 
   if(!pitchAccidentals[currentMaxMidiNumber]){
       
 
-      key.style.backgroundColor = 'white'
+      key.classList.add('white-background');
       // key.style.borderTop = "1px solid gray ";
   } else {
-      key.style.backgroundColor = 'black'
-      key.style.width = '100%'
+      key.classList.add('black-background');
 
-      const blackKey = document.createElement("div");
-      blackKey.style.height = keyHeight + "px";
+      // key.style.width = '100%'
+
+      // const blackKey = document.createElement("div");
+      // blackKey.style.height = keyHeight + "px";
   
-      blackKey.style.backgroundColor = 'white'
-      blackKey.style.width = '20%'
-      blackKey.style.float = 'right'
+      // blackKey.style.backgroundColor = 'white'
+      // blackKey.style.width = '20%'
+      // blackKey.style.float = 'right'
       // blackKey.style.border = 'white'
       // key.appendChild(blackKey);
   } 
@@ -88,18 +86,46 @@ export const createVerticalKeyboard = (id, width = null) => {
   }
 
   currentMaxMidiNumber--
-}
+  }
 
-document.getElementById(`keyboard-${id}`).appendChild(keyboard);
-currentTrackList.selectTrack(id).pianoroll.isPianorollLoading = false
+  document.getElementById(`keyboard-${id}`).appendChild(keyboard);
 
+
+  if(colors){
+    setTimeout(() => {
+      colors.forEach((color, index) => {
+        setInstrumentColor(id, index, color)
+      
+      });
+      
+    }, 1000);
+
+  }
+  return false
 }
 // const setSize = (size) => {
 
 //   pianoroll.config = {noteHeight: size/(maxMidiNumber-minMidiNumber)}
 
 // }
+export const setInstrumentColor = (id, numberOfInstrument, color) => {
 
+  const pianoroll = document.getElementById(`pianoroll-${id}`)
+  var svg = pianoroll.getElementsByTagName('div')[2].getElementsByTagName('svg')[0];
+  const notes = Array.from(svg.querySelectorAll('.note'));
+  const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
+  const uniqueInstruments = Array.from(new Set(instruments));
+
+  if(color){
+    notes.forEach((element, id) => {
+        if(instruments[id] == numberOfInstrument){
+        
+            element.setAttributeNS(null, 'fill', color)
+        }
+    });
+ }
+  return uniqueInstruments
+}
 
 function hasAccidental(midiNumber) {
   const noteName = noteNames[midiNumber % 12];
@@ -116,25 +142,68 @@ const createKeyDescription = (key, keyHeight, currentMaxMidiNumber) => {
   const text = document.createElement("div");
   text.style.height = keyHeight + "px";
   text.textContent = getNoteName(currentMaxMidiNumber)
-
   text.id = 'noteName'
   text.style.marginLeft = '41px'
   text.style.marginTop = '-10px'
   text.style.position = 'absolute'
   text.style.fontSize = '12px'
-  text.style.fontWeight = 'bold'
   text.style.color = 'red'
-  
-
-
   key.appendChild(text)
 }
 
 
-const setInstrumentColor = (notes, instruments, numberOfInstrument, color) => {
-  notes.forEach((element, id) => {
-      if(instruments[id] == numberOfInstrument){
-          element.setAttributeNS(null, 'fill', color)
-      }
-  });
+
+
+export const trackCursorPosition = (wavePos, id, dynamicNames) => {
+  const matchingKeys = [];
+  const pianoroll = document.getElementById(`pianoroll-${id}`)
+  const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
+  const note = Array.from(svgElements.querySelectorAll('.note'));
+  const keyboardElements = document.getElementById(`keyboard-${id}`).querySelectorAll('[id*="key"]')
+
+  //set border of each note, which is hit by cursor
+  for (let i = 0; i < note.length; i++) {
+    let element = note[i];
+    let startTime = element.x.baseVal.value
+    let endTime = element.x.baseVal.value + element.width.baseVal.value
+    if (wavePos >= startTime && wavePos < endTime) {
+
+      const keyId = parseInt(element.getAttributeNS(null, 'data-pitch'));
+      matchingKeys.push(keyId);
+      element.setAttributeNS(null, 'stroke', 'red');
+      element.setAttributeNS(null, 'stroke-width', '2');
+
+    } else {
+        element.removeAttributeNS(null, 'stroke');
+    }
+  }   
+  //set color of each key
+
+  for (let i = 0; i < keyboardElements.length; i++) {
+    const keyId = parseInt(keyboardElements[i].id.split("-")[1]);
+    // if(!dynamicNames){
+    //   keyboardElements[i].innerHTML = "";
+    //   if(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'].includes(getNoteName(keyId))){
+    //     createKeyDescription(keyboardElements[i],7, keyId)
+    //   }
+    // }
+
+    if (matchingKeys.includes(keyId)) {
+        keyboardElements[i].style.backgroundColor = 'red';
+        if(dynamicNames){
+          createKeyDescription( keyboardElements[i],7, keyId)
+        }
+    } else {
+        keyboardElements[i].style.backgroundColor = '';
+        if(dynamicNames){
+          keyboardElements[i].innerHTML = "";
+        }
+
+    }
 }
+
+
+
+
+}
+

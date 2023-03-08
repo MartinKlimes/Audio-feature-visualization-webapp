@@ -8,7 +8,7 @@ import { Icon } from '@iconify/vue';
 import BlueButttons from '../buttons/BlueButttons.vue';
 import {updateRecording} from '../../../custom'
 import Plotly from 'plotly.js-dist'
-
+import { showAlert, closeAlert } from '../../alerts';
 
 const currentTrackList = trackList()
 
@@ -17,19 +17,6 @@ const props = defineProps({
     track: Object,
 })
 
-
-
-const createWaveform = () => {
-    updateRecording(props.track.trackName,'isWaveformDisplayed', !props.track.waveform.isWaveformDisplayed)
-    if(!props.track.waveform.isWaveform){
-        props.track.waveform.isWaveformLoading = true
-        props.track.waveform.isWaveform = true
-        props.track.waveform.isWaveformDisplayed = true
-        updateRecording(props.track.trackName,'isWaveform', true)
-    }else{
-        props.track.waveform.isWaveformDisplayed = !props.track.waveform.isWaveformDisplayed
-    }
-}
 
 const createSpectrogram = () => {
     if (!wavesurfer[props.track.id]) {
@@ -41,21 +28,6 @@ const createSpectrogram = () => {
 
 }
 
-const createPianoroll = () => {
-    updateRecording(props.track.trackName,'isPianorollDisplayed', !props.track.pianoroll.isPianorollDisplayed)
-
-    if(!props.track.pianoroll.isPianoroll){
-        props.track.pianoroll.isPianorollLoading = true
-        props.track.pianoroll.isPianoroll = true
-        props.track.pianoroll.isPianorollDisplayed = true
-        updateRecording(props.track.trackName,'isPianoroll', true)
-    }else{
-        props.track.pianoroll.isPianorollDisplayed = !props.track.pianoroll.isPianorollDisplayed
-        
-
-    }
-    
-}
 const createVisualization = (visualization, isVisualization, isVisualizationDisplayed) => {
     updateRecording(props.track.trackName, isVisualizationDisplayed, !visualization[isVisualizationDisplayed])
 
@@ -70,12 +42,14 @@ const createVisualization = (visualization, isVisualization, isVisualizationDisp
 }
 
 
-
-const plotSpectrogram = () => {
-    updateRecording(props.track.trackName,'isPianoroll', false)
-
+const createPianoroll = (params) => {
+    if(props.track.MIDIFileName){
+        createVisualization(props.track.pianoroll, 'isPianoroll', 'isPianorollDisplayed')
+    }else{
+        showAlert('First select MIDI file!')
+        setTimeout(closeAlert, 1500)
+    }
 }
-
 </script>
 
 
@@ -95,17 +69,25 @@ const plotSpectrogram = () => {
            />
         </button> -->
 
-        <BlueButttons :is-btn-clicked="track.waveform.isWaveformDisplayed " :isDisabled="!track.waveform.isWaveform" :icon="(track.waveform.isWaveformLoading ? 'fa:spinner' : '')" :icon-class="(track.waveform.isWaveformLoading ? 'spin' : 'hidden')" @click="createVisualization(track.waveform, 'isWaveform', 'isWaveformDisplayed')" :class="{'text-xs' : track.waveform.isWaveformLoading}" class="h-6">Waveform</BlueButttons>
+        <BlueButttons :is-btn-clicked="track.waveform.isWaveformDisplayed " :isDisabled="!track.waveform.isWaveform" icon-class='hidden' @click="createVisualization(track.waveform, 'isWaveform', 'isWaveformDisplayed')" class="h-6">Waveform</BlueButttons>
 
         <BlueButttons :is-btn-clicked="track.spectrogram.isSpectrogramDisplayed " :isDisabled="!track.spectrogram.isSpectrogram" :icon="(track.spectrogram.isSpectrogramLoading ? 'fa:spinner' : '')" :icon-class="(track.spectrogram.isSpectrogramLoading ? 'spin' : 'hidden')" @click="createSpectrogram" :class="{'text-xs' : track.spectrogram.isSpectrogramLoading}" class="h-6">Spectrogram</BlueButttons>
 
         <!-- <BlueButttons   @click="createSpectrogram()" class="h-6">Spectrogram</BlueButttons> -->
 
        
-        <BlueButttons :is-btn-clicked="track.pianoroll.isPianorollDisplayed" :isDisabled="!track.pianoroll.isPianoroll" :icon="(track.pianoroll.isPianorollLoading ? 'fa:spinner' : '')" :icon-class="(track.pianoroll.isPianorollLoading  ? 'spin' : 'hidden')" @click="createVisualization(track.pianoroll, 'isPianoroll', 'isPianorollDisplayed')" :class="{'text-xs' : track.pianoroll.isPianorollLoading }" class="h-6">Pianoroll</BlueButttons>
+        <BlueButttons 
+        :is-btn-clicked="track.pianoroll.isPianorollDisplayed" 
+        :isDisabled="!track.pianoroll.isPianoroll" 
+        :icon="(track.pianoroll.isPianorollLoading ? 'fa:spinner' : '')" 
+        :icon-class="(track.pianoroll.isPianorollLoading  ? 'spin' : 'hidden')" 
+        @click="createPianoroll" 
+        :class="{'text-xs' : track.pianoroll.isPianorollLoading }" class="h-6"
+        >
+        Pianoroll</BlueButttons>
 
             <div class="flex w-22 h-max">
-                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none" @click="plotSpectrogram">IOI</button>
+                <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none" @click="">IOI</button>
                 <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-l-none">IBI</button>
             </div>
             

@@ -74,6 +74,7 @@ export const trackList = defineStore('trackList',
             try {
                 const response = await api.get('/get-track-list')
                 const recordings = response.data
+               
                 this.trackState = recordings[0]
                 this.barsList = recordings[1]
                 this.midiList = recordings[2]
