@@ -11,9 +11,7 @@ import TrackToVisualize from '../components/visualizationManager/TrackToVisualiz
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/PianoRoll.vue';
 import Spectrogram from '../components/Spectrogram.vue';
-
 const currentTrackList = trackList();
-
 
 const hideSettingPanel = ref(false)
 const hideTracklistPanel = ref(false)
@@ -21,8 +19,6 @@ const globalTrackIndex = trackIndex()
 const uploadModalVisible = ref(false)
 
 currentTrackList.fetchRecordings()
-
-
 
 
 const axiosConfig = {
@@ -84,8 +80,7 @@ const axiosConfig = {
         :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
         
-
-
+    
 
         
         <!-- <div class="mb-7">
@@ -115,7 +110,7 @@ const axiosConfig = {
                     @click="globalTrackIndex.selTrackIndex = track.id"/>
                     
                 </transition>
-                <!-- <transition>
+                <transition>
                     <PianoRoll
                     v-if="track.pianoroll.isPianoroll"  
                     v-show="track.pianoroll.isPianorollDisplayed"  
@@ -123,8 +118,7 @@ const axiosConfig = {
                     :track="track"
                     @click="globalTrackIndex.selTrackIndex = track.id"
                     />
-                </transition> -->
-              
+                </transition>
                 
 
                 
@@ -192,13 +186,13 @@ const axiosConfig = {
 
 
 
-/* canvas{
+canvas{
     display: block;
     height: 200px;
     width: 800px;
     
    
-} */
+}
 
 #tracklist{
     top: 0;

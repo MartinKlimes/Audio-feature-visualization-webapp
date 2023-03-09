@@ -1,7 +1,7 @@
 from mos_backend import app, db
 import matplotlib.pyplot as plt
 from werkzeug.utils import secure_filename
-import pretty_midi
+
 import os
 import numpy as np
 import librosa.display
@@ -58,45 +58,45 @@ def get_midi():
     return jsonify(f'{filename} was succesfuly uploaded!')
 
 
-@app.route('/get-pianoroll/<start>/<end>/', methods=[ 'GET', 'POST'])
-@jwt_required()
-def get_pianoroll(start, end):
-    user = current_user
-
-
-
-
-    filepath_midi = os.path.realpath(f'./user_uploads/{user.username}/MIDI/data_midi_chopin_01.mid')
-    pm = pretty_midi.PrettyMIDI(filepath_midi)
-
-    def plot_piano_roll(pm, start_pitch, end_pitch, fs=100):
-        # Use librosa's specshow function for displaying the piano roll
-        librosa.display.specshow(pm.get_piano_roll(fs)[start_pitch:end_pitch],
-                                 hop_length=1, sr=fs, x_axis='time', y_axis='cqt_note',
-                                 fmin=pretty_midi.note_number_to_hz(start_pitch))
-
-    plt.figure(figsize=(83.83, 3))
-    plt.axis('off')
-
-    # fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-    plot_piano_roll(pm, 24, 100)
-    if (start != 'undefined') and (end != 'undefined'):
-        if start.isdigit():
-            start = int(start)
-        else:
-            start = float(start)
-        if end.isdigit():
-            end = int(end)
-        else:
-            end = float(end)
-        plt.xlim(start, end);
-
-    filepath_pianoroll = os.path.realpath(f'./user_uploads/{user.username}/MIDI/pianoroll.png')
-    plt.savefig(filepath_pianoroll, bbox_inches='tight',
-                pad_inches=0)
-    image = os.path.realpath(f'./user_uploads/{user.username}/MIDI/pianoroll.png')
-    return send_file(filepath_pianoroll, mimetype='image/png')
-
+# @app.route('/get-pianoroll/<start>/<end>/', methods=[ 'GET', 'POST'])
+# @jwt_required()
+# def get_pianoroll(start, end):
+#     user = current_user
+#
+#
+#
+#
+#     filepath_midi = os.path.realpath(f'./user_uploads/{user.username}/MIDI/data_midi_chopin_01.mid')
+#     pm = pretty_midi.PrettyMIDI(filepath_midi)
+#
+#     def plot_piano_roll(pm, start_pitch, end_pitch, fs=100):
+#         # Use librosa's specshow function for displaying the piano roll
+#         librosa.display.specshow(pm.get_piano_roll(fs)[start_pitch:end_pitch],
+#                                  hop_length=1, sr=fs, x_axis='time', y_axis='cqt_note',
+#                                  fmin=pretty_midi.note_number_to_hz(start_pitch))
+#
+#     plt.figure(figsize=(83.83, 3))
+#     plt.axis('off')
+#
+#     # fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+#     plot_piano_roll(pm, 24, 100)
+#     if (start != 'undefined') and (end != 'undefined'):
+#         if start.isdigit():
+#             start = int(start)
+#         else:
+#             start = float(start)
+#         if end.isdigit():
+#             end = int(end)
+#         else:
+#             end = float(end)
+#         plt.xlim(start, end);
+#
+#     filepath_pianoroll = os.path.realpath(f'./user_uploads/{user.username}/MIDI/pianoroll.png')
+#     plt.savefig(filepath_pianoroll, bbox_inches='tight',
+#                 pad_inches=0)
+#     image = os.path.realpath(f'./user_uploads/{user.username}/MIDI/pianoroll.png')
+#     return send_file(filepath_pianoroll, mimetype='image/png')
+#
 
 @app.route('/get-onset-detection/<record_name>')
 @jwt_required()
