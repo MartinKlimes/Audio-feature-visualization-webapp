@@ -7,8 +7,7 @@ import { updateRecording } from '../../../../custom';
 
 const props = defineProps({
     id: Number,
-    trackName: String,
-    waveformColor: String
+    trackName: String
 })
 
 
@@ -20,25 +19,29 @@ const currentColor = ref(wavesurfer[props.id].getWaveColor())
 
 const changeColorStatus = () => {
     // console.log([wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor()]);
-    updateRecording(props.trackName,'waveformColor', [wavesurfer[props.id].getProgressColor(), wavesurfer[props.id].getWaveColor()])
-    
+    updateRecording(props.id,'waveformColor', [wavesurfer[props.id].getProgressColor(), wavesurfer[props.id].getWaveColor()], props.id)
     // api.get("/change-track-status/waveformColor/" + props.track.trackName + "/" + [wavesurfer[props.track.id].getProgressColor(), wavesurfer[props.track.id].getWaveColor(), splitChannelsStatus.value])
     
 }
 
-
 watchEffect(() => {
+    
     const match = currentColor.value.match(/hsl\((\d+) ([\d.]+)% ([\d.]+)%\)/);
+    if(!match) {
+        return
+    }
     const hue = parseInt(match[1]);
     const saturation = parseFloat(match[2]);
     const lightness = parseFloat(match[3]);
-  
+    
     const newLightness = Math.min(Math.max(lightness + lightnessAdjustment.value, 0), 100);
     const newColor = `hsl(${hue}, ${saturation}%, ${newLightness}%)`;
 
     wavesurfer[props.id].setProgressColor(newColor)
     wavesurfer[props.id].setWaveColor(currentColor.value)
 })
+    
+
 
 window.onbeforeunload = () => {
     changeColorStatus()

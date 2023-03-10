@@ -4,7 +4,7 @@
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 export const createVerticalKeyboard = (id,height, width,paddingRight, colors) => {
-  console.log(width);
+
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
   pianoroll.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
@@ -115,6 +115,7 @@ export const setInstrumentColor = (id, numberOfInstrument, color) => {
   const notes = Array.from(svg.querySelectorAll('.note'));
   const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
   const uniqueInstruments = Array.from(new Set(instruments));
+  const instrumentColors = {};
 
   if(color){
     notes.forEach((element, id) => {
@@ -124,7 +125,14 @@ export const setInstrumentColor = (id, numberOfInstrument, color) => {
         }
     });
  }
-  return uniqueInstruments
+
+ uniqueInstruments.forEach(instrumentId => {
+  const instrumentNotes = notes.filter(note => Number(note.getAttributeNS(null, 'data-instrument')) === instrumentId);
+  const instrumentColor = instrumentNotes.length > 0 ? instrumentNotes[0].getAttributeNS(null, 'fill') : null;
+  instrumentColors[instrumentId] = instrumentColor;
+});
+
+  return {uniqueInstruments, instrumentColors}
 }
 
 function hasAccidental(midiNumber) {

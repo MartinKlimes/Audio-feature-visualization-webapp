@@ -25,7 +25,7 @@ const deleteTrack = async(event) => {
     setTimeout(closeAlert, 1500);
     // currentTrackList.trackState.splice(event.index, 1);
     currentTrackList.fetchRecordings()
-    setTimeout(() => {globalTrackIndex.selTrackIndex = currentTrackList.trackState[0].id}, 100);
+    setTimeout(() => {globalTrackIndex.changeIndex(currentTrackList.trackState[0].id)}, 100);
   })
 };
 

@@ -14,7 +14,7 @@ const target = ref(null)
 
 const setSize = () => {
     props.track.pianoroll.pianorollHeight = size.value
-    updateRecording(props.track.trackName,'pianorollHeight', size.value)
+    updateRecording(props.track.id,'pianorollHeight', size.value)
 
 }
 onClickOutside(target, () => 

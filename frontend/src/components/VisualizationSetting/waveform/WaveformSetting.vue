@@ -32,10 +32,10 @@ const removeWaveform = () => {
     props.track.waveform.isWaveformDisplayed = false
     props.track.spectrogram.isSpectrogram = false
     props.track.spectrogram.isSpectrogramDisplayed = false
-    updateRecording(props.track.trackName,'isWaveform', false)
-    updateRecording(props.track.trackName,'isWaveformDisplayed', false)
-    updateRecording(props.track.trackName,'isSpectrogram', false)
-    updateRecording(props.track.trackName,'isSpectrogramDisplayed', false)
+    updateRecording(props.track.id,'isWaveform', false)
+    updateRecording(props.track.id,'isWaveformDisplayed', false)
+    updateRecording(props.track.id,'isSpectrogram', false)
+    updateRecording(props.track.id,'isSpectrogramDisplayed', false)
 }
 
 const showBars = () => {

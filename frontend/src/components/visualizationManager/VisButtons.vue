@@ -12,7 +12,6 @@ import { showAlert, closeAlert } from '../../alerts';
 
 const currentTrackList = trackList()
 
-
 const props = defineProps({
     track: Object,
 })
@@ -21,7 +20,7 @@ const props = defineProps({
 const createSpectrogram = () => {
     if (!wavesurfer[props.track.id]) {
         props.track.waveform.isWaveform = true
-        updateRecording(props.track.trackName,'isWaveform', true)
+        updateRecording(props.track.id,'isWaveform', true)
 
     }
     createVisualization(props.track.spectrogram, 'isSpectrogram', 'isSpectrogramDisplayed')
@@ -29,13 +28,13 @@ const createSpectrogram = () => {
 }
 
 const createVisualization = (visualization, isVisualization, isVisualizationDisplayed) => {
-    updateRecording(props.track.trackName, isVisualizationDisplayed, !visualization[isVisualizationDisplayed])
+    updateRecording(props.track.id, isVisualizationDisplayed, !visualization[isVisualizationDisplayed])
 
     if(!visualization[isVisualization]){
         visualization[isVisualization + 'Loading'] = true
         visualization[isVisualization] = true
         visualization[isVisualizationDisplayed] = true
-        updateRecording(props.track.trackName,isVisualization, true)
+        updateRecording(props.track.id,isVisualization, true)
     }else {
         visualization[isVisualizationDisplayed] = !visualization[isVisualizationDisplayed]
     }
@@ -43,8 +42,14 @@ const createVisualization = (visualization, isVisualization, isVisualizationDisp
 
 
 const createPianoroll = (params) => {
+    // currentTrackList.changeState(props.track.id, 'waveform.isWaveformDisplayed', true)
+    props.track.waveform.isWaveformDisplayed = true
     if(props.track.MIDIFileName){
         createVisualization(props.track.pianoroll, 'isPianoroll', 'isPianorollDisplayed')
+        setTimeout(() => {
+            props.track.waveform.isWaveformReady = false
+            
+        }, 1000);
     }else{
         showAlert('First select MIDI file!')
         setTimeout(closeAlert, 1500)
@@ -54,7 +59,6 @@ const createPianoroll = (params) => {
 
 
 <template>
- 
 
 <div class="h-[47%] w-full mt-5 p-2 border  shadow-md  border-gray-500 rounded-md bg-white ">
         <div class="grid grid-cols-2 gap-2">

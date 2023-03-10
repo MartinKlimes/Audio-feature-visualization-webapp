@@ -5,9 +5,14 @@ import BlueButttons from '../../buttons/BlueButttons.vue';
 import SetColor from './SetColor.vue'
 import { Icon } from '@iconify/vue';
 import { updateRecording } from '../../../../custom';
-import SizeSize from './SizeSize.vue';
+import SizeSize from './SizeSize.vue'
+
+
+
 const sizeSet = ref(false)
 const setColor = ref(false)
+const ignoreElRef = ref()
+
 const props = defineProps({
     track: Object
 })
@@ -32,11 +37,13 @@ const keyboardSwitch = () => {
 const removePianoroll = () => {
     props.track.pianoroll.isPianoroll = false
     props.track.pianoroll.isPianorollDisplayed = false
-    updateRecording(props.track.trackName,'isPianoroll', false)
-    updateRecording(props.track.trackName,'isPianorollDisplayed', false)
+    updateRecording(props.track.id,'isPianoroll', false)
+    updateRecording(props.track.id,'isPianorollDisplayed', false)
 
 }
+
 </script>
+
 
 
 
@@ -47,9 +54,9 @@ const removePianoroll = () => {
         <SizeSize :track="track" v-if="sizeSet" @close-size-setter="sizeSet = false"/>
     </Transition>
 
-    <BlueButttons :is-btn-clicked="setColor"  @click="setColor = !setColor" class="px-2 mt-2" :icon-class="'hidden'">Set color</BlueButttons>
+    <BlueButttons ref="ignoreElRef" :is-btn-clicked="setColor"  @click="setColor = true" class="px-2 mt-2" :icon-class="'hidden'">Set color</BlueButttons>
     <Transition>
-        <SetColor :track="track"  v-if="setColor" @close-color-picker="setColor = false"/>
+        <SetColor :id="track.id"  v-if="setColor" @close-color-picker="setColor = false"/>
     </Transition>
 
     <BlueButttons  @click="noteNamesHide" class="px-2 mt-2" :icon-class="'hidden'">noteNames</BlueButttons>

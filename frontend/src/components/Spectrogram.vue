@@ -1,7 +1,7 @@
 <script setup>
 import Cursor from './Cursor.vue';
 import {onMounted} from 'vue';
-import Spectrogram from '../functions/index';
+import Spectrogram from '../functions/spectorgram/index';
 import colormap from "colormap"
 import { wavesurfer } from '../functions/waveform';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';

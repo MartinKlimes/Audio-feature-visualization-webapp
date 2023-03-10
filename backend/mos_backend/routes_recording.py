@@ -123,17 +123,15 @@ def get_audio_file():
 @jwt_required()
 def update_recording():
     data = request.get_json()
-    record_name = data.get('record_name')
     column = data.get('column')
     new_value = data.get('new_value')
-
+    record_id = data.get('record_id')
 
     user = current_user
-    recording = Recording.query.filter_by(filename=record_name, user=user).first()
+    recording = Recording.query.filter_by(id=record_id, user=user).first()
     waveform = Waveform.query.filter_by(recording_id=recording.id).first()
     spectrogram = Spectrogram.query.filter_by(recording_id=recording.id).first()
     pianoroll = Pianoroll.query.filter_by(recording_id=recording.id).first()
-    print(recording)
     if not recording:
         return "Nahrávka nenalezena"
 

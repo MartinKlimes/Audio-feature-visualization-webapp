@@ -10,11 +10,11 @@ export const api = axios.create({
     
 });
 
-export const updateRecording = (record_name, column, new_value) => {
+export const updateRecording = (record_id, column, new_value) => {
     api.post('/update-recording', {
-    record_name: record_name,
+    record_id: record_id,
     column: column,
-    new_value: new_value
+    new_value: new_value,
     }, { 
     headers: {
         "X-CSRF-TOKEN": getCookie("csrf_access_token"),

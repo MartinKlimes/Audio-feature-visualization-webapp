@@ -4,7 +4,7 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Cursor from '../functions/cursor/index';
 import Markers from 'wavesurfer.js/dist/plugin/wavesurfer.markers.min.js';
-import Spectrogram from '../functions/index';
+import Spectrogram from './spectorgram/index';
 import {createVerticalKeyboard, trackCursorPosition} from './useMidiPianoroll'
 
 // import colormapJSON from '../hot-colormap.json'

@@ -11,6 +11,7 @@ import TrackToVisualize from '../components/visualizationManager/TrackToVisualiz
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/PianoRoll.vue';
 import Spectrogram from '../components/Spectrogram.vue';
+
 const currentTrackList = trackList();
 
 const hideSettingPanel = ref(false)
@@ -19,7 +20,6 @@ const globalTrackIndex = trackIndex()
 const uploadModalVisible = ref(false)
 
 currentTrackList.fetchRecordings()
-
 
 const axiosConfig = {
     headers: {
@@ -39,7 +39,6 @@ const axiosConfig = {
     <UploadModal v-if="uploadModalVisible"  @close-upload-modal="uploadModalVisible = false"/>
 
     <div id="main-container" class="h-[calc(100vh-4.5rem)]  flex overflow-hidden relative">
-
         <div id="tracklist" class="w-62 h-[calc(100vh-12.5rem)] " :class="{'transform -translate-x-[97%] border border-black' : hideTracklistPanel}">
 
             <div id="tracklist-divider" class="w-[97%] h-full bg-white ">
@@ -49,8 +48,8 @@ const axiosConfig = {
                         <TrackToVisualize      
                         v-if="track.isTrackSelected"
                         :track="track"
-                        @click="globalTrackIndex.selTrackIndex = track.id"
-                        
+                        :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                        @click="globalTrackIndex.changeIndex(track.id)"
                         />
                     </div>
                         <!-- <div class="flex w-full h-[10%] border border-gray-500 mt-5 ">
@@ -80,9 +79,10 @@ const axiosConfig = {
         :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
         
+
     
 
-        
+        {{ globalTrackIndex.selTrackIndex }}
         <!-- <div class="mb-7">
             
                 <MainPanel 
@@ -90,14 +90,13 @@ const axiosConfig = {
                 @showSpectrogram="isSpectrogram =! isSpectrogram"
                 @showPianoroll ="isPianoRoll =! isPianoRoll"
                 /></div> -->
-                <div v-for="track in currentTrackList.trackState" :key="track.id" >
-                
+                <div v-for="track in currentTrackList.trackState" :key="track.id" @click="globalTrackIndex.changeIndex(track.id)">
                 <transition>
                     <Waveform 
                     v-show="track.waveform.isWaveformDisplayed"
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
-                    @click="globalTrackIndex.selTrackIndex = track.id"/>
+                    />
                     
                 </transition>
                 <transition>
@@ -105,9 +104,8 @@ const axiosConfig = {
                     v-if="track.spectrogram.isSpectrogram && track.spectrogram.plotSpectrogram"   
                     v-show="track.spectrogram.isSpectrogramDisplayed"
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
-
                     :track="track"
-                    @click="globalTrackIndex.selTrackIndex = track.id"/>
+                   />
                     
                 </transition>
                 <transition>
@@ -116,7 +114,6 @@ const axiosConfig = {
                     v-show="track.pianoroll.isPianorollDisplayed"  
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
-                    @click="globalTrackIndex.selTrackIndex = track.id"
                     />
                 </transition>
                 

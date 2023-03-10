@@ -74,15 +74,15 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, { modifiedName });
 
 const useTrack = () => {
-  updateRecording(trackToEdit.value.trackName,'isTrackSelected', !trackToEdit.value.isTrackSelected)
+  updateRecording(trackToEdit.value.id,'isTrackSelected', !trackToEdit.value.isTrackSelected)
   if(trackToEdit.value.isTrackSelected == false){
     trackToEdit.value.isTrackSelected = true
   } else {
     trackToEdit.value.isTrackSelected = false
     trackToEdit.value.waveform.isWaveform = false
     trackToEdit.value.waveform.isWaveformDisplayed = false
-    updateRecording(trackToEdit.value.trackName,'isWaveform', false)
-      updateRecording(trackToEdit.value.trackName,'isWaveformDisplayed', false)
+    updateRecording(trackToEdit.value.id,'isWaveform', false)
+      updateRecording(trackToEdit.value.id,'isWaveformDisplayed', false)
   }
 
 };

@@ -34,33 +34,7 @@ export const userInfo = defineStore('userInfo',
     }),
 })
 
-// export const trackInfo = defineStore('trackInfo', 
-// {
-//     state: () => ({ 
-//         id: '',
-//         trackname: '',
-//         isTrackSelected: false,
-//     }),
-
-//     actions: {
-//         getTrackList(){
-//             api.get('http://127.0.0.1:5000/get-track-list')
-//             .then((response) => {   
-
-//                 // this.trackState[0].isTrackClicked = true
-//                 response.data.forEach((oneTrack)=> {
-//                     this.id = oneTrack.id
-//                     this.trackname = oneTrack.trackname
-//                 });
-//             // currentTrackList.trackName = trackName
-//             // currentTrackList.addToTrackList(response.data)
-//             })
-//         },
-//     }
-// })
  
-
-
 export const trackList = defineStore('trackList', 
 {
     state: () => ({ 
@@ -74,21 +48,40 @@ export const trackList = defineStore('trackList',
             try {
                 const response = await api.get('/get-track-list')
                 const recordings = response.data
-               
+                
                 this.trackState = recordings[0]
                 this.barsList = recordings[1]
                 this.midiList = recordings[2]
               } catch (error) {
                 console.error(error)
             }
-        }
-    },
-    
-    getters: {
-        
-        selectTrack(state) {
-            return (trackId) => state.trackState.find((track) => track.id == trackId)
         },
+        changeState(id, propertyName, propertyValue) {
+       
+            const track = this.selectTrack(id)
+            if (track) {
+                const nestedProperties = propertyName.split('.');
+                if (nestedProperties.length > 1) {
+                  let nestedObject = track;
+                  for (let i = 0; i < nestedProperties.length - 1; i++) {
+                    nestedObject = nestedObject[nestedProperties[i]];
+                  }
+                  nestedObject[nestedProperties[nestedProperties.length - 1]] = propertyValue;
+                } else {
+                  track[propertyName] = propertyValue;
+                }
+            }
+            
+        },
+    },
+
+    
+    getters: {       
+        selectTrack: state => id => {
+            
+            return state.trackState.find(track => track.id === id)
+        },
+        // return (trackId) => state.trackState.find((track) => track.id == trackId)
         // selectUsedTrack(state) {
         //     return (trackId) => state.selectedTracks.find((track) => track.id == trackId)
         // }
@@ -102,6 +95,11 @@ export const trackIndex = defineStore('trackIndex',
         selTrackIndex: '',
         selTracksToPlay: [],
     }),
+    actions: {
+        changeIndex(id) {
+            this.selTrackIndex = id
+        }
+    }
 })
 
 
