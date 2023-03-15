@@ -42,14 +42,12 @@ const createVisualization = (visualization, isVisualization, isVisualizationDisp
 
 
 const createPianoroll = (params) => {
-    // currentTrackList.changeState(props.track.id, 'waveform.isWaveformDisplayed', true)
-    props.track.waveform.isWaveformDisplayed = true
     if(props.track.MIDIFileName){
         createVisualization(props.track.pianoroll, 'isPianoroll', 'isPianorollDisplayed')
-        setTimeout(() => {
-            props.track.waveform.isWaveformReady = false
+        // setTimeout(() => {
+        //     props.track.waveform.isWaveformReady = false
             
-        }, 1000);
+        // }, 1000);
     }else{
         showAlert('First select MIDI file!')
         setTimeout(closeAlert, 1500)

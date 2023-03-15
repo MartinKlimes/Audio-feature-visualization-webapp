@@ -4,13 +4,13 @@ import NavBar from '../components/MainPanel/NavBar.vue';
 import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
 import UploadModal from '../components/trackManager/UploadModal.vue';
 import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
-import Waveform from '../components/Waveform.vue';
+import Waveform from '../components/visualizations/waveform/Waveform.vue';
 import { getCookie } from '../cookieHandling';
 import Cursor from '../components/Cursor.vue';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
-import PianoRoll from '../components/PianoRoll.vue';
-import Spectrogram from '../components/Spectrogram.vue';
+import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
+import Spectrogram from '../components/visualizations/spectorgram/Spectrogram.vue';
 
 const currentTrackList = trackList();
 
@@ -78,11 +78,6 @@ const axiosConfig = {
         class="h-full  text-xl text-black  bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
         :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
-        
-
-    
-
-        {{ globalTrackIndex.selTrackIndex }}
         <!-- <div class="mb-7">
             
                 <MainPanel 
@@ -167,7 +162,11 @@ const axiosConfig = {
             :class="{' border-r-[0.5rem] border-l-[0rem]' : hideSettingPanel, 'border-l-[0.5rem] border-r-[0rem]': !hideSettingPanel}"></button>
         </div>
         <div v-for="track in currentTrackList.trackState" :key="track.id">
-            <RightPanel v-if="track.isTrackSelected" :track="track"/>
+            <RightPanel 
+            v-if="track.isTrackSelected" 
+            :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+            :track="track"
+            />
         </div>
 
     </div>

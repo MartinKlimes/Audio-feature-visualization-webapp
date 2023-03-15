@@ -1,11 +1,25 @@
 <script setup>
-import WaveformSetting from './VisualizationSetting/waveform/WaveformSetting.vue';
-import { trackIndex } from '../globalStores';
-import PianorollSetting from './VisualizationSetting/pianoroll/PianorollSetting.vue'
-const globalTrackIndex = trackIndex()
+import WaveformSetting from './visualizations/waveform/WaveformSetting.vue';
+import PianorollSetting from './visualizations/pianoroll/PianorollSetting.vue';
+import SpectrogramSetting from './visualizations/spectorgram/SpectrogramSetting.vue';
+import BlueButttons from './buttons/BlueButttons.vue';
+import { shallowRef } from 'vue';
+import { Icon } from '@iconify/vue';
+
+const currentTrackSetting = shallowRef()
+
+// const visualizations = {'WaveformSetting' : 'mdi:waveform', 'icon-park:music-rhythm' : SpectrogramSetting, 'ph:piano-keys-thin' : PianorollSetting}
+const visualizations = [[WaveformSetting, 'mdi:waveform'],[ SpectrogramSetting, 'icon-park:music-rhythm'], [PianorollSetting, 'ph:piano-keys-thin' ]]
+
+
+setTimeout(() => {
+    currentTrackSetting.value = WaveformSetting
+}, 3000);
 
 const props = defineProps({
     track: Object,
+    isSelected: Boolean
+    
 })
 
 </script>
@@ -13,34 +27,72 @@ const props = defineProps({
 
 
 <template>
+  
 
 
-<div v-show="track.id == globalTrackIndex.selTrackIndex" class="w-[99%] h-full p-1 rounded-md flex flex-col gap-1 items-center " :class="track.backgroundColor">
-    <span class="font-serif text-sm font-bold opacity-60 rounded-md max-h-5 max-w-37 overflow-hidden " :class="{'text-xs py-1' : track.trackName.length > 16}">{{track.trackName}}</span>
+<div v-show="isSelected" class="h-full p-1 rounded-md flex flex-col gap-1 items-center  " :class="track.backgroundColor">
 
-    <div class="h-max w-full p-2 bg-gray-200 rounded-md border  border-gray-300 shadow-md flex flex-col">
-        
-        <WaveformSetting 
-        v-if="track.waveform.isWaveform" 
-        :track="track"/>
+    <span class="max-w-37 overflow-x-auto whitespace-nowrap font-serif text-sm font-bold opacity-60 rounded-md overflow-hidden"
+    >
+    {{track.trackName}}
+    </span>
+
+   
+
+<div class="min-w-38 border rounded-md border-gray">
+
+    <div class="flex max-w-37 overflow-x-auto gap-1 mb-1">
     
-        
-        
+            <Icon v-for="(visualization, i) in visualizations" :key=i :icon="visualization[1]" width="23" 
+            class="cursor-pointer p-0.5" @click="currentTrackSetting = visualization[0]"
+            :class="[currentTrackSetting === visualization[0] ? ' bg-gray-100 shadow-inner shadow-dark-200 ' : 'bg-transparent hover:opacity-70', {'rounded-b-none rounded-l-md ' : i === 0}]"
+            />
+            <!-- <Icon  icon="mdi:waveform" width="20" class="rounded-b-none rounded-l-md cursor-pointer" @click="currentTrackSetting = WaveformSetting"
+            :class="[currentTrackSetting === WaveformSetting ? ' bg-gray-100 shadow-inner shadow-dark-200' : 'bg-transparent' ]"
+            /> -->
+
+            <!-- <Icon  class="text-black" icon="icon-park:music-rhythm" @click="currentTrackSetting = SpectrogramSetting"/>
+            <Icon  class="" icon="ph:piano-keys-thin" @click="currentTrackSetting = PianorollSetting"/> -->
+
+   
     </div>
-    <div class="h-max w-full p-2 bg-gray-200 rounded-md border  border-gray-300 shadow-md flex flex-col">
 
-    <PianorollSetting 
-        v-if="track.pianoroll.isPianoroll && !track.pianoroll.isPianorollLoading" 
-        :track="track"/>
-    </div>
-    <!-- <div class="h-55 w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md flex ">
-        
-        {{ track.trackName }}
+
+    <KeepAlive>
+        <component :is="currentTrackSetting" :track="track"/>
+
+    </KeepAlive>
     
-        
-    </div> -->
-    <!-- <SpectrogramSetting/> -->
-    
+    <!-- <WaveformSetting 
+    v-if="track.waveform.isWaveform" 
+    :track="track"/> -->
+
+    <!-- <PianorollSetting 
+    v-if="track.pianoroll.isPianoroll" 
+    :track="track"/> -->
+
+
 </div>
 
+</div>  
 </template>
+
+
+<style scoped>
+::-webkit-scrollbar {
+  width: 4px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+ 
+  
+}
+
+</style>

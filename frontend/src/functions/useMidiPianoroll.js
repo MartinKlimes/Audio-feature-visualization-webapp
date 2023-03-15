@@ -14,17 +14,6 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
   const maxMidiNumber = Math.max(...pitches)
   const minMidiNumber = Math.min(...pitches)
 
-  
-  
-  // const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
-  // const uniqueInstruments = Array.from(new Set(instruments));
-
-  // const colors = [];
-  // for (let i = 0; i < uniqueInstrumentsNum.length; i++) {
-  //   const color = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`;
-  //   colors.push(color);
-  // }
-  // colors.forEach((instNum, index) => {setInstrumentColor(notes, instruments, index, colors[index]);});
 
     const pitchAccidentals = {};
     for (let i = minMidiNumber; i <= maxMidiNumber; i++) {
@@ -63,22 +52,9 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
 
   if(!pitchAccidentals[currentMaxMidiNumber]){
       
-
       key.classList.add('white-background');
-      // key.style.borderTop = "1px solid gray ";
   } else {
       key.classList.add('black-background');
-
-      // key.style.width = '100%'
-
-      // const blackKey = document.createElement("div");
-      // blackKey.style.height = keyHeight + "px";
-  
-      // blackKey.style.backgroundColor = 'white'
-      // blackKey.style.width = '20%'
-      // blackKey.style.float = 'right'
-      // blackKey.style.border = 'white'
-      // key.appendChild(blackKey);
   } 
   
   if(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'].includes(getNoteName(currentMaxMidiNumber)) || (currentMaxMidiNumber == maxMidiNumber) || (currentMaxMidiNumber == minMidiNumber)){
