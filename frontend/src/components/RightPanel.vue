@@ -1,20 +1,28 @@
 <script setup>
 import WaveformSetting from './visualizations/waveform/WaveformSetting.vue';
 import PianorollSetting from './visualizations/pianoroll/PianorollSetting.vue';
-import SpectrogramSetting from './visualizations/spectorgram/SpectrogramSetting.vue';
-import BlueButttons from './buttons/BlueButttons.vue';
-import { shallowRef } from 'vue';
+import SpectrogramSetting from './visualizations/spectrogram/SpectrogramSetting.vue';
+import BlueButttons from './buttons/BlueButtons.vue';
+import { shallowRef, watch,ref,watchEffect } from 'vue';
 import { Icon } from '@iconify/vue';
 
 const currentTrackSetting = shallowRef()
 
-// const visualizations = {'WaveformSetting' : 'mdi:waveform', 'icon-park:music-rhythm' : SpectrogramSetting, 'ph:piano-keys-thin' : PianorollSetting}
-const visualizations = [[WaveformSetting, 'mdi:waveform'],[ SpectrogramSetting, 'icon-park:music-rhythm'], [PianorollSetting, 'ph:piano-keys-thin' ]]
+const visualizations = [[WaveformSetting, 'mdi:waveform'],[ SpectrogramSetting, 'icon-park:music-rhythm'], [PianorollSetting, 'ph:piano-keys-thin']]
 
+const list = ref([]);
+watchEffect(() => {
+    list.value[0] = props.track.waveform.isWaveform
+    list.value[1] = props.track.spectrogram.isSpectrogram
+    list.value[2] = props.track.pianoroll.isPianoroll
+    for(let i = 0; i < list.value.length; i++) {
+        if(list.value[i]) {
+            currentTrackSetting.value = visualizations[i][0]
+            break; 
+        }
+    }
+})
 
-setTimeout(() => {
-    currentTrackSetting.value = WaveformSetting
-}, 3000);
 
 const props = defineProps({
     track: Object,
@@ -27,7 +35,7 @@ const props = defineProps({
 
 
 <template>
-  
+
 
 
 <div v-show="isSelected" class="h-full p-1 rounded-md flex flex-col gap-1 items-center  " :class="track.backgroundColor">
@@ -39,11 +47,13 @@ const props = defineProps({
 
    
 
-<div class="min-w-38 border rounded-md border-gray">
+<div class="min-w-38 border-2 rounded-md border-gray">
 
     <div class="flex max-w-37 overflow-x-auto gap-1 mb-1">
-    
-            <Icon v-for="(visualization, i) in visualizations" :key=i :icon="visualization[1]" width="23" 
+  
+            <Icon v-for="(visualization, i) in visualizations" :key=i 
+           v-show="list[i]"
+            :icon="visualization[1]" width="23" 
             class="cursor-pointer p-0.5" @click="currentTrackSetting = visualization[0]"
             :class="[currentTrackSetting === visualization[0] ? ' bg-gray-100 shadow-inner shadow-dark-200 ' : 'bg-transparent hover:opacity-70', {'rounded-b-none rounded-l-md ' : i === 0}]"
             />

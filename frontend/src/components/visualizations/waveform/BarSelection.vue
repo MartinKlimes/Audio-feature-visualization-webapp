@@ -3,7 +3,7 @@
 import { ref, onDeactivated } from 'vue';
 import { trackIndex } from '../../../globalStores';
 import { wavesurfer } from '../../../functions/waveform';
-import BlueButttons from '../../buttons/BlueButttons.vue';
+import BlueButttons from '../../buttons/BlueButtons.vue';
 
 
 

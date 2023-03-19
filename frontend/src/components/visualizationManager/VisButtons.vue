@@ -5,7 +5,7 @@ import { trackList } from '../../globalStores';
 import { createWavesurfer } from '../../functions/waveform'
 import { wavesurfer } from '../../functions/waveform';
 import { Icon } from '@iconify/vue';
-import BlueButttons from '../buttons/BlueButttons.vue';
+import BlueButttons from '../buttons/BlueButtons.vue';
 import {updateRecording} from '../../../custom'
 import Plotly from 'plotly.js-dist'
 import { showAlert, closeAlert } from '../../alerts';
@@ -16,16 +16,6 @@ const props = defineProps({
     track: Object,
 })
 
-
-const createSpectrogram = () => {
-    if (!wavesurfer[props.track.id]) {
-        props.track.waveform.isWaveform = true
-        updateRecording(props.track.id,'isWaveform', true)
-
-    }
-    createVisualization(props.track.spectrogram, 'isSpectrogram', 'isSpectrogramDisplayed')
-
-}
 
 const createVisualization = (visualization, isVisualization, isVisualizationDisplayed) => {
     updateRecording(props.track.id, isVisualizationDisplayed, !visualization[isVisualizationDisplayed])
@@ -72,8 +62,15 @@ const createPianoroll = (params) => {
         </button> -->
 
         <BlueButttons :is-btn-clicked="track.waveform.isWaveformDisplayed " :isDisabled="!track.waveform.isWaveform" icon-class='hidden' @click="createVisualization(track.waveform, 'isWaveform', 'isWaveformDisplayed')" class="h-6">Waveform</BlueButttons>
-
-        <BlueButttons :is-btn-clicked="track.spectrogram.isSpectrogramDisplayed " :isDisabled="!track.spectrogram.isSpectrogram" :icon="(track.spectrogram.isSpectrogramLoading ? 'fa:spinner' : '')" :icon-class="(track.spectrogram.isSpectrogramLoading ? 'spin' : 'hidden')" @click="createSpectrogram" :class="{'text-xs' : track.spectrogram.isSpectrogramLoading}" class="h-6">Spectrogram</BlueButttons>
+        
+        <BlueButttons 
+        :is-btn-clicked="track.spectrogram.isSpectrogramDisplayed " 
+        :isDisabled="!track.spectrogram.isSpectrogram" 
+        :icon="(track.spectrogram.isSpectrogramLoading ? 'fa:spinner' : '')" 
+        :icon-class="(track.spectrogram.isSpectrogramLoading ? 'spin' : 'hidden')" 
+        @click="createVisualization(track.spectrogram, 'isSpectrogram', 'isSpectrogramDisplayed')
+" 
+        :class="{'text-xs' : track.spectrogram.isSpectrogramLoading}" class="h-6">Spectrogram</BlueButttons>
 
         <!-- <BlueButttons   @click="createSpectrogram()" class="h-6">Spectrogram</BlueButttons> -->
 

@@ -25,7 +25,8 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
   const keyHeight = Math.round(height / numOfKeys)
   pianoroll.config = {pixelsPerTimeStep: width, noteHeight: keyHeight}
 
- 
+
+
   const keyboard = document.createElement("div");
   keyboard.style.display = "flex";
   keyboard.style.flexDirection = "column";

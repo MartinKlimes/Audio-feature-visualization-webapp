@@ -6,7 +6,7 @@ import { showAlert, closeAlert } from "../../alerts";
 import EditTrack from "./EditTrack.vue";
 import { ref, reactive } from "vue";
 import { marker } from "../../functions/waveform"
-import SelButtons from "../buttons/BlueButttons.vue"
+import SelButtons from "../buttons/BlueButtons.vue"
 import EditBarsMIDI from "./EditBarsMIDI.vue";
 
 const currentTrackList = trackList();

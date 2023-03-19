@@ -411,7 +411,7 @@ export default class SpectrogramPlugin {
     }
     const currentTrackList = trackList()
     
-
+   
       currentTrackList.selectTrack(parseInt(my.id)).spectrogram.isSpectrogramLoading = false
       
    

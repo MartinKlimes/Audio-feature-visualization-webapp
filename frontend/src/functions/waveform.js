@@ -3,7 +3,8 @@ import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Cursor from '../functions/cursor/index';
-import Markers from 'wavesurfer.js/dist/plugin/wavesurfer.markers.min.js';
+import Markers from './markers/index';
+
 import Spectrogram from './spectorgram/index';
 import {createVerticalKeyboard, trackCursorPosition} from './useMidiPianoroll'
 
@@ -170,9 +171,13 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
             time: oneBeat,
             label: id+1,
             color: "black",
+            pointer: true,
+            index: 'bars'
 
         })
     })
+    
+
     beatDuration.forEach(function(oneBeat, id){
         if (id == beatDuration.length-1){
             wavesurfer[selectedTrackIndex].addRegion({

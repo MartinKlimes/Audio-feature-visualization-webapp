@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onDeactivated, onActivated } from 'vue';
 import { wavesurfer} from '../../../functions/waveform';
-import BlueButttons from '../../buttons/BlueButttons.vue';
+import BlueButttons from '../../buttons/BlueButtons.vue';
 
 const from = ref()
 const to = ref()

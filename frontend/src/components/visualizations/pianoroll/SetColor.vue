@@ -1,7 +1,7 @@
 <script setup>
 import { onUnmounted, ref, watchEffect, watch } from 'vue';
 
-import BlueButttons from '../../buttons/BlueButttons.vue';
+import BlueButttons from '../../buttons/BlueButtons.vue';
 import { updateRecording } from '../../../../custom';
 import { setInstrumentColor } from '../../../functions/useMidiPianoroll';
 import ColorsPicker from '../../visualizationManager/ColorsPicker.vue';

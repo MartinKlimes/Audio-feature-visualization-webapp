@@ -102,20 +102,38 @@ def get_midi():
 @jwt_required()
 def get_onset_detection(record_name):
     user = current_user
+    json_path = f"./user_uploads/{user.username}/{record_name}.json"
 
-    if ' - trimmed (' in record_name or ' - bars (' in record_name:
-        y, sr = librosa.load(f'./user_uploads/{user.username}/trimmed_tracks/{record_name}')
+    if os.path.exists(json_path):
+        # soubor existuje, načte vypočítaná data
+        with open(json_path, 'r') as f:
+            data = json.load(f)
     else:
-        y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
+        # soubor neexistuje, provede výpočet a uložení dat
+        if ' - trimmed (' in record_name or ' - bars (' in record_name:
+            y, sr = librosa.load(f'./user_uploads/{user.username}/trimmed_tracks/{record_name}')
+        else:
+            y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
 
-    onset = librosa.onset.onset_detect(y, sr=sr, units='time')
-    tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
+        onset = librosa.onset.onset_detect(y, sr=sr, units='time')
+        tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
 
-    onset_lists = onset.tolist()
-    beats_lists = beats.tolist()
-    list = onset_lists, beats_lists
-    json_str = json.dumps(list)
-    return json_str
+        # uložení vypočítaných dat do souboru
+        data = {'onset': onset.tolist(), 'beats': beats.tolist()}
+        with open(json_path, 'w') as f:
+            json.dump(data, f)
+
+    if 'data_type' in request.args:
+        data_type = request.args['data_type']
+    else:
+        data_type = 'onset'
+
+    if data_type == 'beats':
+        data = {'beats': data['beats']}
+    else:
+        data = {'onset': data['onset']}
+
+    return jsonify(data)
 
 @app.route('/get-spectrogram', methods=[ 'GET', 'POST'])
 @jwt_required()

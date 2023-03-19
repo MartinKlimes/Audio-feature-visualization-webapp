@@ -106,7 +106,8 @@ def get_audio_file():
                 'isSpectrogram': spectrogram.isSpectrogram,
                 'isSpectrogramDisplayed': spectrogram.isSpectrogramDisplayed,
                 'spectrogramColormap': spectrogram.spectrogramColormap,
-                'spectrogramHeight': spectrogram.spectrogramHeight
+                'spectrogramHeight': spectrogram.spectrogramHeight,
+                'isSpectrogramLoading' : False
             } if spectrogram else {},
             'pianoroll': {
                 'id': pianoroll.id,

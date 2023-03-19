@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import BlueButttons from '../../buttons/BlueButttons.vue';
+import BlueButttons from '../../buttons/BlueButtons.vue';
 
 import SetColor from './SetColor.vue'
 import { Icon } from '@iconify/vue';

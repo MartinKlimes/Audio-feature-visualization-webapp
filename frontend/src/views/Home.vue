@@ -10,7 +10,12 @@ import Cursor from '../components/Cursor.vue';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
-import Spectrogram from '../components/visualizations/spectorgram/Spectrogram.vue';
+// import Spectrogram from '../components/visualizations/spectorgram/Spectrogram.vue';
+import { defineAsyncComponent } from 'vue'
+
+const Spectrogram = defineAsyncComponent(() =>
+  import('../components/visualizations/spectrogram/Spectrogram.vue')
+)
 
 const currentTrackList = trackList();
 
@@ -76,7 +81,7 @@ const axiosConfig = {
         
         <div id="content" 
         class="h-full  text-xl text-black  bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
-        :class="{'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
+        :class="{'w-[72.5vw] ml-63': !hideSettingPanel && !hideTracklistPanel, 'w-[86vw] ml-63' : hideSettingPanel && !hideTracklistPanel, 'w-[90.5vw] ml-3 ' : hideTracklistPanel && !hideSettingPanel, 'w-[98.5vw] mx-3.5' : hideTracklistPanel && hideSettingPanel}"
         >
         <!-- <div class="mb-7">
             
@@ -113,10 +118,10 @@ const axiosConfig = {
                 </transition>
                 
 
-                
+            
             </div>
             
-        
+           
 
   
             <!-- <div v-for="(trackname, id) in trackFromStart" :key="trackname">

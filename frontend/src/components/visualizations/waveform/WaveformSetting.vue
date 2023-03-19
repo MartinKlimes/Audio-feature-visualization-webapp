@@ -9,10 +9,13 @@ import { api } from '../../../../custom';
 import { trackIndex, trackList } from '../../../globalStores';
 import { showAlert, closeAlert } from '../../../alerts';
 import { ColorPicker } from 'vue-accessible-color-picker'
-import BlueButtons from '../../buttons/BlueButttons.vue'
+import BlueButtons from '../../buttons/BlueButtons.vue'
 import ClickSoundBtn from '../../buttons/ClickSoundBtn.vue';
 import { createWavesurfer } from '../../../functions/waveform';
 import {updateRecording} from '../../../../custom'
+import IOI from './IOI.vue';
+import LinesVisualizations from './LinesVisualizations.vue';
+
 
 
 const currentSetting = shallowRef()
@@ -21,22 +24,19 @@ const currentTrackList = trackList()
 const showColorPicker = ref(false)
 const isBtnClicked = ref(false)
 const bars = ref()
-const splitChannelsStatus = ref(false)
+const showLinesVis = ref(false)
 
 const props = defineProps({
     track: Object,
 })
 
+
+
 const removeWaveform = () => {
-    wavesurfer[props.track.id].destroy()
     props.track.waveform.isWaveform = false
     props.track.waveform.isWaveformDisplayed = false
-    props.track.spectrogram.isSpectrogram = false
-    props.track.spectrogram.isSpectrogramDisplayed = false
     updateRecording(props.track.id,'isWaveform', false)
     updateRecording(props.track.id,'isWaveformDisplayed', false)
-    updateRecording(props.track.id,'isSpectrogram', false)
-    updateRecording(props.track.id,'isSpectrogramDisplayed', false)
 }
 
 const showBars = () => {
@@ -44,12 +44,18 @@ const showBars = () => {
         showAlert('First select the text file!');
         setTimeout(closeAlert, 1500);
     } else {
-        if(wavesurfer[props.track.id].markers.markers.length > 0) {
-            isBtnClicked.value = false
-            currentSetting.value = ''
-            wavesurfer[props.track.id].clearRegions()
-            wavesurfer[props.track.id].clearMarkers()
-        } else {
+        if(document.getElementById('bars')){
+            if(document.getElementById('bars').style.display == 'none'){
+                isBtnClicked.value = true
+                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'flex')
+            }
+            else {
+                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'none')
+                isBtnClicked.value = false
+
+            }
+        } else{
+        
             api.get('/get-file/' + props.track.txtFileName)
               .then((response) => {
              
@@ -102,15 +108,22 @@ const splitChannels = () => {
 <div class=" flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md">
     <Icon  class="absolute left-1 top-1 rounded"  :class="track.backgroundColor" icon="mdi:waveform" />
 
-    <BlueButtons @click="showBars" :is-btn-clicked="isBtnClicked" :icon="(isBtnClicked ? 'mdi:eye-outline' : 'mdi:eye-off-outline')" @mouseover="track.showFileInfo=true" @mouseleave="track.showFileInfo=false"  :class="{'bg-transparent text-black shadow-sm shadow-dark-50 hover:bg-transparent'  : !track.txtFileName}">Bars</BlueButtons>
+    <BlueButtons :icon="'material-symbols:add-circle-outline'" @click="showLinesVis =! showLinesVis">Add</BlueButtons>
+
+    <LinesVisualizations 
+    v-if="showLinesVis"
+    :track-name="track.trackName"
+    :id="track.id"
+    :txt-file-name="track.txtFileName"
+    :background-color="track.backgroundColor"
+    />
+
+   
 
     <button v-if="!isBtnClicked" class="absolute top-0 right-1 opacity-50 hover:opacity-100"><Icon icon="entypo:export" @click="wavesurfer[track.id].exportImage()"/></button>
 
-    <ClickSoundBtn v-if="isBtnClicked" :id="track.id" :backgroundColor="track.backgroundColor" :markers-list="bars"/>
 
-    <Transition>
-        <div v-if="track.showFileInfo && track.txtFileName" class="absolute bg-blue-300 z-1 rounded-md  text-xs px-1 py-0.5 shadow-inner shadow-gray-500 mt-9 ">{{track.txtFileName}}</div>
-    </Transition>
+  
 
     <span class="text-xs opacity-50 mt-3" >Select part</span>
     <div class="flex  border border-dashed border-gray-400 rounded-md p-1 justify-center items-center " >
@@ -133,8 +146,10 @@ const splitChannels = () => {
  
     <BlueButtons title="Split channels" class="mt-3 items-center opacity-90 " :is-btn-clicked="track.splitChannels" @click="splitChannels()" :icon-class="'ml-0 '" :rotate="1"  :icon="'carbon:split-screen'"></BlueButtons>
 
-    <button title="reload waveform" class="mt-4 opacity-50 hover:opacity-100 absolute right-0 bottom-0" @click="removeWaveform"> <Icon icon="mingcute:delete-2-line" /> </button>
+   
 
+      
+    <button title="reload waveform" class="mt-4 opacity-50 hover:opacity-100 absolute right-0 bottom-0" @click="removeWaveform"> <Icon icon="mingcute:delete-2-line" /> </button>
         <!-- <Transition>
     <div v-if="showColorPicker"  class="flex flex-col w-10 p-1  rounded-md gap-1 bg-white absolute z-5 -bottom-51 -right-2">
         <BlueButtons :icon="'material-symbols:line-end-arrow-notch'" class="items-center justify-center h-4" 

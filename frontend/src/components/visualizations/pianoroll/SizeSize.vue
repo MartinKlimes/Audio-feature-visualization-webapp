@@ -1,5 +1,5 @@
 <script setup>
-import BlueButttons from '../../buttons/BlueButttons.vue';
+import BlueButttons from '../../buttons/BlueButtons.vue';
 import { ref } from 'vue';
 import {updateRecording} from '../../../../custom'
 import { onClickOutside } from '@vueuse/core';

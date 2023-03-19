@@ -59,7 +59,9 @@ watchEffect(() => {
 setTimeout(() => {
     
 watch(() => props.track.waveform.isWaveformReady,() => {
-    if(props.track.waveform.isWaveformReady){
+    if(props.track.waveform.isWaveformReady){   
+    
+   
 
     scrollListener()
     mousemoveListener()
