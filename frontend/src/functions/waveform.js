@@ -172,7 +172,9 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
             label: id+1,
             color: "black",
             pointer: true,
-            index: 'bars'
+            lineID: 'bars',
+            index: 'bars-marker'
+
 
         })
     })

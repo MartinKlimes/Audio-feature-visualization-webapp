@@ -53,7 +53,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-{{ color }}sdfd
 <div class="flex mt-2 relative rounded-t bg-white justify-center items-center w-full" ref="target">
     <div class="max-w-35 overflow-x-auto flex gap-0.5 mb-2">
     <div v-for="instNum in instruments" >

@@ -6,7 +6,8 @@
  * @property {?label} string An optional marker label
   * @property {?pointer}  boolean to true to display colorbar.
  * @property {?color} string Background color for marker
- * @property {?index} string index
+ * @property {?lineID} string index for line only
+ * @property {?index} string index for wholte marker
  * @property {?zIndex} string Background color for marker
  * @property {?position} string "top" or "bottom", defaults to "bottom"
  * @property {?markerElement} element An HTML element to display instead of the default marker image
@@ -164,7 +165,8 @@ export default class MarkersPlugin {
             label: params.label,
             pointer: params.pointer  || DEFAULT_POINTER,
             color: params.color || DEFAULT_FILL_COLOR,
-            index: params.index || 'marker',
+            lineID: params.lineID || 'marker',
+            index: params.index,
             zIndex: params.zIndex || 0,
             position: params.position || DEFAULT_POSITION,
             draggable: !!params.draggabl,
@@ -228,6 +230,7 @@ export default class MarkersPlugin {
         let pointer = marker.pointer;
         let color = marker.color
         let zIndex = marker.zIndex
+        let lineID = marker.lineID
         let index = marker.index
 
         const el = document.createElement('marker');
@@ -240,7 +243,10 @@ export default class MarkersPlugin {
             overflow: "hidden",
             "flex-direction": (marker.position == "top" ? "column-reverse" : "column")
         });
-        el.setAttribute("id", index);
+        if(lineID == 'bars'){
+            console.log(index);
+            el.setAttribute("id", index);
+        }
 
         const line = document.createElement('div');
         const width = markerElement ? markerElement.width : this.markerWidth;
@@ -253,13 +259,15 @@ export default class MarkersPlugin {
             opacity: 1,
             "z-index": zIndex,
             
+            
+            
 
         });
+        line.setAttribute("id", lineID);
         el.appendChild(line);
         
         const labelDiv = document.createElement('div');
         if ( pointer) {
-        console.log(pointer);
             const point = markerElement || this._createPointerSVG(marker.color, marker.position);
             if (marker.draggable){
                 point.draggable = false;

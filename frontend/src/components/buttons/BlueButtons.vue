@@ -1,11 +1,16 @@
 <script setup>
 import { Icon } from '@iconify/vue';
+import { computed } from 'vue';
 const props = defineProps({
     isBtnClicked: Boolean,
     isDisabled: Boolean,
     icon: String,
     iconClass: String,
     rotate: Number,
+})
+
+const iconClass = computed (() =>{
+    return !props.icon ? 'hidden' : props.iconClass
 })
 
 </script>

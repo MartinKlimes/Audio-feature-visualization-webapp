@@ -39,36 +39,36 @@ const removeWaveform = () => {
     updateRecording(props.track.id,'isWaveformDisplayed', false)
 }
 
-const showBars = () => {
-    if(!props.track.txtFileName){
-        showAlert('First select the text file!');
-        setTimeout(closeAlert, 1500);
-    } else {
-        if(document.getElementById('bars')){
-            if(document.getElementById('bars').style.display == 'none'){
-                isBtnClicked.value = true
-                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'flex')
-            }
-            else {
-                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'none')
-                isBtnClicked.value = false
+// const showBars = () => {
+//     if(!props.track.txtFileName){
+//         showAlert('First select the text file!');
+//         setTimeout(closeAlert, 1500);
+//     } else {
+//         if(document.getElementById('bars')){
+//             if(document.getElementById('bars').style.display == 'none'){
+//                 isBtnClicked.value = true
+//                 document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'flex')
+//             }
+//             else {
+//                 document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'none')
+//                 isBtnClicked.value = false
 
-            }
-        } else{
+//             }
+//         } else{
         
-            api.get('/get-file/' + props.track.txtFileName)
-              .then((response) => {
+//             api.get('/get-file/' + props.track.txtFileName)
+//               .then((response) => {
              
-                isBtnClicked.value = true
-                bars.value = response.data.split('\n');
-                console.log(bars);
+//                 isBtnClicked.value = true
+//                 bars.value = response.data.split('\n');
+//                 console.log(bars);
               
-                marker(response.data.split('\n'), props.track.id);
-              }
-            )
-        }
-    }
-}
+//                 marker(response.data.split('\n'), props.track.id);
+//               }
+//             )
+//         }
+//     }
+// }
 const showBarsToSelect = () => {
     if(!isBtnClicked.value){
         
@@ -108,15 +108,21 @@ const splitChannels = () => {
 <div class=" flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md">
     <Icon  class="absolute left-1 top-1 rounded"  :class="track.backgroundColor" icon="mdi:waveform" />
 
-    <BlueButtons :icon="'material-symbols:add-circle-outline'" @click="showLinesVis =! showLinesVis">Add</BlueButtons>
+    <BlueButtons :is-btn-clicked="showLinesVis" :icon="'material-symbols:add-circle-outline'" @click="showLinesVis =! showLinesVis">Add</BlueButtons>
 
-    <LinesVisualizations 
-    v-if="showLinesVis"
-    :track-name="track.trackName"
-    :id="track.id"
-    :txt-file-name="track.txtFileName"
-    :background-color="track.backgroundColor"
-    />
+        <Transition>
+            <keep-alive>
+            <LinesVisualizations 
+            v-if="showLinesVis"
+            :track-name="track.trackName"
+            :id="track.id"
+            :txt-file-name="track.txtFileName"
+            :background-color="track.backgroundColor"
+            />
+            </keep-alive>
+
+        </Transition>
+
 
    
 
