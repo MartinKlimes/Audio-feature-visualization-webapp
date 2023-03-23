@@ -40,6 +40,7 @@ const removeWaveform = () => {
 }
 
 const showBars = () => {
+    console.log('odstranit')
     if(!props.track.txtFileName){
         showAlert('First select the text file!');
         setTimeout(closeAlert, 1500);
