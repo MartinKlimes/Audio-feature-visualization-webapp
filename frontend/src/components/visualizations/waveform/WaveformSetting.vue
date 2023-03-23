@@ -39,6 +39,7 @@ const removeWaveform = () => {
     updateRecording(props.track.id,'isWaveformDisplayed', false)
 }
 
+<<<<<<< HEAD
 // const showBars = () => {
 //     if(!props.track.txtFileName){
 //         showAlert('First select the text file!');
@@ -52,6 +53,22 @@ const removeWaveform = () => {
 //             else {
 //                 document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'none')
 //                 isBtnClicked.value = false
+=======
+const showBars = () => {
+    console.log('odstranit')
+    if(!props.track.txtFileName){
+        showAlert('First select the text file!');
+        setTimeout(closeAlert, 1500);
+    } else {
+        if(document.getElementById('bars')){
+            if(document.getElementById('bars').style.display == 'none'){
+                isBtnClicked.value = true
+                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'flex')
+            }
+            else {
+                document.querySelectorAll('#bars').forEach(marker => marker.style.display = 'none')
+                isBtnClicked.value = false
+>>>>>>> 1c18c8fd32385ebc46082fe5566b0c1cd4d9a390
 
 //             }
 //         } else{
