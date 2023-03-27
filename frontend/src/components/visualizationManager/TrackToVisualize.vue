@@ -152,6 +152,9 @@ const updateBackgroundColor = (color) => {
 <style >
 input[type="range"] {
   -webkit-appearance: none;
+  cursor: pointer;
+
+
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -185,13 +188,13 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
     background-color: red;
   }
   50% {
-    background-color: white;
+    background-color: #1d4ed8
   }
   51% {
     background-color: red;
   }
   100% {
-    background-color: white;
+    background-color: #1d4ed8
   }
 }
 

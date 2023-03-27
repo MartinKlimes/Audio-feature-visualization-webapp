@@ -5,14 +5,14 @@ import BlueButttons from '../../buttons/BlueButtons.vue';
 import SetColor from './SetColor.vue'
 import { Icon } from '@iconify/vue';
 import { updateRecording } from '../../../../custom';
-import SizeSize from './SizeSize.vue'
+import SetSize from '../../buttons/SetSize.vue'
 
 
 
 const sizeSet = ref(false)
 const setColor = ref(false)
 const ignoreElRef = ref()
-
+const showLinesVis = ref(false)
 const props = defineProps({
     track: Object
 })
@@ -42,6 +42,10 @@ const removePianoroll = () => {
 
 }
 
+const changeSize = (e) => {
+    props.track.pianoroll.pianorollHeight = e
+    updateRecording(props.track.id,'pianorollHeight', e)
+}
 </script>
 
 
@@ -49,9 +53,14 @@ const removePianoroll = () => {
 
 <template>
 <div class=" flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border  border-gray-300 shadow-md ">
+
+
+
+
+
     <BlueButttons @click="sizeSet = !sizeSet" class="px-2" :icon-class="'hidden'">Size</BlueButttons>
     <Transition>
-        <SizeSize :track="track" v-if="sizeSet" @close-size-setter="sizeSet = false"/>
+        <SetSize v-if="sizeSet" :default-size="track.pianoroll.pianorollHeight" @change-size="changeSize($event)" @close-size-setter="sizeSet = false"/>
     </Transition>
 
     <BlueButttons ref="ignoreElRef" :is-btn-clicked="setColor"  @click="setColor = true" class="px-2 mt-2" :icon-class="'hidden'">Set color</BlueButttons>

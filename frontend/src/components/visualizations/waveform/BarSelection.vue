@@ -34,6 +34,7 @@ const props = defineProps({
 const emits = defineEmits(['trim-audio'])
 
 function selectBar(){   
+
     // window.eventBus.emit('stopTimeSelection') 
 
     // if(!hideBars){
@@ -66,7 +67,7 @@ function selectBar(){
 
 <template>
  
-<div class="flex flex-col items-center ">
+<div class="flex flex-col items-center box bg-white mt-1 p-1 rounded-md w-full">
     <div class="flex mt-1  rounded-md">
     <input v-model="fromBar" type="number" placeholder="from" class="input-field-nomargin w-13 border-2 border-blue-400 " @change="selectBar()">
     <input v-model="toBar" type="number" placeholder="to"  class="input-field-nomargin w-13 border-2 border-blue-400 ml-1" @change="selectBar()">

@@ -123,30 +123,30 @@ const changeZindex = () => {
 <template>
  
   <div class="flex flex-col items-center gap-1 mt-1 w-full">
-    <div class="grid grid-cols-2 gap-1  border border-dashed border-gray-400 rounded-md p-1">
+    <div class="grid grid-cols-2 gap-1 boxTight w-21 rounded-md p-2">
       <BlueButtons
         :icon="'ic:outline-color-lens'"
-        :icon-class="'mr-1'"
+        :icon-class="'ml-0'"
         @click="showColorPicker = !showColorPicker"
         :is-btn-clicked="showColorPicker"
       ></BlueButtons>
 
       <BlueButtons
         :icon="'ph:list'"
-        :icon-class="'mr-1 '"
+        :icon-class="'ml-0 '"
         @click="changeLine = !changeLine"
         :is-btn-clicked="changeLine"
       ></BlueButtons>
 
       <BlueButtons
         :icon="!zIndex ? 'fluent:copy-24-filled' : 'fluent:copy-20-regular'"
-        :icon-class="'mr-1 '"
+        :icon-class="'ml-0'"
         @click="changeZindex"
       ></BlueButtons>
 
       <BlueButtons
         :icon=" showClickSound ? 'clarity:volume-up-line' : 'clarity:volume-mute-line'"
-        :icon-class="'mr-1 '"
+        :icon-class="'ml-0'"
         @click="showClickSound =! showClickSound"
         :is-btn-clicked="showClickSound"
       ></BlueButtons>
@@ -197,6 +197,4 @@ const changeZindex = () => {
   </div>
 </template>
 
-<style scoped>
 
-</style>

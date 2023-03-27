@@ -170,28 +170,23 @@ def trim_audio():
     else:
         end = float(end)
 
-    if fromBar is not None:
+    if fromBar == 'false':
         record_name_trimmed = f' {record_name} ({"{:.2f}".format(round(start, 2))} - {"{:.2f}".format(round(end, 2))})'
     else:
-
         record_name_trimmed = f' {record_name} - bars ({fromBar} - {toBar})'
 
     recording_exists = Recording.query.filter_by(filename=record_name_trimmed, user=user).first()
-    record = Recording.query.filter_by(filename=record_name, user=user).first()
     if not recording_exists:
+        record = Recording.query.filter_by(filename=record_name, user=user).first()
+        waveform = Waveform.query.filter_by(recording_id=record.id).first()
+
         filepath = os.path.realpath(f'./user_uploads/{user.username}')
         sound = AudioSegment.from_file(f'{filepath}/{record_name}')
-
-
         extract = sound[start * 1000:end * 1000]
-
-        # for f in os.listdir(f'./user_uploads/{user.username}/trimmed_tracks/'):
-        #     os.remove(os.path.join(f'./user_uploads/{user.username}/trimmed_tracks/', f))
 
         filepath = f'./user_uploads/{user.username}/{record_name_trimmed}'
         extract.export(filepath)
-
-        recording = Recording(filename=record_name_trimmed, filepath=filepath, isTrackSelected=True, user_id=user.id)
+        recording = Recording(filename=record_name_trimmed, filepath=filepath, isTrackSelected=True, backgroundColor=record.backgroundColor, waveformColor=waveform.waveformColor, user_id=user.id)
         db.session.add(recording)
         db.session.commit()
 

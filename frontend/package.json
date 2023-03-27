@@ -19,6 +19,7 @@
     "colormap": "^2.3.2",
     "cors": "^2.8.5",
     "html-midi-player": "^1.5.0",
+    "html2canvas": "^1.4.1",
     "mitt": "^3.0.0",
     "pinia": "^2.0.13",
     "plotly.js-dist": "^2.18.2",

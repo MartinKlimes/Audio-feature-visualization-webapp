@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { trackIndex } from "../../../globalStores";
 import { Icon } from "@iconify/vue";
 import { updateRecording } from "../../../../custom";
-
+import { wavesurfer } from "../../../functions/waveform";
 const props = defineProps({
   track: Object,
 });
@@ -42,6 +42,13 @@ const removeSpectrogram = (params) => {
   updateRecording(props.track.id, "isSpectrogram", false);
   updateRecording(props.track.id, "isSpectrogramDisplayed", false);
 };
+
+const size = () => {
+  console.log(wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params)
+  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.height = 500
+  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.init();
+
+}
 </script>
 
 <template>
@@ -55,6 +62,7 @@ const removeSpectrogram = (params) => {
     >
       <Icon icon="mingcute:delete-2-line" />
     </button>
+    <button @click=" size()">size</button>
   </div>
   <!-- <div class=" bg-blue-900 h-100% w-67 z-5 -mt-9.7rem   rounded-1xl border-1 border-black text-sm">
     <div class="rounded border-b">

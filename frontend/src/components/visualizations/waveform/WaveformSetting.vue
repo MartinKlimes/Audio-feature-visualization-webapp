@@ -3,23 +3,25 @@ import { Icon } from "@iconify/vue";
 import { ref, shallowRef } from "vue";
 import BarSelection from "./BarSelection.vue";
 import TimeSelection from "./TimeSelection.vue";
-import ColorWaveform from "./ColorWaveform.vue";
 import { wavesurfer, marker } from "../../../functions/waveform";
 import { api } from "../../../../custom";
-import { trackIndex, trackList } from "../../../globalStores";
+import { trackIndex, trackList, alertState } from "../../../globalStores";
 import BlueButtons from "../../buttons/BlueButtons.vue";
 import { updateRecording } from "../../../../custom";
-import IOI from "./IOI.vue";
-import LinesVisualizations from "./LinesVisualizations.vue";
 import { getCookie } from "../../../cookieHandling";
+import { showAlert, closeAlert } from "../../../alerts";
+import MarkersVis from "./MarkersVis.vue";
+import AppearanceWave from "./AppearanceWave.vue";
+import html2canvas from 'html2canvas';
+
+const alertGlobalState = alertState();
 
 const currentSetting = shallowRef();
 const loading = ref(false);
 const currentTrackList = trackList();
-const showColorPicker = ref(false);
 const isBtnClicked = ref(false);
-const bars = ref();
 const showLinesVis = ref(false);
+const showAppearance = ref(false);
 
 const props = defineProps({
   track: Object,
@@ -42,24 +44,12 @@ const removeWaveform = () => {
 // }
 const showBarsToSelect = () => {
     if(document.querySelector(`#bars-marker-${props.track.id}`)){
-        
-    currentSetting.value === BarSelection ? (currentSetting.value = "") : (currentSetting.value = BarSelection);
-       
-        console.log(wavesurfer[props.track.id].backend);
-
-
-
+      console.log(wavesurfer[props.track.id].regions);
+      currentSetting.value === BarSelection ? (currentSetting.value = "") : (currentSetting.value = BarSelection);
+    }else{
+      showAlert('First display bars!');
+      setTimeout(closeAlert, 1500);
     }
-
-   
-
-
-//   if (!isBtnClicked.value) {
-//     showBars();
-//   }
-//   if (props.track.txtFileName) {
-    // currentSetting.value === BarSelection ? (currentSetting.value = "") : (currentSetting.value = BarSelection);
-
 }
 
 const trimAudio = (event) => {
@@ -67,8 +57,8 @@ const trimAudio = (event) => {
   const record_name = props.track.trackName
   const start = event[0]
   const end = event[1]
-  const fromBar = event[2]
-  const toBar = event[3]
+  const fromBar = event[2] || false
+  const toBar = event[3] || false
   api.post('/trim-audio', {
     record_name,
     start,
@@ -83,21 +73,14 @@ const trimAudio = (event) => {
   })
   .then(response => {
   currentTrackList.fetchRecordings().then(() => {
-    currentTrackList.selectTrack(response.data.id).waveform.isWaveform = true
-    currentTrackList.selectTrack(response.data.id).waveform.isWaveformDisplayed = true
+    const track = currentTrackList.selectTrack(response.data.id)
+    track.waveform.isWaveform = true
+    track.waveform.isWaveformDisplayed = true
     loading.value = false;
+    currentSetting.value = null
   })
-  
-  
   })
-  // api
-  //   .get("/trim-audio/" + props.track.trackName + "/" + event[0] + "/" + event[1] + "/" + event[2] + "/" + event[3])
-  //   .then((response) => {
-  //     // console.log(response.data);
-  //     currentTrackList.fetchRecordings();
-  //     loading.value = false;
-  //   });
-};
+}
 
 const splitChannels = () => {
   props.track.waveform.splitChannels = !props.track.waveform.splitChannels;
@@ -107,6 +90,24 @@ const splitChannels = () => {
     props.track.waveform.isWaveform = true;
   }, 500);
 };
+
+
+function saveImage() {
+  const divToExport = document.getElementById(`waveform-${props.track.id}`);
+  const options ={
+    windowWidth: wavesurfer[props.track.id].drawer.width + divToExport.getBoundingClientRect().right,
+}
+  html2canvas(divToExport, options).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const img = new Image();
+    img.src = imgData;
+    document.body.appendChild(img); // pouze pro kontrolu, může být odebráno
+    const a = document.createElement('a');
+    a.href = imgData;
+    a.download = 'export.png';
+    a.click();
+  });
+}
 </script>
 
 <template>
@@ -119,12 +120,14 @@ const splitChannels = () => {
       :is-btn-clicked="showLinesVis"
       :icon="'material-symbols:add-circle-outline'"
       @click="showLinesVis = !showLinesVis"
+      :class="{ blink: alertGlobalState.message.includes('bars') }"
+
       >Add</BlueButtons
     >
 
     <Transition>
       <keep-alive>
-        <LinesVisualizations
+        <MarkersVis
           v-if="showLinesVis"
           :track-name="track.trackName"
           :id="track.id"
@@ -135,7 +138,7 @@ const splitChannels = () => {
     </Transition>
 
     <button v-if="!isBtnClicked" class="absolute top-0 right-1 opacity-50 hover:opacity-100">
-      <Icon icon="entypo:export" @click="wavesurfer[track.id].exportImage()" />
+      <Icon icon="entypo:export" @click="saveImage" />
     </button>
 
     <span class="text-xs opacity-50 mt-3">Select part</span>
@@ -143,7 +146,6 @@ const splitChannels = () => {
       <BlueButtons
         class="mr-1"
         @click="showBarsToSelect()"
-        :class="{ 'bg-transparent text-black shadow-sm shadow-dark-50 hover:bg-transparent': !track.txtFileName }"
         :icon="'material-symbols:content-cut-rounded'"
         :is-btn-clicked="currentSetting === BarSelection"
         >Bars</BlueButtons
@@ -168,22 +170,25 @@ const splitChannels = () => {
     </transition>
 
     <BlueButtons
-      :icon="'ic:outline-color-lens'"
-      @click="showColorPicker = !showColorPicker"
-      :is-btn-clicked="showColorPicker"
-      class="mt-3"
-      >Color</BlueButtons
-    >
-
-    <Transition>
-      <ColorWaveform
-        v-if="showColorPicker"
-        :id="track.id"
-        :trackName="track.trackName"
-        :waveformColor="track.waveform.waveformColor"
-        @close-waveform-color-picker="showColorPicker = false"
-      />
-    </Transition>
+        class="mt-2 flex "
+        @click="showAppearance =! showAppearance"
+        :icon="'dashicons:admin-appearance'"
+        :icon-class="'ml-0'"
+        :is-btn-clicked="showAppearance"
+        title="Appearance"
+        ></BlueButtons
+      >
+      <transition>
+        <AppearanceWave 
+          v-if="showAppearance"
+          :track-name="track.trackName"
+          :id="track.id"
+          :waveform-color="track.waveformColor"
+          :waveform-height="track.waveform.waveformHeight"
+          @close-modal="showAppearance = false"
+        />
+      </transition>
+    
 
     <BlueButtons
       title="Split channels"

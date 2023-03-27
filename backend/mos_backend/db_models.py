@@ -35,7 +35,7 @@ class Recording(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, filename, filepath, user_id, ground_truth=None, isTrackSelected=False, backgroundColor=None,
-                 txtFileName=None, MIDIFileName=None, splitChannels=None):
+                 txtFileName=None, MIDIFileName=None, splitChannels=None, waveformColor=None):
         self.filename = filename
         self.filepath = filepath
         self.ground_truth = ground_truth
@@ -44,7 +44,7 @@ class Recording(db.Model):
         self.txtFileName = txtFileName
         self.MIDIFileName = MIDIFileName
         self.splitChannels = splitChannels
-        self.waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor="", recording_id=self.id)
+        self.waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor=waveformColor, waveformHeight=200, recording_id=self.id)
         self.spectrogram = Spectrogram(isSpectrogram=False, isSpectrogramDisplayed=False, spectrogramColormap="jet",
                                        spectrogramHeight=256, recording_id=self.id)
         self.pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,

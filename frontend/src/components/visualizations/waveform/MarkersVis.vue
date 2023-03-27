@@ -1,6 +1,6 @@
 <script setup>
 import BlueButtons from "../../buttons/BlueButtons.vue";
-import IOI from "./IOI.vue";
+import MarkersCreate from "./MarkersCreate.vue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import { showAlert, closeAlert } from "../../../alerts";
@@ -46,8 +46,8 @@ const checkBarsAndShow = () => {
 
 <template>
 
-  <div class="w-full h-max border border-dashed border-gray-400 rounded-md p-1 flex flex-col items-center mt-2" :class="backgroundColor">
-    <div class="flex flex-col border border-dashed border-gray-400 rounded-md p-1 justify-center items-center">
+  <div class="w-full h-max rounded-md p-2 flex flex-col items-center mt-2 bg-white box">
+    <div class="flex flex-col boxTight rounded-md p-2 justify-center items-center">
       <BlueButtons
         @click="checkBarsAndShow"
         :is-btn-clicked="showSetting && dataType == 'bars'"
@@ -73,7 +73,7 @@ const checkBarsAndShow = () => {
       <!-- <ClickSoundBtn v-if="isBtnClicked" :id="id" :backgroundColor="backgroundColor" :markers-list="bars"/> -->
 
       <BlueButtons
-        title="IOI"
+        title="Onsets"
         class="mt-1 w-17"
         :is-btn-clicked="dataType == 'onset' && showSetting"
         :icon="onsetLoading ? 'fa:spinner' : showOnsets ? 'mdi:eye-outline' : 'mdi:eye-off-outline'"
@@ -83,7 +83,7 @@ const checkBarsAndShow = () => {
       >
 
       <BlueButtons
-        title="IOI"
+        title="Beats"
         class="mt-1 w-17"
         :is-btn-clicked="dataType == 'beats' && showSetting"
         :icon="beatsLoading ? 'fa:spinner' : showBeats ? 'mdi:eye-outline' : 'mdi:eye-off-outline'"
@@ -111,7 +111,7 @@ const checkBarsAndShow = () => {
     </Transition> -->
       <Transition>
         
-        <IOI v-if="showSetting" 
+        <MarkersCreate v-if="showSetting" 
         :track-name="trackName" 
         :id="id" 
         :dataType="dataType" 
@@ -126,3 +126,10 @@ const checkBarsAndShow = () => {
     
   </div>
 </template>
+
+<style scoped>
+.box {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+
+}
+</style>

@@ -175,6 +175,7 @@ export default class CursorPlugin {
                 this.params.customStyle
             )
         );
+        this.cursor.setAttribute('data-html2canvas-ignore','true')
         this.cursor.id = `waveform-cursor-${this.id}`
             
         if (this.params.showTime) {

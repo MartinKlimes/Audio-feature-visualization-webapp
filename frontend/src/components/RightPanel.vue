@@ -106,3 +106,14 @@ const props = defineProps({
 }
 
 </style>
+<style>
+.box {
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+
+}
+.boxTight {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+
+}
+
+</style>
