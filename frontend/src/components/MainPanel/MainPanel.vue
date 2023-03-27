@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import { onMounted, reactive, ref } from 'vue';
-import {showVolume,hideVolume, playAll, pauseAll, stopAll, muteAll, showIOIBtnIBIBtn} from '../../filesFunctions'
+
 import { makeWaveform, wavesurfer, trackFromStart} from '../../Waveform';
 import { trackList, trackIndex } from '../../globalStores';
 import { api } from '../../../custom';

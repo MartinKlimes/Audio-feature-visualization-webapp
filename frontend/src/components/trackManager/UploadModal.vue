@@ -87,6 +87,7 @@ function uploadOneFile(file, id) {
     api
       .post("upload-audio-file/" + file.type.split('/'), formData, axiosConfig)
       .then(function (response) {
+        
         // uploadCheck.style.visibility = "visible";
         isUploaded.value[id] = true;
         currentTrackList.fetchRecordings();

@@ -1,5 +1,5 @@
 <script setup>
-import { wavesurfer } from "../../../Waveform";
+
 import { ref } from "vue";
 import { trackIndex } from "../../../globalStores";
 import { Icon } from "@iconify/vue";

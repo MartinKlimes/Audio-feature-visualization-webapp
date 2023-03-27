@@ -166,7 +166,7 @@ export default class MarkersPlugin {
             pointer: params.pointer  || DEFAULT_POINTER,
             color: params.color || DEFAULT_FILL_COLOR,
             lineID: params.lineID || 'marker',
-            index: params.index,
+            index: params.index || 'marker',
             zIndex: params.zIndex || 0,
             position: params.position || DEFAULT_POSITION,
             draggable: !!params.draggabl,
@@ -243,10 +243,10 @@ export default class MarkersPlugin {
             overflow: "hidden",
             "flex-direction": (marker.position == "top" ? "column-reverse" : "column")
         });
-        if(lineID == 'bars'){
-            console.log(index);
-            el.setAttribute("id", index);
-        }
+    
+       
+        el.setAttribute("id", index);
+        
 
         const line = document.createElement('div');
         const width = markerElement ? markerElement.width : this.markerWidth;

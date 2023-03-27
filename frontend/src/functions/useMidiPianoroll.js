@@ -1,6 +1,6 @@
 
 
-
+let saturationValues
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 export const createVerticalKeyboard = (id,height, width,paddingRight, colors) => {
@@ -85,11 +85,27 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
 //   pianoroll.config = {noteHeight: size/(maxMidiNumber-minMidiNumber)}
 
 // }
-export const setInstrumentColor = (id, numberOfInstrument, color) => {
+export const getsaturationValues = (id) => {
+  const notes = getNotes(id)
+  const colors = notes.map(note => note.getAttribute('fill'));
+  saturationValues = colors.map(color => {
+    const rgbaValues = color.substring(color.indexOf('(') + 1, color.lastIndexOf(')')).split(',');
+    return parseFloat(rgbaValues[3]);
+  });
+ 
+  return saturationValues;
+}
 
+
+const getNotes = (id) => {
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   var svg = pianoroll.getElementsByTagName('div')[2].getElementsByTagName('svg')[0];
   const notes = Array.from(svg.querySelectorAll('.note'));
+  return notes
+}
+
+export const setInstrumentColor = (id, numberOfInstrument, color) => {
+  const notes = getNotes(id)
   const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
   const uniqueInstruments = Array.from(new Set(instruments));
   const instrumentColors = {};
@@ -99,6 +115,8 @@ export const setInstrumentColor = (id, numberOfInstrument, color) => {
         if(instruments[id] == numberOfInstrument){
         
             element.setAttributeNS(null, 'fill', color)
+            element.setAttributeNS(null, 'opacity', saturationValues[id])
+           
         }
     });
  }

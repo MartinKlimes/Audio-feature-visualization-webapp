@@ -158,7 +158,7 @@ const axiosConfig = {
                 <button @click="expandTracklist()" id="arrow-left" class="h-50"></button>
             </div> -->
         <div 
-        class="h-full w-41 absolute top-0 right-1 flex bg-gray-200 transform duration-400"
+        class="h-full w-41 absolute top-0 right-1 flex justify-center bg-gray-200 transform duration-400"
         :class="{'transform translate-x-39.5 border border-black w-0' : hideSettingPanel}">
         
         

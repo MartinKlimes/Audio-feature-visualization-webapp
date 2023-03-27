@@ -125,27 +125,31 @@ const updateBackgroundColor = (color) => {
     <Transition>
       <SelectFiles
         v-if="isBarsUploaded"
-        class="right-1 bottom-8"
+        class="right-1 bottom-8 absolute w-[97%] h-[47%]"
         :id="track.id"
         :files="currentTrackList.barsList"
         :selected-file="currentTrackList.selectTrack(track.id).txtFileName"
         @select-file="selectBars($event)"
+      @close-modal="isBarsUploaded = false"
+
       />
     </Transition>
     <Transition>
       <SelectFiles
         v-if="isMIDIUploaded"
-        class="right-1 bottom-8"
+        class="right-1 bottom-8 absolute w-[97%] h-[47%]"
         :id="track.id"
         :files="currentTrackList.midiList"
         :selected-file="currentTrackList.selectTrack(track.id).MIDIFileName"
         @select-file="selectMIDI($event)"
+      @close-modal="isMIDIUploaded = false"
+
       />
     </Transition>
   </div>
 </template>
 
-<style scoped>
+<style >
 input[type="range"] {
   -webkit-appearance: none;
 }
@@ -153,7 +157,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
   width: 300px;
   height: 5px;
-  background: #ddd;
+  background: #c0bebe;
   border: none;
   border-radius: 3px;
 }
@@ -165,7 +169,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   border-radius: 50%;
   background: rgb(63, 63, 63);
-  margin-top: -4px;
+  margin-top: -5px;
 }
 
 input[type="range"]:focus {
@@ -173,7 +177,7 @@ input[type="range"]:focus {
 }
 
 input[type="range"]:focus::-webkit-slider-runnable-track {
-  background: #ccc;
+  background: #747474;
 }
 
 @keyframes blink {

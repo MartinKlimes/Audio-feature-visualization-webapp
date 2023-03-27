@@ -8,7 +8,7 @@ import { reactive, ref } from 'vue'
 import { Icon } from '@iconify/vue';
 import {showAlert, closeAlert} from '../../alerts'
 import { uploadModalState } from '../../globalStores';
-import {getAudioFile} from  '../../filesFunctions'
+
 
 
 const currentTrackList = trackList();

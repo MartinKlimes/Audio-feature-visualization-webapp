@@ -1,6 +1,5 @@
 <script setup>
 import { api } from '../../../custom';
-import { makeWaveform } from '../../Waveform';
 import { trackList } from '../../globalStores';
 import { createWavesurfer } from '../../functions/waveform'
 import { wavesurfer } from '../../functions/waveform';

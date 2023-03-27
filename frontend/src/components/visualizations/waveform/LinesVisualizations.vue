@@ -3,6 +3,7 @@ import BlueButtons from "../../buttons/BlueButtons.vue";
 import IOI from "./IOI.vue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
+import { showAlert, closeAlert } from "../../../alerts";
 
 const props = defineProps({
   trackName: String,
@@ -18,10 +19,11 @@ const beatsLoading = ref(false);
 const showSetting = ref(false);
 const showFileInfo = ref(false);
 const dataType = ref("");
+const markersList = ref({bars : null, beats : null, onset : null})
 
 
 const toggleEye = (e) => {
-  console.log(e);
+ 
   if (e[1] == 'bars') {
     showBars.value = e[0]
   } else if(e[1] == 'beats'){
@@ -31,14 +33,23 @@ const toggleEye = (e) => {
   }
 }
 
-
+const checkBarsAndShow = () => {
+  if(!props.txtFileName){
+        showAlert('First select the text file!');
+        setTimeout(closeAlert, 1500);
+  } else {
+  dataType.value == 'bars' ? (showSetting.value = !showSetting.value) : (showSetting.value = true)
+  dataType.value = 'bars'
+  }
+}
 </script>
 
 <template>
-  <div class="w-full h-max bg-white border border-dark-300 rounded-md p-1 flex flex-col items-center mt-2">
+
+  <div class="w-full h-max border border-dashed border-gray-400 rounded-md p-1 flex flex-col items-center mt-2" :class="backgroundColor">
     <div class="flex flex-col border border-dashed border-gray-400 rounded-md p-1 justify-center items-center">
       <BlueButtons
-        @click="dataType == 'bars' ? (showSetting = !showSetting) : (showSetting = true), (dataType = 'bars')"
+        @click="checkBarsAndShow"
         :is-btn-clicked="showSetting && dataType == 'bars'"
         :icon="showBars ? 'mdi:eye-outline' : 'mdi:eye-off-outline'"
         @mouseover="showFileInfo = true"
@@ -99,13 +110,16 @@ const toggleEye = (e) => {
         />
     </Transition> -->
       <Transition>
-
+        
         <IOI v-if="showSetting" 
         :track-name="trackName" 
         :id="id" 
         :dataType="dataType" 
         :txtFileName="txtFileName"
+        :markersList="markersList[dataType] "
         @toggle-eye="toggleEye($event)"
+        @toggle-loading="$event == 'beats' ? beatsLoading =! beatsLoading : onsetLoading =! onsetLoading "
+        @fill-markers-list="markersList[dataType] = $event"
          />
 
       </Transition>

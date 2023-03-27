@@ -6,23 +6,28 @@ import { wavesurfer } from "../../../functions/waveform";
 import { marker } from "../../../functions/waveform";
 import { ColorPicker } from "vue-accessible-color-picker";
 import SelectFiles from "../../buttons/SelectFiles.vue";
+import ClickSoundBtn from "../../buttons/ClickSoundBtn.vue";
 
 const props = defineProps({
   trackName: String,
   id: Number,
   dataType: String,
   txtFileName: String,
+  markersList: Array
 });
 const currentColor = ref("");
 const showColorPicker = ref(false);
 const changeLine = ref(false);
 const lineType = ref("")
+const zIndex = ref(true)
+const showClickSound = ref(false)
+const selectedClickAudio = ref(null)
 
 const markerID = computed(() => {
-  return props.dataType == "bars" ? `#bars-marker` : `#${props.dataType}`;
+  return props.dataType == "bars" ? `#bars-marker-${props.id}` : `#${props.dataType}-${props.id}`;
 });
 
-const emits = defineEmits(["toggleLoading", "toggleEye"]);
+const emits = defineEmits(["toggleLoading", "toggleEye", "fillMarkersList"]);
 
 const addMarkers = (data) => {
   let i = 0;
@@ -31,13 +36,11 @@ const addMarkers = (data) => {
       wavesurfer[props.id].addMarker({
         time: data[i],
         color: props.dataType == "onset" ? "red" : "blue",
-        lineID: `${props.dataType}`,
+        lineID: `${props.dataType}-${props.id}`,
       });
       i++;
       requestAnimationFrame(addMarker);
-    } else {
-      emits("toggleLoading", props.dataType);
-    }
+    } 
   };
   requestAnimationFrame(addMarker);
 };
@@ -46,18 +49,19 @@ onMounted(() => {
   watch(
     () => props.dataType,
     () => {
-      if (document.getElementById(props.dataType)) {
-        console.log(markerID.value);
+      if (document.querySelector(markerID.value)) {
 
         if (document.querySelector(markerID.value).style.display == "none") {
           emits("toggleEye", [true, props.dataType]);
-          console.log(markerID.value);
+        
           document.querySelectorAll(markerID.value).forEach((marker) => (marker.style.display = "flex"));
         }
       } else {
         emits("toggleEye", [true, props.dataType]);
         if (props.dataType == "bars") {
           api.get("/get-file/" + props.txtFileName).then((response) => {
+            
+            emits('fillMarkersList', response.data.split("\n").map(str => parseFloat(str)))
             marker(response.data.split("\n"), props.id);
           });
         } else {
@@ -67,7 +71,12 @@ onMounted(() => {
               params: { data_type: props.dataType },
             })
             .then((response) => {
+              emits('fillMarkersList', response.data[props.dataType])
+              // markersList.value[props.dataType] = response.data[props.dataType]
+              
               addMarkers(response.data[props.dataType]);
+              emits("toggleLoading", props.dataType);
+
             });
         }
       }
@@ -77,68 +86,87 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  console.log(markerID.value);
   document.querySelectorAll(markerID.value).forEach((marker) => (marker.style.display = "none"));
   emits("toggleEye", [false, props.dataType]);
 });
 
+//change color
 watch(
   () => currentColor.value,
   () => {
-    document.querySelectorAll(`#${props.dataType}`).forEach((marker) => (marker.style.background = currentColor.value));
+    // document.querySelectorAll(markerID.value).forEach((marker) => (marker.style.background = currentColor.value));
+    document.querySelectorAll(`#${props.dataType}-${props.id}`).forEach((marker) => (marker.style.background = currentColor.value));
   }
 );
 
+//change line type
 watch(() => lineType.value, () => {
   const match = lineType.value.match(/\d+px/);
   const value = match ? match[0] : null;
-  document.querySelectorAll(`#${props.dataType}`).forEach((marker) => (marker.style.width = value));
+  document.querySelectorAll(`#${props.dataType}-${props.id}`).forEach((marker) => (marker.style.width = value));
 
 })
+
+//change zIndex
+const changeZindex = () => {
+  zIndex.value =! zIndex.value
+  let zIndexNum
+  !zIndex.value ? zIndexNum = 10 : zIndexNum = 0
+ 
+  document.querySelectorAll(`#${props.dataType}-${props.id}`).forEach((marker) => (marker.style.zIndex = zIndexNum));
+  
+}
 
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-1">
-    <div class="flex">
+ 
+  <div class="flex flex-col items-center gap-1 mt-1 w-full">
+    <div class="grid grid-cols-2 gap-1  border border-dashed border-gray-400 rounded-md p-1">
       <BlueButtons
         :icon="'ic:outline-color-lens'"
         :icon-class="'mr-1'"
         @click="showColorPicker = !showColorPicker"
         :is-btn-clicked="showColorPicker"
-        class="mt-1 w-max"
       ></BlueButtons>
-
-      <input
-        id="range-input"
-        type="number"
-        title="Line width"
-        class="pl-1 w-9 h-7 rounded-md text-dark-700 bg-gray-300 font-bold mt-1 ml-1"
-        v-model="lightnessAdjustment"
-        min="0"
-        max="100"
-      />
 
       <BlueButtons
         :icon="'ph:list'"
         :icon-class="'mr-1 '"
         @click="changeLine = !changeLine"
         :is-btn-clicked="changeLine"
-        class="mt-1 ml-1"
       ></BlueButtons>
+
+      <BlueButtons
+        :icon="!zIndex ? 'fluent:copy-24-filled' : 'fluent:copy-20-regular'"
+        :icon-class="'mr-1 '"
+        @click="changeZindex"
+      ></BlueButtons>
+
+      <BlueButtons
+        :icon=" showClickSound ? 'clarity:volume-up-line' : 'clarity:volume-mute-line'"
+        :icon-class="'mr-1 '"
+        @click="showClickSound =! showClickSound"
+        :is-btn-clicked="showClickSound"
+      ></BlueButtons>
+      
     </div>
+
+
     <transition>
       <SelectFiles 
       v-if="changeLine"
       :id="id" 
       :files="['w-20 h-[1px] bg-black ', 'w-20 h-[2px] bg-black ', 'w-20 h-[3px] bg-black ','w-20 h-[4px] bg-black ', 'w-20 h-[5px] bg-black ']"
       :isDivClass = "true"
-      class="bottom-1 z-1 max-h-37"
+      :selected-file="lineType"
+      class="bottom-1 z-1 w-full"
       @select-file="lineType = $event"
+      @close-modal="changeLine = false"
 
       />
     </transition>
-
-
 
     <transition>
       <ColorPicker
@@ -149,11 +177,26 @@ watch(() => lineType.value, () => {
         alpha-channel="hide"
       />
     </transition>
+
+    <transition>
+
+      <ClickSoundBtn
+      v-if="showClickSound"
+      :id="id" 
+      :markers-list="markersList"
+      :selected-sound="selectedClickAudio"
+      class="w-full"
+      @select-audio = "selectedClickAudio = $event"
+      
+      />
+   
+
+
+    </transition>
+
   </div>
 </template>
 
 <style scoped>
-input[type="number"]:focus {
-  outline: none;
-}
+
 </style>

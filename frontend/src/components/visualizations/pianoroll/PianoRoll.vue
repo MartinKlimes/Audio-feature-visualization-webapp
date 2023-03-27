@@ -5,7 +5,7 @@ import {ref, onMounted, watchEffect, watch } from 'vue';
 import { wavesurfer } from '../../../functions/waveform';
 import Cursor from '../../Cursor.vue'
 import { api } from '../../../../custom';
-import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor} from '../../../functions/useMidiPianoroll'
+import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor, getsaturationValues} from '../../../functions/useMidiPianoroll'
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 
 
@@ -56,23 +56,31 @@ watchEffect(() => {
 
 })
 
-setTimeout(() => {
-    
-watch(() => props.track.waveform.isWaveformReady,() => {
-    if(props.track.waveform.isWaveformReady){   
-    
-   
-
-    scrollListener()
-    mousemoveListener()
+const countWidthWaveform = () => {
     const width = wavesurfer[props.track.id].drawer.width / wavesurfer[props.track.id].getDuration()
     const paddingRight = (wavesurfer[props.track.id].getDuration() - document.getElementById(`pianoroll-player-${props.track.id}`).duration) * width
+    return {width, paddingRight}
+}
 
+
+setTimeout(() => {
+    
+watch(() => props.track.waveform.isWaveformReady, () => {
+
+    if(props.track.waveform.isWaveformReady){   
+
+    getsaturationValues(props.track.id)
+   
+    scrollListener()
+    mousemoveListener()
+
+    const {width, paddingRight} = countWidthWaveform()
     let colors
     if(props.track.pianoroll.pianorollColor){
         colors = props.track.pianoroll.pianorollColor.slice(1, -1).split(',').map(color => color.replace(/"/g, ''))
         
     }
+   
     watchEffect(() =>{
         props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)               
     })
@@ -104,6 +112,12 @@ watch(() => props.track.waveform.isWaveformReady,() => {
     wavesurfer[props.track.id].addPlugin(TimelinePlugin.create({
         container: `#timeline-pianoroll-${props.track.id}`,
     })).initPlugin('timeline')
+
+    wavesurfer[props.track.id].on('zoom', () => {
+        const {width, paddingRight} = countWidthWaveform()
+        createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)  
+    })
+
 
     }
 }, {immediate: true})

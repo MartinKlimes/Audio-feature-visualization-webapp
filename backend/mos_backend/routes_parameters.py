@@ -117,7 +117,7 @@ def get_onset_detection(record_name):
 
         onset = librosa.onset.onset_detect(y, sr=sr, units='time')
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
-
+        print(beats)
         # uložení vypočítaných dat do souboru
         data = {'onset': onset.tolist(), 'beats': beats.tolist()}
         with open(json_path, 'w') as f:

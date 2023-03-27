@@ -4,21 +4,14 @@ from werkzeug.utils import secure_filename
 import os
 import string
 
+from sqlalchemy.orm import joinedload
 from pydub import AudioSegment
 from flask_jwt_extended import jwt_required, current_user
-from flask import request, jsonify, send_from_directory
-import librosa
-import librosa.display
-
-import numpy as np
-
-import matplotlib.pyplot as plt
-
+from flask import request, jsonify, send_from_directory, send_file
 
 @app.route('/upload-audio-file/<file_type>', methods=['POST'])
 @jwt_required()
 def upload_audio_file(file_type):
-
     user = current_user
     file = request.files['file']
     if file:
@@ -30,40 +23,16 @@ def upload_audio_file(file_type):
             recording_exists = Recording.query.filter_by(filename=filename, user=user).first()
             if not recording_exists:
                 file.save(filepath)
-
-                recording = Recording(filename=filename, filepath=filepath,isTrackSelected=False, user_id=user.id)
+                recording = Recording(filename=filename, filepath=filepath, user_id=user.id)
                 db.session.add(recording)
                 db.session.commit()
-
-                # vytvoření nového záznamu v třídě Waveform
-                waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor="{violet, purple}", recording_id=recording.id)
-                db.session.add(waveform)
-                db.session.commit()
-
-                # vytvoření nového záznamu v třídě Spectrogram
-                spectrogram = Spectrogram(isSpectrogram=False, isSpectrogramDisplayed=False, spectrogramColormap="jet",
-                                          spectrogramHeight=256, recording_id=recording.id)
-                db.session.add(spectrogram)
-                db.session.commit()
-
-                # vytvoření nového záznamu v třídě Pianoroll
-                pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,
-                                      pianorollHeight=128, recording_id=recording.id)
-                db.session.add(pianoroll)
-                db.session.commit()
-            # return jsonify({'message': 'file succesfully uploaded'})
-            return jsonify(filename)
-
         elif file_type == 'text,plain':
             filepath = f'./user_uploads/{user.username}/ground_truth/{filename}'
             file.save(filepath)
-            return jsonify(filename)
-
         elif file_type == 'audio,mid':
             filepath = f'./user_uploads/{user.username}/MIDI/{filename}'
             file.save(filepath)
-            return jsonify(filename)
-
+        return jsonify({'message': 'file succesfully uploaded'})
     else:
         return jsonify({'message': 'file could not be uploaded'})
 
@@ -71,52 +40,17 @@ def upload_audio_file(file_type):
 @app.route('/get-track-list', methods=['GET'])
 @jwt_required()
 def get_audio_file():
-
     user = current_user
     ground_truth_path = f'./user_uploads/{user.username}/ground_truth'
     midi_path = f'./user_uploads/{user.username}/MIDI'
-    recordings = Recording.query.filter_by(user=user).all()
 
+    recordings = Recording.query.options(
+        joinedload(Recording.waveform),
+        joinedload(Recording.spectrogram),
+        joinedload(Recording.pianoroll)).filter_by(user=user).all()
 
-    record_list = []
-    for recording in recordings:
-        waveform = Waveform.query.filter_by(recording_id=recording.id).first()
-        spectrogram = Spectrogram.query.filter_by(recording_id=recording.id).first()
-        pianoroll = Pianoroll.query.filter_by(recording_id=recording.id).first()
+    record_list = [recording.to_dict() for recording in recordings]
 
-        record_list.append({
-            'id': recording.id,
-            'trackName': recording.filename,
-            'filepath': recording.filepath,
-            'ground_truth': recording.ground_truth,
-            'isTrackSelected': recording.isTrackSelected,
-            'backgroundColor': recording.backgroundColor,
-            'txtFileName': recording.txtFileName,
-            'MIDIFileName': recording.MIDIFileName,
-            'splitChannels': recording.splitChannels,
-            'waveform': {
-                'id': waveform.id,
-                'isWaveform': waveform.isWaveform,
-                'isWaveformDisplayed': waveform.isWaveformDisplayed,
-                'waveformColor': waveform.waveformColor,
-                'waveformHeight': waveform.waveformHeight
-            } if waveform else {},
-            'spectrogram': {
-                'id': spectrogram.id,
-                'isSpectrogram': spectrogram.isSpectrogram,
-                'isSpectrogramDisplayed': spectrogram.isSpectrogramDisplayed,
-                'spectrogramColormap': spectrogram.spectrogramColormap,
-                'spectrogramHeight': spectrogram.spectrogramHeight,
-                'isSpectrogramLoading' : False
-            } if spectrogram else {},
-            'pianoroll': {
-                'id': pianoroll.id,
-                'isPianoroll': pianoroll.isPianoroll,
-                'isPianorollDisplayed': pianoroll.isPianorollDisplayed,
-                'pianorollColor': pianoroll.pianorollColor,
-                'pianorollHeight': pianoroll.pianorollHeight
-            } if pianoroll else {}
-        })
 
     return jsonify(record_list, os.listdir((ground_truth_path)), os.listdir((midi_path)))
 
@@ -206,6 +140,7 @@ def get_filepath(record_name):
         filepath = os.path.realpath(f'./user_uploads/{user.username}/ground_truth')
     elif record_name.endswith('.mid'):
         filepath = os.path.realpath(f'./user_uploads/{user.username}/MIDI')
+
     else:
         filepath = os.path.realpath(f'./user_uploads/{user.username}')
 
@@ -216,44 +151,15 @@ def get_filepath(record_name):
         as_attachment=False
     )
 
-
-@app.route('/send-time-annotations/<record_name>')
+@app.route('/trim-audio', methods=['POST'])
 @jwt_required()
-def send_time_annotations(record_name):
+def trim_audio():
     user = current_user
-    record = Recording.query.filter_by(filename=record_name, user=user).first()
-    if record.ground_truth:
-        return jsonify(record.ground_truth)
-
-
-@app.route('/upload-text-file/<record_name>', methods=['POST'])
-@jwt_required()
-def upload_text_file(record_name):
-    user = current_user
-    record = Recording.query.filter_by(filename=record_name, user=user).first()
-    if request.files:
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        filepath = f'./user_uploads/{user.username}/{filename}'
-        file.save(filepath)
-        record.txtFileName = filename
-        db.session.commit()
-    # else:
-    #     filepath = record.ground_truth
-    #
-    # lines = []
-    #
-    # if filepath:
-    #     f = open(filepath, 'r')
-    #     for line in f:
-    #         lines.append(line.strip())
-    return jsonify('File Uploaded')
-
-
-@app.route('/trim-audio/<record_name>/<start>/<end>/<fromBar>/<toBar>', methods=['POST', 'GET'])
-@jwt_required()
-def trim_audio(record_name, start, end, fromBar, toBar):
-    user = current_user
+    record_name = request.form['record_name']
+    start = request.form['start']
+    end = request.form['end']
+    fromBar = request.form['fromBar']
+    toBar = request.form['toBar']
 
     if start.isdigit():
         start = int(start)
@@ -263,7 +169,8 @@ def trim_audio(record_name, start, end, fromBar, toBar):
         end = int(end)
     else:
         end = float(end)
-    if fromBar == 'undefined':
+
+    if fromBar is not None:
         record_name_trimmed = f' {record_name} ({"{:.2f}".format(round(start, 2))} - {"{:.2f}".format(round(end, 2))})'
     else:
 
@@ -284,74 +191,31 @@ def trim_audio(record_name, start, end, fromBar, toBar):
         filepath = f'./user_uploads/{user.username}/{record_name_trimmed}'
         extract.export(filepath)
 
-
-        recording = Recording(filename=record_name_trimmed,
-                              filepath=filepath,
-                              user=user,
-                              isTrackSelected=True,
-                              isWaveform=True,
-                              isWaveformDisplayed=True,
-                              splitChannels=False,
-                              waveformColor=record.waveformColor,
-                              backgroundColor=record.backgroundColor
-                              )
+        recording = Recording(filename=record_name_trimmed, filepath=filepath, isTrackSelected=True, user_id=user.id)
         db.session.add(recording)
         db.session.commit()
 
-    return jsonify(f'{record_name_trimmed} was succesfuly trimmed!')
+
+    return jsonify({'message': f'{record_name_trimmed} was succesfuly trimmed!', 'id': recording.id})
 
 
-@app.route('/get-trimmed-audio/<record_name>', methods=['POST', 'GET'])
-@jwt_required()
-def get_trimmed_audio(record_name):
-    print(record_name)
+# @app.route('/get-trimmed-audio/<record_name>', methods=['POST', 'GET'])
+# @jwt_required()
+# def get_trimmed_audio(record_name):
+#     print(record_name)
+#
+#     user = current_user
+#
+#     return send_from_directory(
+#         os.path.realpath(f'./user_uploads/{user.username}/trimmed_tracks/'),
+#         record_name,
+#         as_attachment=False, environ=request.environ
+#     )
 
-    user = current_user
+@app.route('/get-click-audio/<record_name>')
+def get_click_audio(record_name):
+    return send_file(os.path.realpath(f'./user_uploads/clickSound/{record_name}'))
+@app.route('/get-click-audio-list')
+def get_click_audio_list():
+    return jsonify(os.listdir((os.path.realpath(f'./user_uploads/clickSound/'))))
 
-    return send_from_directory(
-        os.path.realpath(f'./user_uploads/{user.username}/trimmed_tracks/'),
-        record_name,
-        as_attachment=False, environ=request.environ
-    )
-@app.route('/get-spectrogram/<record_name>', methods=['POST', 'GET'])
-@jwt_required()
-def createSpectrogram(record_name):
-    user = current_user
-    filepath = os.path.realpath(f'./user_uploads/{user.username}/{record_name}')
-
-    y, sr = librosa.load(filepath)
-
-    print(y)
-    # N = 2048
-    # H = 2036
-    # Y_stft = librosa.stft(x)
-    # # S_db = np.abs(Y_stft) ** 2
-    # # D = librosa.stft(x)
-    # S_db_hr = librosa.amplitude_to_db(np.abs(Y_stft), ref=np.max)
-    #
-    # # plt.figure(figsize=(60, 4))
-    # # librosa.display.specshow(S_db_hr, hop_length=256, x_axis='time', y_axis='log')
-    # # plt.colorbar()
-    # # plt.show()
-    # return jsonify(S_db_hr.tolist())
-@app.route('/spectrogram/<record_name>', methods=['POST', 'GET'])
-@jwt_required()
-def spectrogram(record_name):
-    user = current_user
-    filepath = os.path.realpath(f'./user_uploads/{user.username}/{record_name}')
-
-    x, sr = librosa.load(filepath, duration=5)
-
-    # M = librosa.feature.melspectrogram(y=x, sr=sr, n_fft=1024)
-    # M_db = librosa.power_to_db(M, ref=np.max)
-
-
-    Y_stft = librosa.stft(x,n_fft=512)
-    S_db_hr = librosa.power_to_db(np.abs(Y_stft), ref=np.max)
-    librosa.display.specshow(S_db_hr, y_axis='log', x_axis='time')
-    plt.colorbar()
-    plt.show()
-    librosa.display.specshow(S_db_hr, y_axis='linear', x_axis='time')
-    plt.colorbar()
-    plt.show()
-    return jsonify(S_db_hr.tolist())

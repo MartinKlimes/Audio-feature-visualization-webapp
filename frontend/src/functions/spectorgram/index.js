@@ -160,7 +160,7 @@ export default class SpectrogramPlugin {
       this.render();
 
       drawer.wrapper.addEventListener("scroll", this._onScroll);
-      ws.on("redraw", this._onRender);
+      // ws.on("redraw", this._onRender);
       this.wrapper.addEventListener('mousemove', this._onMousemove);
     };
   }
@@ -302,6 +302,7 @@ export default class SpectrogramPlugin {
     this.updateCanvasStyle();
 
     if (this.frequenciesDataUrl) {
+
       this.loadFrequenciesData(this.frequenciesDataUrl);
     } else {
         
@@ -411,8 +412,11 @@ export default class SpectrogramPlugin {
     }
     const currentTrackList = trackList()
     
-   
-      currentTrackList.selectTrack(parseInt(my.id)).spectrogram.isSpectrogramLoading = false
+   const track = currentTrackList.selectTrack(parseInt(my.id))
+   track.spectrogram.isSpectrogramLoading = false
+  track.spectrogram.renderingSpectrogram = false
+  track.spectrogram.showSpectrogramRefresh = false
+
       
    
     

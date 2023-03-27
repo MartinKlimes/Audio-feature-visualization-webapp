@@ -47,9 +47,9 @@ const props = defineProps({
 
    
 
-<div class="min-w-38 border-2 rounded-md border-gray">
+<div class="min-w-38 border-2 rounded-md border-gray ">
 
-    <div class="flex max-w-37 overflow-x-auto gap-1 mb-1">
+    <div class="flex  overflow-x-auto gap-1 mb-1">
   
             <Icon v-for="(visualization, i) in visualizations" :key=i 
            v-show="list[i]"

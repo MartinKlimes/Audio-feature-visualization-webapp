@@ -23,7 +23,7 @@ let colors = colormap({
 })
 
 export var wavesurfer = []
-export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', setprogressColor = 'purple', isSplitChannels = false){
+export function createWavesurfer(audio,trackName, id, setwaveColor, setprogressColor, isSplitChannels = false){
    
     wavesurfer[id] = WaveSurfer.create({
     container: `#waveform-${id}`,
@@ -36,9 +36,10 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
     scrollParent: true,
     autoCenter: true,
     responsive: true, 
-    normalize: true,
     pixelRatio: 1,
     height: 200,
+    normalize: true,
+    
     xhr: {credentials: "include"},
  
     plugins: [
@@ -80,7 +81,7 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
         }),
     ],
     })
-
+   
     wavesurfer[id].load(audio)
 
     wavesurfer[id].on('ready', function () {
@@ -94,6 +95,8 @@ export function createWavesurfer(audio,trackName, id, setwaveColor = 'violet', s
     wavesurfer[id].on('interaction', () => {
         setTimeout(updateCursorPosition.bind(this, id), 0)
     });
+
+  
 }
 
 
@@ -172,8 +175,8 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
             label: id+1,
             color: "black",
             pointer: true,
-            lineID: 'bars',
-            index: 'bars-marker'
+            lineID: `bars-${selectedTrackIndex}`,
+            index: `bars-marker-${selectedTrackIndex}`
 
 
         })
