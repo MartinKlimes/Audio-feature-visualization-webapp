@@ -25,5 +25,5 @@ watchEffect(() => {
 
 
 <template>
-<div  class="h-full absolute z-5" :class="[`bg-${color}`, `w-${width}`]" ref="cursor" :id="id" >
+<div  class="h-full absolute z-10 " :class="[`bg-${color}`, `w-${width}`]" ref="cursor" :id="id" data-html2canvas-ignore="true" >
 </div></template>

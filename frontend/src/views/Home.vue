@@ -6,19 +6,20 @@ import UploadModal from '../components/trackManager/UploadModal.vue';
 import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
 import Waveform from '../components/visualizations/waveform/Waveform.vue';
 import { getCookie } from '../cookieHandling';
-import Cursor from '../components/Cursor.vue';
+import Cursor from '../components/tools/Cursor.vue';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
-// import Spectrogram from '../components/visualizations/spectorgram/Spectrogram.vue';
-import { defineAsyncComponent } from 'vue'
+import Spectrogram from '../components/visualizations/spectrogram/Spectrogram.vue'
+import IntervalsVisualization from '../components/visualizations/intervals/IntervalsVisualization.vue';
 
-const Spectrogram = defineAsyncComponent(() =>
-  import('../components/visualizations/spectrogram/Spectrogram.vue')
-)
+// import { defineAsyncComponent } from 'vue'
+// const Spectrogram = defineAsyncComponent(() =>
+//   import('../components/visualizations/spectrogram/Spectrogram.vue')
+// )
 
 const currentTrackList = trackList();
-
+const selectedVis = ref(0)
 const hideSettingPanel = ref(false)
 const hideTracklistPanel = ref(false)
 const globalTrackIndex = trackIndex()
@@ -96,17 +97,21 @@ const axiosConfig = {
                     v-show="track.waveform.isWaveformDisplayed"
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
+                    @click="selectedVis = 0"
+
                     />
                     
                 </transition>
                 <transition>
+                   
                     <Spectrogram
                     v-if="track.spectrogram.isSpectrogram && track.spectrogram.plotSpectrogram"   
                     v-show="track.spectrogram.isSpectrogramDisplayed"
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
+                    @click="selectedVis = 1"
                    />
-                    
+                
                 </transition>
                 <transition>
                     <PianoRoll
@@ -114,6 +119,19 @@ const axiosConfig = {
                     v-show="track.pianoroll.isPianorollDisplayed"  
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
                     :track="track"
+                    @click="selectedVis = 2"
+
+                    />
+                </transition>
+
+                <transition>
+                    <IntervalsVisualization
+                    v-if="track.imi_data.isIMI"  
+                    v-show="track.imi_data.isIMIDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                    :id="track.id"
+                    :txt-file-name="track.txtFileName"
+                    @click="selectedVis = 2"
                     />
                 </transition>
                 
@@ -171,6 +189,7 @@ const axiosConfig = {
             v-if="track.isTrackSelected" 
             :isSelected = "track.id===globalTrackIndex.selTrackIndex"
             :track="track"
+            :selected-Vis="selectedVis"
             />
         </div>
 

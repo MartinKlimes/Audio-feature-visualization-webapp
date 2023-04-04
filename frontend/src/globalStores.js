@@ -47,6 +47,7 @@ export const trackList = defineStore('trackList',
         async fetchRecordings() {
             try {
                 const response = await api.get('/get-track-list')
+                console.log(response);
                 const recordings = response.data
                 
                 this.trackState = recordings[0]

@@ -30,6 +30,7 @@ import Plotly from 'plotly.js-dist'
  * @property {?boolean} deferInit Set to true to manually call
  * `initPlugin('spectrogram')`
  * @property {?number[][]} colorMap A 256 long array of 4-element arrays.
+ * @property {string} colorscale A 256 long array of 4-element arrays.
  * Each entry should contain a float between 0 and 1 and specify
  * r, g, b, and alpha.
  * @property {boolean} log Set to true to display frequency in logaritmic scale
@@ -71,6 +72,7 @@ export default class SpectrogramPlugin {
    * @return {PluginDefinition} An object representing the plugin.
    */
   static create(params) {
+   
     return {
       name: "spectrogram",
       deferInit: params && params.deferInit ? params.deferInit : false,
@@ -83,10 +85,10 @@ export default class SpectrogramPlugin {
   }
 
   constructor(params, ws) {
+  
     this.params = params;
     this.wavesurfer = ws;
     this.util = ws.util;
-
     this.frequenciesDataUrl = params.frequenciesDataUrl;
     this._onMousemove = (e) => {
       this.updateCursorPosition(e);
@@ -144,6 +146,7 @@ export default class SpectrogramPlugin {
       this.windowFunc = params.windowFunc;
       this.alpha = params.alpha;
       this.splitChannels = params.splitChannels;
+      this.colorscale = params.colorscale
       this.channels = this.splitChannels
         ? ws.backend.buffer.numberOfChannels
         : 1;
@@ -167,7 +170,7 @@ export default class SpectrogramPlugin {
   
   init() {
     // Check if wavesurfer is ready
-
+    
     if (this.wavesurfer.isReady) {
       this._onReady();
     } else {
@@ -210,6 +213,7 @@ export default class SpectrogramPlugin {
         width: `55px`,
         top: 0,
         position: 'absolute',
+       
 
       });
       this.wrapper.appendChild(labelsEl);
@@ -226,7 +230,7 @@ export default class SpectrogramPlugin {
       );
     }
     //// create colorbar legend
-    if (this.params.legend) {
+   
 
     setTimeout(() => {
         const legend = (this.legend = document.createElement('canvas'));
@@ -255,7 +259,7 @@ export default class SpectrogramPlugin {
             '#specLabels'
             );
     }, 0);
-  }
+  
 
     this.drawer.style(this.wrapper, {
       display: "block",
@@ -372,17 +376,13 @@ export default class SpectrogramPlugin {
           z: [...pixels],
           type: 'heatmap',
           transpose: true,
-          colorscale: 'Jet',
+          colorscale: my.colorscale,
           showscale: false 
-
-
-          
-
       }
       ];
 
       Plotly.newPlot(my.wrapper, data, layout, config);
-      const imageData = new ImageData(width, height);
+      // const imageData = new ImageData(width, height);
 
       // for (let i = 0; i < pixels.length; i++) {
       //   for (let j = 0; j < pixels[i].length; j++) {
@@ -571,34 +571,7 @@ export default class SpectrogramPlugin {
     const fr = [];
    
 
-    api
-      .get("/get-spectrogram/" + "FMP_C3_F03.mp3")
-      .then((response) => {
-        const spectrogram = response.data;
 
-        // Vykreslení spektrogramu pomocí HTML canvas
-        const canvas = document.createElement('canvas');
-        canvas.width = spectrogram.length;
-        canvas.height = spectrogram[0].length;
-    
-        const context = canvas.getContext('2d');
-        for (let i = 0; i < spectrogram.length; i++) {
-          for (let j = 0; j < spectrogram[i].length; j++) {
-            const value = Math.log(Math.abs(spectrogram[i][j]) + 1);
-            context.fillStyle = `rgb(${value * 255}, ${value * 255}, ${value * 255})`;
-            context.fillRect(i, canvas.height - j, 1, 1);
-          }
-        }
-        document.body.appendChild(canvas);
-      });
-
-    // request.on('success', data =>
-
-    //     this.drawSpectrogram(JSON.parse(data), this)
-    // );
-    // request.on('error', e => this.fireEvent('error', e));
-
-    // return request;
   }
 
   freqType(freq) {
@@ -732,6 +705,7 @@ export default class SpectrogramPlugin {
     textAlign,
     container
   ) {
+
     const frequenciesHeight = this.height;
     bgFill = bgFill || "rgba(68,68,68,0)";
     fontSizeFreq = fontSizeFreq || "12px";
@@ -813,6 +787,7 @@ export default class SpectrogramPlugin {
   }
 
   drawColorMaps(ctx, marginColorbar) {
+  
     const ColorbarHeightIndex = this.height / 256
 
     for (var j = 0; j <256; j++) {

@@ -18,7 +18,7 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  api.get("/get-click-audio-list").then(function (response) {
+  api.get("/get-files-list/clickSound").then(function (response) {
     clickAudioList.value = response.data;
   });
   wavesurfer[props.id].backend.on("audioprocess", clickSound);

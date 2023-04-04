@@ -1,7 +1,8 @@
 
 import { createApp } from 'vue'
 import { createI18n } from 'vue-i18n'
-import mitt from 'mitt'
+
+
 
 import router from './router.js'
 import App from './App.vue'
@@ -9,7 +10,7 @@ import 'virtual:windi.css'
 
 import { createPinia } from 'pinia'
 
-window.eventBus = mitt()
+
 // load localization yml files
 const messages = Object.fromEntries(
     Object.entries(

@@ -7,6 +7,7 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
 
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
+  
   pianoroll.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
   
   const notes = Array.from(svgElements.querySelectorAll('.note'));
@@ -157,7 +158,8 @@ const createKeyDescription = (key, keyHeight, currentMaxMidiNumber) => {
 
 
 
-export const trackCursorPosition = (wavePos, id, dynamicNames) => {
+export const trackCursorPosition = (wavePos, id, dynamicNames, color = 'red') => {
+  console.log(color);
   const matchingKeys = [];
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
@@ -173,7 +175,7 @@ export const trackCursorPosition = (wavePos, id, dynamicNames) => {
 
       const keyId = parseInt(element.getAttributeNS(null, 'data-pitch'));
       matchingKeys.push(keyId);
-      element.setAttributeNS(null, 'stroke', 'red');
+      element.setAttributeNS(null, 'stroke', color);
       element.setAttributeNS(null, 'stroke-width', '2');
 
     } else {
@@ -192,7 +194,7 @@ export const trackCursorPosition = (wavePos, id, dynamicNames) => {
     // }
 
     if (matchingKeys.includes(keyId)) {
-        keyboardElements[i].style.backgroundColor = 'red';
+        keyboardElements[i].style.backgroundColor = color;
         if(dynamicNames){
           createKeyDescription( keyboardElements[i],7, keyId)
         }

@@ -79,10 +79,25 @@ const useTrack = () => {
     trackToEdit.value.isTrackSelected = true
   } else {
     trackToEdit.value.isTrackSelected = false
-    trackToEdit.value.waveform.isWaveform = false
-    trackToEdit.value.waveform.isWaveformDisplayed = false
-    updateRecording(trackToEdit.value.id,'isWaveform', false)
+
+    if(trackToEdit.value.waveform.isWaveform){
+      trackToEdit.value.waveform.isWaveform = false
+      trackToEdit.value.waveform.isWaveformDisplayed = false
+      updateRecording(trackToEdit.value.id,'isWaveform', false)
       updateRecording(trackToEdit.value.id,'isWaveformDisplayed', false)
+    }
+    if(trackToEdit.value.pianoroll.isPianoroll){
+      trackToEdit.value.pianoroll.isPianoroll = false
+      trackToEdit.value.pianoroll.isPianorollDisplayed = false
+      updateRecording(trackToEdit.value.id,'isPianoroll', false)
+      updateRecording(trackToEdit.value.id,'isPianorollDisplayed', false)
+    }
+    if(trackToEdit.value.spectrogram.isSpectrogram){
+      trackToEdit.value.spectrogram.isSpectrogram = false
+      trackToEdit.value.spectrogram.isSpectrogramDisplayed = false
+      updateRecording(trackToEdit.value.id,'isSpectrogram', false)
+      updateRecording(trackToEdit.value.id,'isSpectrogramDisplayed', false)
+    }
   }
 
 };

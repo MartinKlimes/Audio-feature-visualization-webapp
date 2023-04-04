@@ -1,10 +1,10 @@
 <script setup>
 import { onUnmounted, ref, watchEffect, watch } from 'vue';
 
-import BlueButttons from '../../buttons/BlueButtons.vue';
-import { updateRecording } from '../../../../custom';
-import { setInstrumentColor } from '../../../functions/useMidiPianoroll';
-import ColorsPicker from '../../visualizationManager/ColorsPicker.vue';
+import BlueButttons from '../../../buttons/BlueButtons.vue';
+import { updateRecording } from '../../../../../custom';
+import { setInstrumentColor } from '../../../../functions/useMidiPianoroll';
+import ColorsPicker from '../../../visualizationManager/ColorsPicker.vue';
 import { onClickOutside } from '@vueuse/core';
 
 
@@ -53,14 +53,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-<div class="flex mt-2 relative rounded-t bg-white justify-center items-center w-full" ref="target">
-    <div class="max-w-35 overflow-x-auto flex gap-0.5 mb-2">
-    <div v-for="instNum in instruments" >
-       
-        <BlueButttons :is-btn-clicked="instNum === selectedInstrument" @click="selectedInstrument = instNum" class="px-1 mt-2" :icon-class="'hidden'">{{instNum}}</BlueButttons>
+<div class="flex flex-col mt-2 relative rounded-t bg-white justify-center items-center w-full h-max" ref="target">
+    <div class="max-w-28 overflow-x-auto flex gap-0.5 ">
+        <div v-for="instNum in instruments" >
+        
+            <BlueButttons :is-btn-clicked="instNum === selectedInstrument" @click="selectedInstrument = instNum" class="px-1 mt-2" :icon-class="'hidden'">{{instNum}}</BlueButttons>
+        </div>
     </div>
-</div>
-    <ColorsPicker class="absolute h-27 w-full top-10" :selected-color="colorsList[selectedInstrument]"  @update-color="color = $event"
+    <ColorsPicker class=" h-27 w-full " :selected-color="colorsList[selectedInstrument]"  @update-color="color = $event"
     :format="'hex'"
     />
 

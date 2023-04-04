@@ -86,7 +86,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  console.log(markerID.value);
   document.querySelectorAll(markerID.value).forEach((marker) => (marker.style.display = "none"));
   emits("toggleEye", [false, props.dataType]);
 });

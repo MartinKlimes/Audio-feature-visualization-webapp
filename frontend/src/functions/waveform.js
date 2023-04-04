@@ -23,12 +23,12 @@ let colors = colormap({
 })
 
 export var wavesurfer = []
-export function createWavesurfer(audio,trackName, id, setwaveColor, setprogressColor, isSplitChannels = false){
+export function createWavesurfer(audio,trackName, id, setwaveColor, setprogressColor, isSplitChannels, waveformHeight){
    
     wavesurfer[id] = WaveSurfer.create({
     container: `#waveform-${id}`,
     backend: 'WebAudio',
-    splitChannels: isSplitChannels,
+    splitChannels: isSplitChannels || false,
     waveColor: setwaveColor,
     progressColor: setprogressColor,
     backgroundColor: 'white',
@@ -37,7 +37,7 @@ export function createWavesurfer(audio,trackName, id, setwaveColor, setprogressC
     autoCenter: true,
     responsive: true, 
     pixelRatio: 1,
-    height: 200,
+    height: waveformHeight || 200,
     normalize: true,
     
     xhr: {credentials: "include"},
@@ -85,8 +85,9 @@ export function createWavesurfer(audio,trackName, id, setwaveColor, setprogressC
     wavesurfer[id].load(audio)
 
     wavesurfer[id].on('ready', function () {
-        const currentTrackList = trackList()
-        // currentTrackList.selectTrack(id).waveform.isWaveformLoading = false
+    const currentTrackList = trackList()
+
+        currentTrackList.selectTrack(id).waveform.isWaveformLoading = false
         currentTrackList.selectTrack(id).waveform.isWaveformReady = true
         currentTrackList.selectTrack(id).spectrogram.plotSpectrogram = true
     });
@@ -111,8 +112,9 @@ const updateCursorPosition = (id) => {
       document.querySelector(`.spec-legend-${id}`).style.marginRight = `${-wavesurfer[id].drawer.wrapper.scrollLeft}px`;
     }
     if (liveCursorPiano) {
-        liveCursorPiano.style.left = xpos;
-      pianoroll.getElementsByTagName('div')[2].scrollLeft = wavesurfer[id].drawer.wrapper.scrollLeft;
+        const currentTrackList = trackList()
+        liveCursorPiano.style.left = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`;
+        pianoroll.getElementsByTagName('div')[2].scrollLeft = currentTrackList.selectTrack(id).pianoroll.scrollLeft + wavesurfer[id].drawer.wrapper.scrollLeft;
     }
   }
 export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, toBar){

@@ -7,19 +7,19 @@ import { wavesurfer, marker } from "../../../functions/waveform";
 import { api } from "../../../../custom";
 import { trackIndex, trackList, alertState } from "../../../globalStores";
 import BlueButtons from "../../buttons/BlueButtons.vue";
+import ExportBtn from "../../buttons/ExportBtn.vue";
 import { updateRecording } from "../../../../custom";
 import { getCookie } from "../../../cookieHandling";
 import { showAlert, closeAlert } from "../../../alerts";
 import MarkersVis from "./MarkersVis.vue";
 import AppearanceWave from "./AppearanceWave.vue";
-import html2canvas from 'html2canvas';
 
 const alertGlobalState = alertState();
 
 const currentSetting = shallowRef();
 const loading = ref(false);
 const currentTrackList = trackList();
-const isBtnClicked = ref(false);
+
 const showLinesVis = ref(false);
 const showAppearance = ref(false);
 
@@ -44,7 +44,6 @@ const removeWaveform = () => {
 // }
 const showBarsToSelect = () => {
     if(document.querySelector(`#bars-marker-${props.track.id}`)){
-      console.log(wavesurfer[props.track.id].regions);
       currentSetting.value === BarSelection ? (currentSetting.value = "") : (currentSetting.value = BarSelection);
     }else{
       showAlert('First display bars!');
@@ -82,32 +81,8 @@ const trimAudio = (event) => {
   })
 }
 
-const splitChannels = () => {
-  props.track.waveform.splitChannels = !props.track.waveform.splitChannels;
-  props.track.waveform.isWaveform = false;
-  api.get("/change-track-status/splitChannels/" + props.track.trackName + "/''");
-  setTimeout(() => {
-    props.track.waveform.isWaveform = true;
-  }, 500);
-};
 
 
-function saveImage() {
-  const divToExport = document.getElementById(`waveform-${props.track.id}`);
-  const options ={
-    windowWidth: wavesurfer[props.track.id].drawer.width + divToExport.getBoundingClientRect().right,
-}
-  html2canvas(divToExport, options).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const img = new Image();
-    img.src = imgData;
-    document.body.appendChild(img); // pouze pro kontrolu, může být odebráno
-    const a = document.createElement('a');
-    a.href = imgData;
-    a.download = 'export.png';
-    a.click();
-  });
-}
 </script>
 
 <template>
@@ -137,12 +112,15 @@ function saveImage() {
       </keep-alive>
     </Transition>
 
-    <button v-if="!isBtnClicked" class="absolute top-0 right-1 opacity-50 hover:opacity-100">
-      <Icon icon="entypo:export" @click="saveImage" />
-    </button>
+    <ExportBtn  
+      :id="track.id"
+      :track-name="track.trackName"
+      :visualization="'waveform'"
+      class="absolute top-0 right-0 "
+    />
 
-    <span class="text-xs opacity-50 mt-3">Select part</span>
-    <div class="flex border border-dashed border-gray-400 rounded-md p-1 justify-center items-center">
+    <span class="text-xs opacity-50 mt-2">Select part</span>
+    <div class="flex border border-dashed border-gray-400 rounded-md p-1 justify-center items-center mb-1">
       <BlueButtons
         class="mr-1"
         @click="showBarsToSelect()"
@@ -185,23 +163,15 @@ function saveImage() {
           :id="track.id"
           :waveform-color="track.waveformColor"
           :waveform-height="track.waveform.waveformHeight"
+          :split-channels="track.waveform.splitChannels"
           @close-modal="showAppearance = false"
         />
       </transition>
     
 
-    <BlueButtons
-      title="Split channels"
-      class="mt-3 items-center opacity-90"
-      :is-btn-clicked="track.splitChannels"
-      @click="splitChannels()"
-      :icon-class="'ml-0 '"
-      :rotate="1"
-      :icon="'carbon:split-screen'"
-    ></BlueButtons>
-
     <button
-      title="reload waveform"
+      v-if="!showAppearance"
+      title="delete waveform"
       class="mt-4 opacity-50 hover:opacity-100 absolute right-0 bottom-0"
       @click="removeWaveform"
     >
@@ -221,4 +191,8 @@ function saveImage() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+overflow {
+  overflow: visible;
+}
+</style>

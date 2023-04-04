@@ -1,9 +1,10 @@
 from mos_backend import app, db
-from mos_backend.db_models import Recording, Waveform, Spectrogram, Pianoroll
+from mos_backend.db_models import Recording, Waveform, Spectrogram, Pianoroll, InterBeatInterval, InterOnsetInterval, InterMeasureInterval
 from werkzeug.utils import secure_filename
 import os
 import string
 
+import mido
 from sqlalchemy.orm import joinedload
 from pydub import AudioSegment
 from flask_jwt_extended import jwt_required, current_user
@@ -47,6 +48,9 @@ def get_audio_file():
     recordings = Recording.query.options(
         joinedload(Recording.waveform),
         joinedload(Recording.spectrogram),
+        joinedload(Recording.ioi_data),
+        joinedload(Recording.ibi_data),
+        joinedload(Recording.imi_data),
         joinedload(Recording.pianoroll)).filter_by(user=user).all()
 
     record_list = [recording.to_dict() for recording in recordings]
@@ -67,6 +71,9 @@ def update_recording():
     waveform = Waveform.query.filter_by(recording_id=recording.id).first()
     spectrogram = Spectrogram.query.filter_by(recording_id=recording.id).first()
     pianoroll = Pianoroll.query.filter_by(recording_id=recording.id).first()
+    ioi_data = InterOnsetInterval.query.filter_by(recording_id=recording.id).first()
+    ibi_data = InterBeatInterval.query.filter_by(recording_id=recording.id).first()
+    imi_data = InterMeasureInterval.query.filter_by(recording_id=recording.id).first()
     if not recording:
         return "Nahrávka nenalezena"
 
@@ -82,9 +89,17 @@ def update_recording():
     if pianoroll:
         setattr(pianoroll, column, new_value)
         db.session.commit()
+    if ioi_data:
+        setattr(ioi_data, column, new_value)
+        db.session.commit()
+    if ibi_data:
+        setattr(ibi_data, column, new_value)
+        db.session.commit()
+    if imi_data:
+        setattr(imi_data, column, new_value)
+        db.session.commit()
 
-
-    return 'Status succesfully changed'
+    return f'{column} in record id: {record_id} change to: {new_value}'
 
 @app.route('/rename-track/<record_name>/<modified_name>', methods=['GET'])
 @jwt_required()
@@ -106,13 +121,20 @@ def delete_audio_fil(event_name, type):
 
     if type == 'audio':
         record = Recording.query.filter_by(filename=event_name).first()
-        print(record)
+
         waveform = Waveform.query.filter_by(recording_id=record.id).first()
         pianoroll = Pianoroll.query.filter_by(recording_id=record.id).first()
         spectrogram = Spectrogram.query.filter_by(recording_id=record.id).first()
+        ioi_data = InterOnsetInterval.query.filter_by(recording_id=record.id).first()
+        ibi_data = InterBeatInterval.query.filter_by(recording_id=record.id).first()
+        imi_data = InterMeasureInterval.query.filter_by(recording_id=record.id).first()
+
         db.session.delete(waveform)
         db.session.delete(pianoroll)
         db.session.delete(spectrogram)
+        db.session.delete(ioi_data)
+        db.session.delete(ibi_data)
+        db.session.delete(imi_data)
         os.remove(f'./user_uploads/{user.username}/{event_name}')
         db.session.delete(record)
     elif type == 'bars':
@@ -140,7 +162,8 @@ def get_filepath(record_name):
         filepath = os.path.realpath(f'./user_uploads/{user.username}/ground_truth')
     elif record_name.endswith('.mid'):
         filepath = os.path.realpath(f'./user_uploads/{user.username}/MIDI')
-
+    elif record_name.endswith('.png'):
+        filepath = os.path.realpath(f'./user_uploads/colormap')
     else:
         filepath = os.path.realpath(f'./user_uploads/{user.username}')
 
@@ -186,7 +209,15 @@ def trim_audio():
 
         filepath = f'./user_uploads/{user.username}/{record_name_trimmed}'
         extract.export(filepath)
-        recording = Recording(filename=record_name_trimmed, filepath=filepath, isTrackSelected=True, backgroundColor=record.backgroundColor, waveformColor=waveform.waveformColor, user_id=user.id)
+        recording = Recording(filename=record_name_trimmed,
+                              filepath=filepath,
+                              isTrackSelected=True,
+                              backgroundColor=record.backgroundColor,
+                              waveformColor=waveform.waveformColor,
+                              start=start,
+                              end=end,
+                              MIDIFileName=record.MIDIFileName,
+                              user_id=user.id)
         db.session.add(recording)
         db.session.commit()
 
@@ -210,7 +241,41 @@ def trim_audio():
 @app.route('/get-click-audio/<record_name>')
 def get_click_audio(record_name):
     return send_file(os.path.realpath(f'./user_uploads/clickSound/{record_name}'))
-@app.route('/get-click-audio-list')
-def get_click_audio_list():
-    return jsonify(os.listdir((os.path.realpath(f'./user_uploads/clickSound/'))))
+@app.route('/get-files-list/<directory>')
+def get_click_audio_list(directory):
+    return jsonify(os.listdir((os.path.realpath(f'./user_uploads/{directory}/'))))
+@app.route('/trim_midi', methods=['POST'])
+@jwt_required()
+def trim_midi():
+    user = current_user
+    file_name = request.form['file_name']
+    start_time = float(request.form['start_time'])
+    end_time = float(request.form['end_time'])
+    midi = mido.MidiFile(os.path.realpath(f'./user_uploads/{user.username}/MIDI/{file_name}'))
+    print(midi.tracks)
 
+    new_midi = mido.MidiFile()
+
+    for track in midi.tracks:
+        new_track = mido.MidiTrack()
+        time = 0
+        for msg in track:
+            time += msg.time
+            if time >= start_time * midi.ticks_per_beat and time <= (end_time ) * midi.ticks_per_beat:
+                new_track.append(msg.copy())
+            elif time > (end_time ) * midi.ticks_per_beat:
+                break
+        new_midi.tracks.append(new_track)
+
+    print(new_midi.tracks)
+
+    new_file_name = f'{file_name}_({"{:.2f}".format(round(start_time, 2))}-{"{:.2f}".format(round(end_time, 2))}).mid'
+
+    new_midi.save(os.path.realpath(f'./user_uploads/{user.username}/MIDI/{new_file_name}'))
+    filepath = os.path.realpath(f'./user_uploads/{user.username}/MIDI/')
+
+    return send_from_directory(
+        filepath,
+        new_file_name,
+        as_attachment=True
+    )

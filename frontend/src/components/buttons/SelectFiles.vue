@@ -11,7 +11,15 @@ const props = defineProps({
   files: Array,
   id: Number,
   selectedFile: String,
-  isDivClass: Boolean,
+  isDivClass: {
+    type: Boolean,
+    default: false
+  },
+  isImage: {
+    type: Boolean,
+    default: false
+  }
+
 });
 
 const emits = defineEmits(["selectFile", "closeModal"]);
@@ -29,15 +37,35 @@ onClickOutside(target, () =>
 <template>
   <div class=" bg-white border border-black rounded-md overflow-y-auto" ref="target" >
     <div
-      class="min-h-6 flex items-center justify-center bg-light-blue-400 border border-black m-1 p-0.5 text-sm font-bold rounded-md hover hover:border-gray-400 cursor-pointer shadow-md shadow-gray-700"
+      class="min-h-6 flex items-center justify-center bg-light-blue-400 border border-black m-1 text-sm font-bold rounded-md hover hover:border-gray-400 cursor-pointer shadow-md shadow-gray-700"
       :class="{ 'shadow-inner shadow-dark-500 bg-light-blue-300 hover:border-black': selectedFile == file }"
       v-for="file in files"
       @click="$emit('selectFile', file)"
     >
-      <div v-if="!isDivClass">
+    <img
+        v-if="isImage"
+        :src="file"
+        class="object-cover w-full h-full rounded-md"
+        :class="{ 'border-2 border-dotted border-blue-200': selectedFile == file }"
+      
+
+
+    
+
+      />
+      <div v-else-if="isDivClass" class="" :class="file">
+      </div>
+      <div v-else >
         {{ file }}
       </div>
-      <div v-if="isDivClass" class="" :class="file"></div>
+
     </div>
   </div>
 </template>
+<style scoped>
+.shadow-inner {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
+}
+
+
+</style>

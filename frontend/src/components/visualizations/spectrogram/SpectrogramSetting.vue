@@ -1,32 +1,37 @@
 <script setup>
-
 import { ref } from "vue";
-import { trackIndex } from "../../../globalStores";
+import { trackIndex, trackList } from "../../../globalStores";
 import { Icon } from "@iconify/vue";
 import { updateRecording } from "../../../../custom";
 import { wavesurfer } from "../../../functions/waveform";
+import ExportBtn from "../../buttons/ExportBtn.vue";
+import BlueButtons from "../../buttons/BlueButtons.vue";
+import SpectrogramStyle from "./spectrogramStyle/SpectrogramStyle.vue";
+import SpectrogramRange from "./spectrogramSettings/SpectrogramRange.vue";
+import SpectrogramFFTSamples from "./spectrogramSettings/SpectrogramFFTSamples.vue";
+
+
 const props = defineProps({
   track: Object,
 });
 
-const fftsamplesSelected = ref(12000);
 const globalTrackIndex = trackIndex();
+const currentTrackList = trackList();
+const showSpectrogramStyle = ref(false);
+const showSpectrogramFFTSamples = ref(false)
 
 function changeSpectrogramNumberOfSamples(numberOfSamples) {
-  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.fftSamples =
-    parseInt(numberOfSamples.target.value);
+  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.fftSamples = parseInt(numberOfSamples.target.value);
   wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.init();
   fixedSpecLabels();
 }
 function changeSpectrogramMaxFrequency(maxFrequency) {
-  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.frequencyMax =
-    parseInt(maxFrequency);
+  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.frequencyMax = parseInt(maxFrequency);
   wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.init();
   fixedSpecLabels();
 }
 function changeSpectrogramWindow(windowType) {
-  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.windowFunc =
-    windowType.target.value;
+  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.windowFunc = windowType.target.value;
   wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.init();
   fixedSpecLabels();
 }
@@ -36,33 +41,77 @@ const fixedSpecLabels = () => {
   label.id = `spec-labels-0`;
 };
 
-const removeSpectrogram = (params) => {
+const removeSpectrogram = () => {
   props.track.spectrogram.isSpectrogram = false;
   props.track.spectrogram.isSpectrogramDisplayed = false;
   updateRecording(props.track.id, "isSpectrogram", false);
   updateRecording(props.track.id, "isSpectrogramDisplayed", false);
+  setTimeout(() => {
+  props.track.spectrogram.isSpectrogram = true;
+  }, 0);
+  setTimeout(() => {
+    props.track.spectrogram.isSpectrogram = false;
+  }, 0);
 };
 
-const size = () => {
-  console.log(wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params)
-  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.height = 500
-  wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.init();
 
-}
+
 </script>
 
 <template>
-  <div
-    class="flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md"
-  >
+  <div class="flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md">
+    
+    <SpectrogramRange 
+    :id="track.id"
+    title="frequency range"
+    />
+
     <button
+      v-if="!showSpectrogramStyle"
       title="reload waveform"
       class="mt-4 opacity-50 hover:opacity-100 absolute right-0 bottom-0"
       @click="removeSpectrogram"
     >
       <Icon icon="mingcute:delete-2-line" />
     </button>
-    <button @click=" size()">size</button>
+
+    <BlueButtons
+      class="mt-2 flex"
+      @click="showSpectrogramFFTSamples = !showSpectrogramFFTSamples"
+      :is-btn-clicked="showSpectrogramFFTSamples"
+      title="spectrogram style"
+    >FFT samples</BlueButtons>
+
+    <BlueButtons
+      class="mt-2 flex"
+      @click="showSpectrogramStyle = !showSpectrogramStyle"
+      :icon="'dashicons:admin-appearance'"
+      :icon-class="'ml-0'"
+      :is-btn-clicked="showSpectrogramStyle"
+      title="spectrogram style"
+    ></BlueButtons>
+
+    <Transition>
+      <SpectrogramFFTSamples
+      v-if="showSpectrogramFFTSamples"
+      :id="track.id"
+      />
+    </Transition>
+
+
+
+
+    <transition>
+      <SpectrogramStyle
+        v-if="showSpectrogramStyle"
+        :track-name="track.trackName"
+        :id="track.id"
+        :spectrogram-colormap="track.spectrogram.spectrogramColormap"
+        @close-modal="showSpectrogramStyle = false"
+      />
+    </transition>
+
+    <ExportBtn :id="track.id" :track-name="track.trackName" :visualization="'spectrogram'" class="absolute top-0 right-0" />
   </div>
   <!-- <div class=" bg-blue-900 h-100% w-67 z-5 -mt-9.7rem   rounded-1xl border-1 border-black text-sm">
     <div class="rounded border-b">

@@ -25,20 +25,16 @@ const deleteTrack = async(event) => {
     setTimeout(closeAlert, 1500);
     // currentTrackList.trackState.splice(event.index, 1);
     currentTrackList.fetchRecordings()
-    setTimeout(() => {globalTrackIndex.changeIndex(currentTrackList.trackState[0].id)}, 100);
+ 
+    setTimeout(() => {
+      if(currentTrackList.trackState[0]){
+        globalTrackIndex.changeIndex(currentTrackList.trackState[0].id)
+      }
+    }, 100);
   })
 };
 
 
-const getTxt = () => {
-  api.get('/get-audio-file/' + 'chopin1_gt.txt')
-    .then((response) => {
-      let bars = response.data.split('\n');
-
-      marker(response.data.split('\n'), 5);
-    }
-  )
-}
 
 </script>
 

@@ -1,17 +1,21 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
-
+import { useHideBtn } from "../../../composables/useHideBtn";
 import { api } from "../../../../custom";
 import { createWavesurfer } from "../../../functions/waveform";
 import { wavesurfer } from "../../../functions/waveform";
-
+import { trackIndex, trackList } from "../../../globalStores";
+import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 
 const showZoomerSetting = ref(false)
 const hideZoomer = ref(false)
-
+const globalTrackIndex = trackIndex()
+const currentTrackList = trackList()
+const {hide} = useHideBtn(showZoomerSetting)
 
 onMounted(() => {
+  currentTrackList.selectTrack(props.track.id).waveform.isWaveformLoading = true
   api.get("/get-file/" + props.track.trackName).then((response) => {
     const audioSrc = response.request.responseURL;
     let colors = [];
@@ -28,10 +32,12 @@ onMounted(() => {
       props.track.id,
       colors[1],
       colors[0],
-      props.track.waveform.splitChannels
+      props.track.waveform.splitChannels,
+      props.track.waveform.waveformHeight
     );
-
-    // globalTrackIndex.changeIndex(props.track.id)
+    if(props.track.waveform.isWaveform){
+      globalTrackIndex.changeIndex(props.track.id)
+    }
   });
 });
 
@@ -47,20 +53,12 @@ const changeHeight = (e) => {
 
 };
 
-const zoom = () => {
-    if(showZoomerSetting.value === false){
-    showZoomerSetting.value = true
-    setTimeout(() => {
-        showZoomerSetting.value = false
-    }, 2000);
-}
-}
-
 const refreshZoomer = () => {
     wavesurfer[props.track.id].params.normalize = true
-    document.getElementById(`zoomerWidth-${props.track.id}`).value = 100
+    document.getElementById(`zoomerWidth-${props.track.id}`).value = 20
     document.getElementById(`zoomerHeight-${props.track.id}`).value = 1
     wavesurfer[props.track.id].zoom(20)
+    wavesurfer[props.track.id].seekTo(0)
 }
 </script>
 
@@ -74,8 +72,9 @@ const refreshZoomer = () => {
       :class="[{ 'shadow-md shadow-gray-500': props.isSelected }]"
     >
       <transition>
-        <div :id="`waveform-${track.id}`">
-          <div class="text-gray-400 ml-2 text-sm" >{{ track.trackName }} </div>
+        <div :id="`waveform-${track.id}`" >
+          <LoadingOverlay  v-if="track.waveform.isWaveformLoading"/>
+          <div class="text-gray-400 ml-2 text-sm " >{{ track.trackName }} </div>
 
      
         <div v-show="!hideZoomer" data-html2canvas-ignore="true">
@@ -86,7 +85,7 @@ const refreshZoomer = () => {
                 type="range"
                 min="0"
                 max="200"
-                value="100"
+                value="20"
                 step="5"
                 class="slider vertical bg-transparent "
                 :id="`zoomerWidth-${track.id}`"
@@ -116,10 +115,10 @@ const refreshZoomer = () => {
             <transition>
                 <div v-show="showZoomerSetting"  class="absolute right-3 gap-1 bottom-10 bg-gray-400 rounded-md flex z-10  z-10 cursor-pointer" data-html2canvas-ignore="true">
                     <Icon icon="zondicons:refresh" class="hover:bg-white hover:border hover:border-black rounded-l-md" @click="refreshZoomer"/>
-                    <Icon icon="mdi:hide" class="hover:bg-white hover:border hover:border-black rounded-r-md" @click="hideZoomer =! hideZoomer"/>
+                    <Icon  :icon="hideZoomer ? 'mdi:show' : 'mdi:hide'" class="hover:bg-white hover:border hover:border-black rounded-r-md" @click="hideZoomer =! hideZoomer"/>
                 </div>
             </transition>
-            <div @mouseenter="zoom" class="w-15 h-10 absolute right-0 bottom-10 z-5"></div>
+            <div @mouseenter="hide" class="w-15 h-10 absolute right-0 bottom-10 z-5"></div>
         </div>
       </transition>
       <!-- <Icon icon="ci:close-small" v-show="!state.isWaveformHide" class="hover:bg-gray-300 transition cursor-pointer top-0 right-0 absolute -my-1  -mr-4.25 text-black" @click="deleteVisualization(id)"/> -->
@@ -129,6 +128,3 @@ const refreshZoomer = () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>

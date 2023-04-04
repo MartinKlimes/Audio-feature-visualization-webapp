@@ -101,7 +101,7 @@ const upload = ($event) => {
     ? [...$event.dataTransfer.files]
     : [...$event.target.files];
     let audioTypes = "audio/*";
-
+  console.log(files);
     for (let i = 0; i < files.length; i++) {
 
       if ((files[i].type.match(audioTypes) && !currentTrackList.trackState.includes(files[i].name))
@@ -176,7 +176,7 @@ onClickOutside(target, () =>
                     id="added-files"
                     type="file"
                     class="hidden"
-                    accept="audio/*, .txt"
+                    accept="audio/*, .txt, .mid"
                     multiple
                     @change="upload($event), ($event.target.value = '')"
                   />

@@ -36,6 +36,11 @@ onMounted(() => {
             to.value = region.end
         }, 200);
     })
+    wavesurfer[props.id].on("region-updated", (region, e) => { 
+        from.value = region.start
+        to.value = region.end
+     })
+
 })
 
 onUnmounted(() => {
@@ -79,7 +84,7 @@ onActivated(() => {
     <input v-model="from" type="number" placeholder="from" class="input-field-nomargin w-15 border-2 border-blue-400">
     <input v-model="to" type="number" placeholder="to"  class="input-field-nomargin w-15 ml-1 border-2 border-blue-400">
     </div>
-    <BlueButttons :is-btn-clicked="loading" :icon="(loading ? 'fa:spinner' : '')" :icon-class="(loading ? 'spin' : 'hidden')" @click="$emit('trim-audio', [from, to])" :disabled="loading" class="mt-1 px-2">Select</BlueButttons>
+    <BlueButttons :is-btn-clicked="loading" :icon="(loading ? 'fa:spinner' : '')" :icon-class="(loading ? 'spin' : 'hidden')" @click="$emit('trim-audio', [from, to])" :disabled="!from || !to" class="mt-1 px-2">Select</BlueButttons>
 
 </div>
 

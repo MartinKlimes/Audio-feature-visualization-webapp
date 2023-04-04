@@ -3,12 +3,15 @@ import WaveformSetting from './visualizations/waveform/WaveformSetting.vue';
 import PianorollSetting from './visualizations/pianoroll/PianorollSetting.vue';
 import SpectrogramSetting from './visualizations/spectrogram/SpectrogramSetting.vue';
 import BlueButttons from './buttons/BlueButtons.vue';
-import { shallowRef, watch,ref,watchEffect } from 'vue';
+import { shallowRef, watch,ref,watchEffect} from 'vue';
 import { Icon } from '@iconify/vue';
+import { trackIndex } from '../globalStores';
 
 const currentTrackSetting = shallowRef()
+const globalTrackIndex = trackIndex()
 
 const visualizations = [[WaveformSetting, 'mdi:waveform'],[ SpectrogramSetting, 'icon-park:music-rhythm'], [PianorollSetting, 'ph:piano-keys-thin']]
+const visualizationTxt = [[IMISetting, 'IMI'], [IOISetting, 'IOI'], [IBISetting, 'IBI']]
 
 const list = ref([]);
 watchEffect(() => {
@@ -23,12 +26,18 @@ watchEffect(() => {
     }
 })
 
+watchEffect(() => {
+    currentTrackSetting.value = visualizations[props.selectedVis][0]
+
+})
 
 const props = defineProps({
     track: Object,
-    isSelected: Boolean
+    isSelected: Boolean,
+    selectedVis: Number
     
 })
+
 
 </script>
 

@@ -25,7 +25,6 @@ const changeColorStatus = () => {
 }
 
 watchEffect(() => {
-    
     const match = currentColor.value.match(/hsl\((\d+) ([\d.]+)% ([\d.]+)%\)/);
     if(!match) {
         return
@@ -66,7 +65,7 @@ onClickOutside(target, () =>
 
 <template>
     <div ref="target" class="relative">
-    <ColorPicker :color="currentColor" @color-change="currentColor = $event.cssColor" class= " overflow-hidden max-h-60 rounded-md z-20 mt-2"  alpha-channel="hide"  />
+    <ColorPicker :color="currentColor" @color-change="currentColor = $event.cssColor"  class= " overflow-hidden max-h-60 rounded-md z-20 mt-2"  alpha-channel="hide"  />
 
         <label for="range-input" class="absolute  right-0 bottom-7 z-10 text-sm">lightness</label>
         <input id="range-input" type="number" class="absolute w-10 h-10 rounded-md text-dark-700 bg-white font-bold right-0 bottom-0" v-model="lightnessAdjustment" min="0" max="100">

@@ -82,7 +82,7 @@ onClickOutside(target, () =>
 </script>
 
 <template>
-  <div class="absolute w-full " ref="target">
+  <div class="relative w-full " ref="target">
  
     
     <div  class="h-full rounded-md z-10  p-1 bg-white grid grid-cols-4 gap-1 overflow-y-auto">

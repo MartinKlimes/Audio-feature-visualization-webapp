@@ -274,8 +274,8 @@ export default class CursorPlugin {
         this.style(this.cursor, {
             left: `${xpos}px`
         });
-        
-        if(this.wavesurfer.spectrogram){
+ 
+        if(document.getElementById(`spectrogram-cursor-${this.id}`)){
             document.getElementById(`spectrogram-cursor-${this.id}`).style.left = `${xpos - this.wrapper.scrollLeft}px`
 
         }
