@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { trackIndex, trackList } from "../../../globalStores";
+import { trackIndex, trackList } from "../../../stores/globalStores";
 import { Icon } from "@iconify/vue";
 import { updateRecording } from "../../../../custom";
 import { wavesurfer } from "../../../functions/waveform";
@@ -8,7 +8,7 @@ import ExportBtn from "../../buttons/ExportBtn.vue";
 import BlueButtons from "../../buttons/BlueButtons.vue";
 import SpectrogramStyle from "./spectrogramStyle/SpectrogramStyle.vue";
 import SpectrogramRange from "./spectrogramSettings/SpectrogramRange.vue";
-import SpectrogramFFTSamples from "./spectrogramSettings/SpectrogramFFTSamples.vue";
+import SpectrogramParams from "./spectrogramSettings/SpectrogramParams.vue";
 
 
 const props = defineProps({
@@ -19,6 +19,7 @@ const globalTrackIndex = trackIndex();
 const currentTrackList = trackList();
 const showSpectrogramStyle = ref(false);
 const showSpectrogramFFTSamples = ref(false)
+const showSpectrogramWindowtype = ref(false)
 
 function changeSpectrogramNumberOfSamples(numberOfSamples) {
   wavesurfer[globalTrackIndex.selTrackIndex].spectrogram.params.fftSamples = parseInt(numberOfSamples.target.value);
@@ -75,12 +76,21 @@ const removeSpectrogram = () => {
       <Icon icon="mingcute:delete-2-line" />
     </button>
 
+    <div class="flex gap-1">
     <BlueButtons
       class="mt-2 flex"
       @click="showSpectrogramFFTSamples = !showSpectrogramFFTSamples"
       :is-btn-clicked="showSpectrogramFFTSamples"
       title="spectrogram style"
-    >FFT samples</BlueButtons>
+    >FFT size</BlueButtons>
+
+    <BlueButtons
+      class="mt-2 flex"
+      @click="showSpectrogramWindowtype = !showSpectrogramWindowtype"
+      :is-btn-clicked="showSpectrogramWindowtype"
+      title="spectrogram style"
+    >window</BlueButtons>
+  </div>
 
     <BlueButtons
       class="mt-2 flex"
@@ -92,9 +102,19 @@ const removeSpectrogram = () => {
     ></BlueButtons>
 
     <Transition>
-      <SpectrogramFFTSamples
+      <SpectrogramParams
       v-if="showSpectrogramFFTSamples"
       :id="track.id"
+      :values="[128, 256, 512, 1024, 2048, 4096]"
+      :parametr="'fftSamples'"
+      />
+    </Transition>
+    <Transition>
+      <SpectrogramParams
+      v-if="showSpectrogramWindowtype"
+      :id="track.id"
+      :values="['bartlett', 'bartlettHann', 'blackman', 'cosine', 'gauss', 'hamming', 'hann', 'lanczoz', 'rectangular', 'triangular']"
+      :parametr="'windowFunc'"
       />
     </Transition>
 

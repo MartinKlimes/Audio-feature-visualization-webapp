@@ -62,7 +62,9 @@ onMounted(() => {
           api.get("/get-file/" + props.txtFileName).then((response) => {
             
             emits('fillMarkersList', response.data.split("\n").map(str => parseFloat(str)))
-            marker(response.data.split("\n"), props.id);
+            const data = response.data.split("\n")
+            data.pop()
+            marker(data, props.id);
           });
         } else {
           emits("toggleLoading", props.dataType);

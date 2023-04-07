@@ -1,32 +1,34 @@
 <script setup>
-import { onUnmounted, ref, watchEffect, watch } from 'vue';
+import { onUnmounted, ref, watchEffect, watch } from "vue";
 
-import BlueButttons from '../../../buttons/BlueButtons.vue';
-import { updateRecording } from '../../../../../custom';
-import { setInstrumentColor } from '../../../../functions/useMidiPianoroll';
-import ColorsPicker from '../../../visualizationManager/ColorsPicker.vue';
-import { onClickOutside } from '@vueuse/core';
+import BlueButttons from "../../../buttons/BlueButtons.vue";
+import { updateRecording } from "../../../../../custom";
+import { setInstrumentColor } from "../../../../functions/pianoroll/useMidiPianoroll";
+import ColorsPicker from "../../../visualizationManager/ColorsPicker.vue";
+import { onClickOutside } from "@vueuse/core";
 
+const props = defineProps({
+  id: Number,
+});
 
-const props = defineProps ({
-    id: Number
-})
+const emits = defineEmits(["closeColorPicker"]);
 
-const emits = defineEmits(['closeColorPicker'])
-
-const selectedInstrument = ref(0)
+const selectedInstrument = ref(0);
 const target = ref(null);
-const color = ref(null)
-const colorsList = ref(null)
-let instruments = []
+const color = ref(null);
+const colorsList = ref(null);
+let instruments = [];
 
-watch(() => color.value,() =>  {
-    const {uniqueInstruments, instrumentColors}  = setInstrumentColor(props.id, selectedInstrument.value, color.value)
-    instruments = uniqueInstruments
-    colorsList.value = instrumentColors
-    color.value = null
-}, {immediate: true})
-
+watch(
+  () => color.value,
+  () => {
+    const { uniqueInstruments, instrumentColors } = setInstrumentColor(props.id, selectedInstrument.value, color.value);
+    instruments = uniqueInstruments;
+    colorsList.value = instrumentColors;
+    color.value = null;
+  },
+  { immediate: true }
+);
 
 // const setColor = (color) => {
 //     setInstrumentColor(props.track.id, selectedInstrument.value,color)
@@ -34,40 +36,33 @@ watch(() => color.value,() =>  {
 //     updateRecording(props.track.trackName,'pianorollColor',props.track.pianoroll.pianorollColor)
 // }
 
-onClickOutside(target, () => 
-{   
-    setTimeout(() => {
-    emits('closeColorPicker')
-    
-}, 0);
-})
+onClickOutside(target, () => {
+  setTimeout(() => {
+    emits("closeColorPicker");
+  }, 0);
+});
 
 onUnmounted(() => {
-    const colorsToList = Object.values(colorsList.value);
-    console.log(colorsToList);
+  const colorsToList = Object.values(colorsList.value);
+  console.log(colorsToList);
 
-    updateRecording(props.id,'pianorollColor',colorsToList)
-    
-})
-
+  updateRecording(props.id, "pianorollColor", colorsToList);
+});
 </script>
 
 <template>
-<div class="flex flex-col mt-2 relative rounded-t bg-white justify-center items-center w-full h-max" ref="target">
-    <div class="max-w-28 overflow-x-auto flex gap-0.5 ">
-        <div v-for="instNum in instruments" >
-        
-            <BlueButttons :is-btn-clicked="instNum === selectedInstrument" @click="selectedInstrument = instNum" class="px-1 mt-2" :icon-class="'hidden'">{{instNum}}</BlueButttons>
-        </div>
+  <div class="flex flex-col mt-2 relative rounded-t bg-white justify-center items-center w-full h-max" ref="target">
+    <div class="max-w-28 overflow-x-auto flex gap-0.5">
+      <div v-for="instNum in instruments">
+        <BlueButttons
+          :is-btn-clicked="instNum === selectedInstrument"
+          @click="selectedInstrument = instNum"
+          class="px-1 mt-2"
+          :icon-class="'hidden'"
+          >{{ instNum }}</BlueButttons
+        >
+      </div>
     </div>
-    <ColorsPicker class=" h-27 w-full " :selected-color="colorsList[selectedInstrument]"  @update-color="color = $event"
-    :format="'hex'"
-    />
-
-</div>
-
-
-
-
-
+    <ColorsPicker class="h-27 w-full" :selected-color="colorsList[selectedInstrument]" @update-color="color = $event" :format="'hex'" />
+  </div>
 </template>

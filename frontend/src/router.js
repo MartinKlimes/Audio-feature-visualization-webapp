@@ -6,7 +6,7 @@ import Register from './views/Register.vue'
 import {loggedIn} from './cookieHandling'
 
 import {showAlert, closeAlert} from './alerts'
-import { userInfo } from './globalStores';
+import { userInfo } from './stores/globalStores';
 
 
 

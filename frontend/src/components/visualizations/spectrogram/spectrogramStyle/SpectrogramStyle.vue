@@ -4,10 +4,14 @@ import { onClickOutside } from "@vueuse/core";
 import SpectrogramColormap from './SpectrogramColormap.vue';
 import BlueButtons from '../../../buttons/BlueButtons.vue';
 import SizeSetter from '../../../tools/SizeSetter.vue';
+import SpectrogramDisplayType from './SpectrogramDisplayType.vue';
+
+
 const target = ref(null);
 const emits = defineEmits(['closeModal'])
 const showSizeSetter = ref(false);
 const showColormapSetter = ref(false)
+const showSpectrogramDisplay = ref(false)
 const loadingColor = ref(false)
 const props = defineProps({
     id: Number,
@@ -43,6 +47,13 @@ onClickOutside(target, () => {
         :icon-class="'ml-0'"
         :loading="loadingColor"
         ></BlueButtons>
+        <BlueButtons
+        :icon="'ic:round-display-settings'"
+        @click="showSpectrogramDisplay = !showSpectrogramDisplay"
+        :is-btn-clicked="showSpectrogramDisplay"
+        :icon-class="'ml-0'"
+        ></BlueButtons>
+
     </div>
 
     <Transition>
@@ -60,6 +71,12 @@ onClickOutside(target, () => {
         :id="id"
         @change-color="loadingColor =! loadingColor"
 
+        />
+    </Transition>
+    <Transition>
+        <SpectrogramDisplayType
+        v-if="showSpectrogramDisplay"
+        :id="id"
         />
     </Transition>
 

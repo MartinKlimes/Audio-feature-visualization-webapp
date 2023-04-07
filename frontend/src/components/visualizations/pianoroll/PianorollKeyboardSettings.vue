@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue";
 import { useHideBtn } from "../../../composables/useHideBtn";
 import { ref } from "vue";
-import { trackList } from "../../../globalStores";
+import { trackList } from "../../../stores/globalStores";
 
 const showKeyboardSetting = ref(false);
 const { hide } = useHideBtn(showKeyboardSetting);

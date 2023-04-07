@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { trackIndex, trackList } from "../../globalStores";
+import { trackIndex, trackList } from "../../stores/globalStores";
 import { api } from "../../../custom";
 import { showAlert, closeAlert } from "../../alerts";
 import EditTrack from "./EditTrack.vue";

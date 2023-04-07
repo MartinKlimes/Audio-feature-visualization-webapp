@@ -1,4 +1,4 @@
-import { alertState } from './globalStores'
+import { alertState } from './stores/globalStores'
 
 function showAlert(msg)
 {

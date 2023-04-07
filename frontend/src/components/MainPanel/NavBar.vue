@@ -6,7 +6,7 @@ import {showAlert, closeAlert} from '../../alerts'
 
 // import Vue router for redirects
 import router from '../../router.js'
-import { userInfo } from '../../globalStores';
+import { userInfo } from '../../stores/globalStores';
 import { onClickOutside } from '@vueuse/core'
 // import axios
 import { api } from '../../../custom';

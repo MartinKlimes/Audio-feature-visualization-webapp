@@ -1,5 +1,5 @@
 <script setup>
-import { trackList } from "../../globalStores";
+import { trackList } from "../../stores/globalStores";
 import { Icon } from "@iconify/vue";
 import { onClickOutside } from "@vueuse/core";
 import { ref } from "vue";

@@ -6,7 +6,7 @@ import colormap from "colormap";
 import { wavesurfer } from "../../../functions/waveform";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import { Icon } from "@iconify/vue";
-import { trackList } from "../../../globalStores";
+import { trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 import {useHideBtn} from "../../../composables/useHideBtn"
 const currentTrackList = trackList();
@@ -22,6 +22,7 @@ onMounted(() => {
 });
 
 const createSpectrogramPlugin = () => {
+  console.log(props.track.spectrogram.fftSamples);
   watch(
     () => props.track.spectrogram.plotSpectrogram,
     () => {
@@ -39,14 +40,14 @@ const createSpectrogramPlugin = () => {
               container: `#spectrogram-${props.track.id}`,
               colorMap: colors,
               colorscale: props.track.spectrogram.spectrogramColormap,
-              fftSamples: 1024,
+              fftSamples: props.track.spectrogram.fftSamples,
               height: props.track.spectrogram.spectrogramHeight,
               labels: true,
               legend: true,
               frequencyMax: 12000,
               frequencyMin: 0,
               log: false,
-              windowFunc: "hann",
+              windowFunc: props.track.spectrogram.windowFunc,
               splitChannels: false,
             })
           )

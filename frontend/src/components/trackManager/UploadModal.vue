@@ -1,6 +1,6 @@
 <script setup>
 import TrackManager from "./TrackManager.vue";
-import { trackList} from "../../globalStores";
+import { trackList} from "../../stores/globalStores";
 import { storeToRefs } from "pinia";
 import { Icon } from "@iconify/vue";
 import { onMounted, reactive } from "vue";

@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue";
 import { ref, onMounted, reactive, computed } from "vue";
 import { api } from "../../../custom";
-import { trackIndex, trackList, alertState } from "../../globalStores";
+import { trackIndex, trackList, alertState } from "../../stores/globalStores";
 import VisButtons from "./VisButtons.vue";
 import SelectFiles from "../buttons/SelectFiles.vue";
 import { wavesurfer } from "../../functions/waveform";

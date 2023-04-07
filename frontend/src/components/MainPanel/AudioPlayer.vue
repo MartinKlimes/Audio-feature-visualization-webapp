@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from '@iconify/vue';
 import PlayBtn from '../buttons/PlayBtn.vue';
-import { trackIndex } from '../../globalStores';
+import { trackIndex } from '../../stores/globalStores';
 import { wavesurfer } from '../../functions/waveform';
 import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue';

@@ -6,7 +6,7 @@ import SelectFiles from "../../../buttons/SelectFiles.vue";
 import { onMounted, ref } from "vue";
 import { api } from "../../../../../custom";
 import { wavesurfer } from "../../../../functions/waveform";
-import { trackList } from "../../../../globalStores";
+import { trackList } from "../../../../stores/globalStores";
 import { updateRecording } from "../../../../../custom";
 
 const imagePaths = ref([]);

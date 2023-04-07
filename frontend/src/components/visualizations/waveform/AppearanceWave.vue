@@ -4,7 +4,7 @@ import BlueButtons from "../../buttons/BlueButtons.vue";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { wavesurfer } from "../../../functions/waveform";
-import { trackList } from "../../../globalStores";
+import { trackList } from "../../../stores/globalStores";
 import { updateRecording } from "../../../../custom";
 import SizeSetter from "../../tools/SizeSetter.vue";
 

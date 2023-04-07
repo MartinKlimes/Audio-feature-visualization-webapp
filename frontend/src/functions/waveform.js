@@ -6,11 +6,11 @@ import Cursor from '../functions/cursor/index';
 import Markers from './markers/index';
 
 import Spectrogram from './spectorgram/index';
-import {createVerticalKeyboard, trackCursorPosition} from './useMidiPianoroll'
+import {createVerticalKeyboard, trackCursorPosition} from './pianoroll/useMidiPianoroll'
 
 // import colormapJSON from '../hot-colormap.json'
 import { api } from "../../custom";
-import { trackList } from "../globalStores";
+import { trackList } from "../stores/globalStores";
 import colormap from "colormap"
 import { watch } from "vue";
 
@@ -183,6 +183,8 @@ export function trimWaveform(trackname, start,end, selectedTrackIndex, fromBar, 
 
         })
     })
+    console.log(wavesurfer[selectedTrackIndex].markers);
+    console.log(beatDuration);
     
 
     beatDuration.forEach(function(oneBeat, id){

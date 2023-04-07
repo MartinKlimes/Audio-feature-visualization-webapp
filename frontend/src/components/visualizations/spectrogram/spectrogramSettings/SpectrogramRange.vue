@@ -3,7 +3,7 @@ import { wavesurfer } from '../../../../functions/waveform';
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { ref } from 'vue';
-import { trackList } from '../../../../globalStores';
+import { trackList } from '../../../../stores/globalStores';
 
 const props = defineProps({
     id: Number

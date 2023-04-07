@@ -5,7 +5,7 @@ import PianorollStyle from "./pianorollStyle/PianorollStyle.vue";
 import { Icon } from "@iconify/vue";
 import { updateRecording } from "../../../../custom";
 import ExportBtn from "../../buttons/ExportBtn.vue";
-import { trackList } from "../../../globalStores";
+import { trackList } from "../../../stores/globalStores";
 import { ColorPicker } from "vue-accessible-color-picker";
 
 const showPianorollStyle = ref(false);
@@ -24,16 +24,15 @@ const removePianoroll = () => {
 
 const dynamicNames = () => {
   currentTrackList.selectTrack(props.track.id).pianoroll.dynamicNames =!  currentTrackList.selectTrack(props.track.id).pianoroll.dynamicNames
+  updateRecording(props.track.id, "dynamicNames", currentTrackList.selectTrack(props.track.id).pianoroll.dynamicNames);
 }
 
 const changeColor = (e) => {
-
   currentTrackList.selectTrack(props.track.id).pianoroll.ActiveNotesColor = e
+  updateRecording(props.track.id, "ActiveNotesColor", currentTrackList.selectTrack(props.track.id).pianoroll.ActiveNotesColor);
+
 }
 
-onMounted(() => {
-  currentTrackList.selectTrack(props.track.id).pianoroll.dynamicNames = false
-})
 
 
 

@@ -5,7 +5,7 @@ import { useHideBtn } from "../../../composables/useHideBtn";
 import { api } from "../../../../custom";
 import { createWavesurfer } from "../../../functions/waveform";
 import { wavesurfer } from "../../../functions/waveform";
-import { trackIndex, trackList } from "../../../globalStores";
+import { trackIndex, trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 
 const showZoomerSetting = ref(false)

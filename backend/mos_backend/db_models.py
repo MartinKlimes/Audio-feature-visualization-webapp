@@ -51,13 +51,13 @@ class Recording(db.Model):
         self.start = start
         self.end = end
         self.waveform = Waveform(isWaveform=False, isWaveformDisplayed=False, waveformColor=waveformColor, waveformHeight=200, splitChannels=False, recording_id=self.id)
-        self.spectrogram = Spectrogram(isSpectrogram=False, isSpectrogramDisplayed=False, spectrogramColormap="jet",
-                                       spectrogramHeight=300, recording_id=self.id)
+        self.spectrogram = Spectrogram(isSpectrogram=False, isSpectrogramDisplayed=False, spectrogramColormap="Jet",
+                                       spectrogramHeight=300,fftSamples=1024, windowFunc='hann', recording_id=self.id)
         self.pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,
-                                   pianorollHeight=300, recording_id=self.id)
-        self.ioi_data = InterOnsetInterval(isIOI=False, isIOIDisplayed=False, graph_type="bar", graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
-        self.ibi_data = InterBeatInterval(isIBI=False, isIBIDisplayed=False, graph_type="bar", graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
-        self.imi_data = InterMeasureInterval(isIMI=False, isIMIDisplayed=False, graph_type="bar", graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+                                   pianorollHeight=300,dynamicNames=False, ActiveNotesColor='red', recording_id=self.id)
+        self.ioi_data = InterOnsetInterval(isIOI=False, isIOIDisplayed=False, graph_type="bar",ioi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.ibi_data = InterBeatInterval(isIBI=False, isIBIDisplayed=False, graph_type="bar", ibi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.imi_data = InterMeasureInterval(isIMI=False, isIMIDisplayed=False, graph_type="bar", imi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
         self.user_id = user_id
     def to_dict(self):
         return {
@@ -109,6 +109,8 @@ class Spectrogram(db.Model):
 
     spectrogramColormap = db.Column(db.String(128), nullable=True)
     spectrogramHeight = db.Column(db.Integer, nullable=True)
+    fftSamples = db.Column(db.Integer, nullable=True)
+    windowFunc = db.Column(db.String(128), nullable=True)
 
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
 
@@ -118,7 +120,9 @@ class Spectrogram(db.Model):
             'isSpectrogram': self.isSpectrogram,
             'isSpectrogramDisplayed': self.isSpectrogramDisplayed,
             'spectrogramColormap': self.spectrogramColormap,
-            'spectrogramHeight': self.spectrogramHeight
+            'spectrogramHeight': self.spectrogramHeight,
+            'fftSamples': self.fftSamples,
+            'windowFunc': self.windowFunc
         }
 class Pianoroll(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -127,7 +131,8 @@ class Pianoroll(db.Model):
 
     pianorollColor = db.Column(db.String(256), nullable=True)
     pianorollHeight = db.Column(db.Integer, nullable=True)
-
+    dynamicNames = db.Column(db.Boolean, nullable=True)
+    ActiveNotesColor = db.Column(db.String(256), nullable=True)
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
 
     def to_dict(self):
@@ -136,15 +141,18 @@ class Pianoroll(db.Model):
             'isPianoroll': self.isPianoroll,
             'isPianorollDisplayed': self.isPianorollDisplayed,
             'pianorollColor': self.pianorollColor,
-            'pianorollHeight': self.pianorollHeight
+            'pianorollHeight': self.pianorollHeight,
+            'dynamicNames': self.dynamicNames,
+            'ActiveNotesColor': self.ActiveNotesColor,
         }
 class InterOnsetInterval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     graph_type = db.Column(db.String(256), nullable=True)
-    graph_color = db.Column(db.String(256), nullable=True)
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
+    graph_color = db.Column(db.String(256), nullable=True)
     isIOI = db.Column(db.Boolean, nullable=True)
     isIOIDisplayed = db.Column(db.Boolean, nullable=True)
+    ioi_dataHeight = db.Column(db.Integer, nullable=True)
 
     def to_dict(self):
         return {
@@ -152,7 +160,8 @@ class InterOnsetInterval(db.Model):
             'graph_type': self.graph_type,
             'graph_color': self.graph_color,
             'isIOI': self.isIOI,
-            'isIOIDisplayed': self.isIOIDisplayed
+            'isIOIDisplayed': self.isIOIDisplayed,
+            'ioi_dataHeight': self.ioi_dataHeight
         }
 
 class InterBeatInterval(db.Model):
@@ -162,6 +171,7 @@ class InterBeatInterval(db.Model):
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
     isIBI = db.Column(db.Boolean, nullable=True)
     isIBIDisplayed = db.Column(db.Boolean, nullable=True)
+    ibi_dataHeight = db.Column(db.Integer, nullable=True)
 
     def to_dict(self):
         return {
@@ -169,7 +179,8 @@ class InterBeatInterval(db.Model):
             'graph_type': self.graph_type,
             'graph_color': self.graph_color,
             'isIBI': self.isIBI,
-            'isIBIDisplayed': self.isIBIDisplayed
+            'isIBIDisplayed': self.isIBIDisplayed,
+            'ibi_dataHeight': self.ibi_dataHeight
         }
 
 class InterMeasureInterval(db.Model):
@@ -179,6 +190,7 @@ class InterMeasureInterval(db.Model):
     recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
     isIMI = db.Column(db.Boolean, nullable=True)
     isIMIDisplayed = db.Column(db.Boolean, nullable=True)
+    imi_dataHeight = db.Column(db.Integer, nullable=True)
 
     def to_dict(self):
         return {
@@ -186,5 +198,6 @@ class InterMeasureInterval(db.Model):
             'graph_type': self.graph_type,
             'graph_color': self.graph_color,
             'isIMI': self.isIMI,
-            'isIMIDisplayed': self.isIMIDisplayed
+            'isIMIDisplayed': self.isIMIDisplayed,
+            'imi_dataHeight': self.imi_dataHeight
         }

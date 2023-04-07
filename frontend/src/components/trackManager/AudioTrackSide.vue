@@ -1,13 +1,13 @@
 <script setup>
 
-import { tracklistState, trackList } from '../../globalStores';
+import { tracklistState, trackList } from '../../stores/globalStores';
 import { storeToRefs } from 'pinia'
 import { api } from '../../../custom';
 import UploadModal from './UploadModal.vue';
 import { reactive, ref } from 'vue'
 import { Icon } from '@iconify/vue';
 import {showAlert, closeAlert} from '../../alerts'
-import { uploadModalState } from '../../globalStores';
+import { uploadModalState } from '../../stores/globalStores';
 
 
 

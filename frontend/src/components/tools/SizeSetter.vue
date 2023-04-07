@@ -4,7 +4,7 @@ import { updateRecording } from '../../../custom';
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { ref } from 'vue';
-import { trackList } from '../../globalStores';
+import { trackList } from '../../stores/globalStores';
 
 const currentTrackList = trackList()
 const value = ref(currentTrackList.selectTrack(props.id)[props.visualization][`${props.visualization}Height`])
@@ -18,8 +18,11 @@ const changeSize = (e) => {
         wavesurfer[props.id].spectrogram.init();
     } else if (props.visualization == 'waveform'){
         wavesurfer[props.id].setHeight(e)
+    } else if (props.visualization == 'pianoroll'){
+      currentTrackList.selectTrack(props.id).pianoroll.pianorollHeight = e; 
     } else{
-        currentTrackList.selectTrack(props.id).pianoroll.pianorollHeight = e;
+      currentTrackList.selectTrack(props.id)[props.visualization][`${props.visualization}Height`] = e
+
     }
     updateRecording(props.id,`${props.visualization}Height`, e)
     currentTrackList.selectTrack(props.id)[props.visualization][props.loadingVisualization] = false
@@ -37,7 +40,20 @@ const props = defineProps({
     loadingVisualization: {
         required: true,
         type: String
+    },
+    minValue: {
+      type: Number,
+      default: 100
+    },
+    maxValue: {
+      type: Number,
+      default: 1000
+    },
+    interval: {
+      type: Number,
+      default: 100
     }
+
 })
 
 </script>
@@ -45,23 +61,16 @@ const props = defineProps({
 
 
 <template>
-
-    <!-- <SetSize
-    :default-size="wavesurfer[id].spectrogram.params.height"
-    @change-size="changeSize($event)"
-    /> -->
     <div class="box p-1 bg-white rounded-md mt-2 flex flex-col items-center">
-
-   
     <vue-slider
       @change="changeSize($event)"
       v-model="value"
       :direction="'ttb'"
       :width="6"
       :height="150"
-      :min="100"
-      :max="1000"
-      :interval="100"
+      :min="minValue"
+      :max="maxValue"
+      :interval="interval"
       :marks="true"
       :lazy="true"
       :tooltipStyle="{ backgroundColor: 'Blue' }"

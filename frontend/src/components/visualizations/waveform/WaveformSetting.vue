@@ -5,7 +5,7 @@ import BarSelection from "./BarSelection.vue";
 import TimeSelection from "./TimeSelection.vue";
 import { wavesurfer, marker } from "../../../functions/waveform";
 import { api } from "../../../../custom";
-import { trackIndex, trackList, alertState } from "../../../globalStores";
+import { trackIndex, trackList, alertState } from "../../../stores/globalStores";
 import BlueButtons from "../../buttons/BlueButtons.vue";
 import ExportBtn from "../../buttons/ExportBtn.vue";
 import { updateRecording } from "../../../../custom";

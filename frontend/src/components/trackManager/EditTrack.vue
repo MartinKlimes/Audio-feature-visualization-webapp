@@ -5,7 +5,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 import { useI18n } from "vue-i18n";
 import { api } from "../../../custom";
-import { trackList } from "../../globalStores";
+import { trackList } from "../../stores/globalStores";
 import { updateRecording } from "../../../custom";
 const { t, locale } = useI18n();
 

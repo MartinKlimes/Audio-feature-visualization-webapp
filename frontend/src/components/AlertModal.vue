@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from '@iconify/vue';
-import { alertState } from '../globalStores';
+import { alertState } from '../stores/globalStores';
 import { storeToRefs } from 'pinia'
 
 const alertGlobalState = alertState();

@@ -4,12 +4,12 @@ import {ref, onMounted, watchEffect, watch } from 'vue';
 import { wavesurfer } from '../../../functions/waveform';
 import Cursor from '../../tools/Cursor.vue'
 import { api } from '../../../../custom';
-import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor, getsaturationValues} from '../../../functions/useMidiPianoroll'
+import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor, getsaturationValues} from '../../../functions/pianoroll/useMidiPianoroll'
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import LoadingOverlay from '../../tools/LoadingOverlay.vue';
 
 
-import { trackList } from '../../../globalStores';
+import { trackList } from '../../../stores/globalStores';
 import { q } from 'plotly.js-dist';
 import PianorollKeyboardSettings from './PianorollKeyboardSettings.vue';
 
@@ -124,6 +124,7 @@ const editPianoroll = () => {
 
         const {width, paddingRight} = countWidthWaveform()
         watchEffect(() =>{
+            console.log(props.track.pianoroll.dynamicNames);
             props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors, props.track.pianoroll.dynamicNames)               
         })
         watch(
@@ -149,7 +150,6 @@ const editPianoroll = () => {
                 trackCursor = setInterval(setPianorollCurrentPosition, 100)
             }   
         })
-
         wavesurfer[props.track.id].on('pause', () => {  
             clearInterval(trackCursor)
         })

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { api } from '../custom'
+import { api } from '../../custom'
 
 
 export const alertState = defineStore('alertState', 
@@ -47,7 +47,6 @@ export const trackList = defineStore('trackList',
         async fetchRecordings() {
             try {
                 const response = await api.get('/get-track-list')
-                console.log(response);
                 const recordings = response.data
                 
                 this.trackState = recordings[0]
@@ -89,6 +88,7 @@ export const trackList = defineStore('trackList',
     }
 
 })
+
 
 export const trackIndex = defineStore('trackIndex', 
 {

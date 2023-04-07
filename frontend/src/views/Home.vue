@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import NavBar from '../components/MainPanel/NavBar.vue';
 import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
 import UploadModal from '../components/trackManager/UploadModal.vue';
-import { tracklistState, uploadModalState, trackList, trackIndex } from '../globalStores';
+import { tracklistState, uploadModalState, trackList, trackIndex } from '../stores/globalStores';
 import Waveform from '../components/visualizations/waveform/Waveform.vue';
 import { getCookie } from '../cookieHandling';
 import Cursor from '../components/tools/Cursor.vue';
@@ -27,14 +27,21 @@ const uploadModalVisible = ref(false)
 
 currentTrackList.fetchRecordings()
 
-const axiosConfig = {
-    headers: {
-        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
-        'Content-Type': 'multipart/form-data',     
-    },
+const getVisualizationProps = (track, intervalsType, type) => {
+    const data = track[intervalsType + '_data'];
+    console.log(data);
+    return {
+        id: track.id,
+        trackName: track.trackName,
+        graph_color: data.graph_color,
+        txtFileName: track.txtFileName,
+        showHorizontalAverage: data.showHorizontalAverage,
+        showMovingAverage: data.showMovingAverage,
+        movingAverageWindowSize: data.movingAverageWindowSize,
+        height: data[intervalsType + '_dataHeight'],
+        intervalsType: type
+    };
 }
-
-
 
 </script>
 
@@ -129,9 +136,27 @@ const axiosConfig = {
                     v-if="track.imi_data.isIMI"  
                     v-show="track.imi_data.isIMIDisplayed"  
                     :isSelected = "track.id===globalTrackIndex.selTrackIndex"
-                    :id="track.id"
-                    :txt-file-name="track.txtFileName"
-                    @click="selectedVis = 2"
+                    :props="getVisualizationProps(track, 'imi', 'measure')"
+                    @click="selectedVis = 3"
+                    />
+                </transition>
+        
+                <transition>
+                    <IntervalsVisualization
+                    v-if="track.ioi_data.isIOI"  
+                    v-show="track.ioi_data.isIOIDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                    :props="getVisualizationProps(track, 'ioi', 'onset')"
+                    @click="selectedVis = 4"
+                    />
+                </transition>
+                <transition>
+                    <IntervalsVisualization
+                    v-if="track.ibi_data.isIBI"  
+                    v-show="track.ibi_data.isIBIDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                    :props="getVisualizationProps(track, 'ibi', 'beats')"
+                    @click="selectedVis = 5"
                     />
                 </transition>
                 

@@ -65,7 +65,7 @@ def update_recording():
     column = data.get('column')
     new_value = data.get('new_value')
     record_id = data.get('record_id')
-
+    print(data,column,new_value)
     user = current_user
     recording = Recording.query.filter_by(id=record_id, user=user).first()
     waveform = Waveform.query.filter_by(recording_id=recording.id).first()
@@ -244,38 +244,3 @@ def get_click_audio(record_name):
 @app.route('/get-files-list/<directory>')
 def get_click_audio_list(directory):
     return jsonify(os.listdir((os.path.realpath(f'./user_uploads/{directory}/'))))
-@app.route('/trim_midi', methods=['POST'])
-@jwt_required()
-def trim_midi():
-    user = current_user
-    file_name = request.form['file_name']
-    start_time = float(request.form['start_time'])
-    end_time = float(request.form['end_time'])
-    midi = mido.MidiFile(os.path.realpath(f'./user_uploads/{user.username}/MIDI/{file_name}'))
-    print(midi.tracks)
-
-    new_midi = mido.MidiFile()
-
-    for track in midi.tracks:
-        new_track = mido.MidiTrack()
-        time = 0
-        for msg in track:
-            time += msg.time
-            if time >= start_time * midi.ticks_per_beat and time <= (end_time ) * midi.ticks_per_beat:
-                new_track.append(msg.copy())
-            elif time > (end_time ) * midi.ticks_per_beat:
-                break
-        new_midi.tracks.append(new_track)
-
-    print(new_midi.tracks)
-
-    new_file_name = f'{file_name}_({"{:.2f}".format(round(start_time, 2))}-{"{:.2f}".format(round(end_time, 2))}).mid'
-
-    new_midi.save(os.path.realpath(f'./user_uploads/{user.username}/MIDI/{new_file_name}'))
-    filepath = os.path.realpath(f'./user_uploads/{user.username}/MIDI/')
-
-    return send_from_directory(
-        filepath,
-        new_file_name,
-        as_attachment=True
-    )
