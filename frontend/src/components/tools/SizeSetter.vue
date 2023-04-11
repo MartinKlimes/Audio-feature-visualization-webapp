@@ -52,6 +52,10 @@ const props = defineProps({
     interval: {
       type: Number,
       default: 100
+    },
+    lazy: {
+      type: Boolean,
+      default: true
     }
 
 })
@@ -61,10 +65,10 @@ const props = defineProps({
 
 
 <template>
-    <div class="box p-1 bg-white rounded-md mt-2 flex flex-col items-center">
+    <div class="box p-1 bg-white rounded-md mt-2 flex flex-col items-center min-w-11">
     <vue-slider
       @change="changeSize($event)"
-      v-model="value"
+      v-model="currentTrackList.selectTrack(props.id)[props.visualization][`${props.visualization}Height`]"
       :direction="'ttb'"
       :width="6"
       :height="150"
@@ -72,7 +76,7 @@ const props = defineProps({
       :max="maxValue"
       :interval="interval"
       :marks="true"
-      :lazy="true"
+      :lazy="lazy"
       :tooltipStyle="{ backgroundColor: 'Blue' }"
       :processStyle="{ backgroundColor: 'Blue' }"
       :dotStyle="{ backgroundColor: 'Blue' }"
@@ -83,7 +87,7 @@ const props = defineProps({
       :labelStyle="{ opacity: 0 }"
 
     ></vue-slider>
-    <span class="mt-1 text-xs font-bold">{{ value }}px</span>
+    <span class="mt-1 text-xs font-bold">{{ currentTrackList.selectTrack(props.id)[props.visualization][`${props.visualization}Height`] }}px</span>
 
   </div>
 </template>

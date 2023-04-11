@@ -8,6 +8,7 @@ import { wavesurfer } from "../../../functions/waveform";
 import { trackIndex, trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 
+
 const showZoomerSetting = ref(false)
 const hideZoomer = ref(false)
 const globalTrackIndex = trackIndex()
@@ -51,6 +52,8 @@ const changeHeight = (e) => {
     wavesurfer[props.track.id].params.barHeight = e
     wavesurfer[props.track.id].drawBuffer()
 
+
+
 };
 
 const refreshZoomer = () => {
@@ -60,6 +63,7 @@ const refreshZoomer = () => {
     wavesurfer[props.track.id].zoom(20)
     wavesurfer[props.track.id].seekTo(0)
 }
+
 </script>
 
 <template>

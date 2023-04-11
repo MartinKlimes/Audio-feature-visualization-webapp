@@ -65,7 +65,7 @@ def update_recording():
     column = data.get('column')
     new_value = data.get('new_value')
     record_id = data.get('record_id')
-    print(data,column,new_value)
+
     user = current_user
     recording = Recording.query.filter_by(id=record_id, user=user).first()
     waveform = Waveform.query.filter_by(recording_id=recording.id).first()

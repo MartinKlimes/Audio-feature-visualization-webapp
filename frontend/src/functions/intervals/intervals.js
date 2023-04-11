@@ -1,27 +1,28 @@
 import Chart from 'chart.js/auto';
 
 export default class ChartManager {
-  constructor(data, id, type) {
-
+  constructor(data, id, type, graph_color,graph_type) {
+    console.log(graph_color);
+    this.graph_color = graph_color
     this.intervals = [];
-    const times = [];
+    this.times = [];
     for (let i = 0; i < data.length - 1; i++) {
       const interval = data[i + 1] - data[i];
       this.intervals.push(interval);
-      times.push(data[i]);
+      this.times.push(data[i]);
     }
-
+    this.type = type
     // Add the last interval and its time as well
     this.intervals.push(data[data.length - 1] - data[data.length - 2]);
-    times.push(data[data.length - 1]);
+    this.times.push(data[data.length - 1]);
 
-    this.chart = new Chart(document.getElementById(`${type}-${id}`), {
-      type: 'bar',
+    this.chart = new Chart(document.getElementById(`Inter-${type}-${id}`), {
+      type: graph_type || 'bar',
       data: {
-        labels: times,
+        labels:  Array.from({ length: this.intervals.length }, (_, i) => i + 1),
         datasets: [{
           label: 'IOI',
-          backgroundColor: 'rgba(0, 0, 255, 0.5)',
+          backgroundColor: graph_color == 'rgba(0, 0, 255, 0.5)'? 'rgba(0, 0, 255, 0.5)' : hexToRGBA(graph_color, 0.8),
           data: this.intervals,
         }],
       },
@@ -58,7 +59,7 @@ export default class ChartManager {
   }
 
   averageHorizontalLine() {
-  const average = this.intervals.reduce((a, b) => a + b) / this.intervals.length;
+  const average = this.chart.data.datasets[0].data.reduce((a, b) => a + b) / this.chart.data.datasets[0].data.length;
   const existingDatasetIndex = this.chart.data.datasets.findIndex(dataset => dataset.label === 'Average');
   if (existingDatasetIndex > -1) {
     // toggle off if already exists
@@ -73,7 +74,7 @@ export default class ChartManager {
       borderColor: 'rgba(255, 0, 0, 1)',
       borderWidth: 3,
       pointRadius: 0,
-      data: Array(this.chart.data.labels.length).fill(average),
+      data: Array(this.chart.data.datasets[0].data.length).fill(average),
     });
   }
   this.chart.update();
@@ -81,16 +82,14 @@ export default class ChartManager {
 
 
 createMovingAverage(windowSize = this.windowSize) {
-  console.log('object');
-
     this.windowSize = windowSize;
     this.movingAvg = [];
 
-    for (let i = 0; i < this.intervals.length; i++) {
+    for (let i = 0; i < this.chart.data.datasets[0].data.length; i++) {
       let sum = 0;
       let count = 0;
       for (let j = Math.max(0, i - windowSize + 1); j <= i; j++) {
-        sum += this.intervals[j];
+        sum += this.chart.data.datasets[0].data[j];
         count++;
       }
       this.movingAvg.push(sum / count);
@@ -132,14 +131,15 @@ createMovingAverage(windowSize = this.windowSize) {
   changeColor(newColor) {
     const datasets = this.chart.data.datasets;
     for (let i = 0; i < datasets.length; i++) {
-      datasets[i].backgroundColor = newColor;
+      datasets[i].backgroundColor = hexToRGBA(newColor, 0.5);
+  
     }
     this.chart.update();
   }
   resetChart() {
     this.chart.destroy(); // zničí aktuální graf
   }
-  createHistogram(numBins) {
+  createHistogramLength(numBins) {
     // Create bins for the histogram
     const minInterval = Math.min(...this.intervals);
     const maxInterval = Math.max(...this.intervals);
@@ -161,26 +161,28 @@ createMovingAverage(windowSize = this.windowSize) {
     }
   
     // Update the chart data
-    this.chart.config.type = 'bar';
+    // this.chart.config.type = 'bar';
     this.chart.data = {
       labels: labels,
       datasets: [{
         label: 'Histogram',
-        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+        backgroundColor:  this.graph_color,
         data: bins,
       }],
     };
+    this.chart.options.scales.x.title.text = `Length Interval [min:sec]`;
+
     this.chart.update();
   }
-  createHistogramFrame(numBins) {
-    const startTime = this.chart.data.labels[0];
-    const endTime = this.chart.data.labels[this.chart.data.labels.length - 1];
+  createHistogramTime(numBins) {
+    const startTime = this.times[0]
+    const endTime = this.times[this.times.length - 1];
     const intervalSize = (endTime - startTime) / numBins;
     const binCounts = Array(numBins).fill(0);
   
     for (let i = 0; i < this.intervals.length; i++) {
       const interval = this.intervals[i];
-      const time = this.chart.data.labels[i];
+      const time = this.times[i];
       const binIndex = Math.floor((time - startTime) / intervalSize);
       if (binIndex < numBins) {
         binCounts[binIndex]++;
@@ -204,13 +206,20 @@ createMovingAverage(windowSize = this.windowSize) {
       binLabels.push(binLabel);
     }
   
-    this.chart.config.type = 'bar';
+    // this.chart.config.type = 'bar';
     this.chart.data.datasets[0].data = binCounts;
     this.chart.data.labels = binLabels;
+    this.chart.data.datasets.backgroundColor = this.graph_color,
     this.chart.options.scales.x.title.text = `Time Interval [min:sec]`;
     this.chart.options.scales.y.title.text = `Interval Count`;
     this.chart.update();
   }
 
-  
+}
+
+function hexToRGBA(hex, alpha) {
+  const r = parseInt(hex.substring(1, 3), 16);
+  const g = parseInt(hex.substring(3, 5), 16);
+  const b = parseInt(hex.substring(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }

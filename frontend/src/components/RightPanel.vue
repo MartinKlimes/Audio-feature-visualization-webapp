@@ -51,7 +51,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-show="isSelected" class="h-full p-1 rounded-md flex flex-col gap-1 items-center" :class="track.backgroundColor">
+  <div v-show="isSelected" class="h-full p-1 rounded-md flex flex-col gap-1 items-center overflow-auto" :class="track.backgroundColor">
     <span class="max-w-37 overflow-x-auto whitespace-nowrap font-serif text-sm font-bold opacity-60 rounded-md overflow-hidden">
       {{ track.trackName }}
     </span>

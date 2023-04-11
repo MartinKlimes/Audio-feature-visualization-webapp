@@ -36,8 +36,8 @@ const toggleMovingAverage = () => {
       <label class="font-bold text-xs ml-1">Moving Average</label>
     </div>
 
-    <div v-if="currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].showMovingAverage" class="mt-2 flex flex-col items-center boxTight rounded-md py-1">
-        <span class="text-sm opacity-40 font-bold">window size: {{ windowSize }}</span>
+    <div v-if="currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].showMovingAverage" class="mt-2 flex flex-col items-center  rounded-md py-1 ">
+        <span class="text-sm opacity-40 font-bold boxTight p-1 rounded-md">window size: {{ windowSize }}</span>
     
 
     <vue-slider

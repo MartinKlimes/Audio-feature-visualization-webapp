@@ -12,6 +12,7 @@ import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
 import Spectrogram from '../components/visualizations/spectrogram/Spectrogram.vue'
 import IntervalsVisualization from '../components/visualizations/intervals/IntervalsVisualization.vue';
+import Tempo from '../components/visualizations/Tempo.vue';
 
 // import { defineAsyncComponent } from 'vue'
 // const Spectrogram = defineAsyncComponent(() =>
@@ -29,15 +30,17 @@ currentTrackList.fetchRecordings()
 
 const getVisualizationProps = (track, intervalsType, type) => {
     const data = track[intervalsType + '_data'];
-    console.log(data);
     return {
         id: track.id,
         trackName: track.trackName,
         graph_color: data.graph_color,
+        graph_type: data.graph_type,
         txtFileName: track.txtFileName,
         showHorizontalAverage: data.showHorizontalAverage,
         showMovingAverage: data.showMovingAverage,
         movingAverageWindowSize: data.movingAverageWindowSize,
+        histogramTimeFrameSize: data.histogramTimeFrameSize,
+        histogramLengthFrameSize: data.histogramLengthFrameSize,
         height: data[intervalsType + '_dataHeight'],
         intervalsType: type
     };
@@ -159,7 +162,14 @@ const getVisualizationProps = (track, intervalsType, type) => {
                     @click="selectedVis = 5"
                     />
                 </transition>
+            <Transition>
+
+                <Tempo
+                :id="track.id"
+                :trackName="track.trackName"
                 
+                />
+            </Transition>
 
             
             </div>

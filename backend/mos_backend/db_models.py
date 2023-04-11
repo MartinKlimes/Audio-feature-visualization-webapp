@@ -55,9 +55,9 @@ class Recording(db.Model):
                                        spectrogramHeight=300,fftSamples=1024, windowFunc='hann', recording_id=self.id)
         self.pianoroll = Pianoroll(isPianoroll=False, isPianorollDisplayed=False, pianorollColor=None,
                                    pianorollHeight=300,dynamicNames=False, ActiveNotesColor='red', recording_id=self.id)
-        self.ioi_data = InterOnsetInterval(isIOI=False, isIOIDisplayed=False, graph_type="bar",ioi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
-        self.ibi_data = InterBeatInterval(isIBI=False, isIBIDisplayed=False, graph_type="bar", ibi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
-        self.imi_data = InterMeasureInterval(isIMI=False, isIMIDisplayed=False, graph_type="bar", imi_dataHeight=200, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.ioi_data = InterOnsetInterval(isIOI=False, isIOIDisplayed=False, graph_type="bar",ioi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.ibi_data = InterBeatInterval(isIBI=False, isIBIDisplayed=False, graph_type="bar", ibi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.imi_data = InterMeasureInterval(isIMI=False, isIMIDisplayed=False, graph_type="bar", imi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
         self.user_id = user_id
     def to_dict(self):
         return {
