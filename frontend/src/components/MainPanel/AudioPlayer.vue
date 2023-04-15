@@ -4,18 +4,20 @@ import PlayBtn from '../buttons/PlayBtn.vue';
 import { trackIndex } from '../../stores/globalStores';
 import { wavesurfer } from '../../functions/waveform';
 import { storeToRefs } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, watchEffect } from 'vue';
+import VueSlider from 'vue-slider-component';
 
 const globalTrackIndex = trackIndex()
 const {selTrackIndex, selTracksToPlay} = storeToRefs(globalTrackIndex) 
 const isPlaying = ref([])
 const currentTime = ref(0)
+const duration = ref(null)
+const playbackRate = ref(null)
 
 
 const getCurrentTime = (id) => {
+    countTime()
     const xpos = `${wavesurfer[id].drawer.lastPos - wavesurfer[id].drawer.wrapper.scrollLeft}px`
-    currentTime.value = wavesurfer[id].getCurrentTime()
-
     const liveCursorSpec = document.getElementById(`spectrogram-liveCursor-${id}`)
     const liveCursorpiano = document.getElementById(`pianoroll-liveCursor-${id}`)
 
@@ -141,6 +143,22 @@ const skipBackward = () => {
 // const activeLoops = (params) => {
     
 // }
+watchEffect(() => {
+    if(wavesurfer[selTrackIndex.value]){
+    duration.value = Math.floor(wavesurfer[selTrackIndex.value].getDuration() / 60).toString().padStart(2, '0') + ':' + (wavesurfer[selTrackIndex.value].getDuration() % 60).toFixed(0).toString().padStart(2, '0') + ':' + (wavesurfer[selTrackIndex.value].getDuration() % 1).toFixed(2).substring(2)
+
+    wavesurfer[selTrackIndex.value].on('interaction', () => {
+        setTimeout(() => {
+            countTime()
+        });
+        }, 0);
+    }
+})
+const countTime = () => {
+    return currentTime.value = Math.floor(wavesurfer[selTrackIndex.value].getCurrentTime() / 60).toString().padStart(2, '0') + ':' + (wavesurfer[selTrackIndex.value].getCurrentTime() % 60).toFixed(0).toString().padStart(2, '0') + ':' + (wavesurfer[selTrackIndex.value].getCurrentTime() % 1).toFixed(2).substring(2)
+}
+
+
 
 </script>
 
@@ -149,6 +167,28 @@ const skipBackward = () => {
 
 
 <template>
+
+<!-- <div class="flex gap-2 ml-40 mt-0.5 rounded-2xl bg-gray-300 h-9 px-3 items-center justify-center">
+    <vue-slider
+      @change="changeSize($event)"
+      v-model="playbackRate"
+     
+      :width="100"
+      :height="20"
+      :min="0.25"
+      :max="3"
+      :interval="0.25"
+      :marks="true"
+      :tooltipStyle="{ backgroundColor: 'Blue' , width: '10px', height: '10px'}"
+      :processStyle="{ backgroundColor: 'Blue' , width: '10px', height: '10px'}"
+      :dotStyle="{ backgroundColor: 'Blue', width: '10px', height: '10px' }"
+      :railStyle="{ backgroundColor: '' }"
+      :stepStyle="{ backgroundColor: 'RoyalBlue	' , width: '10px', height: '10px'}"
+      :stepActiveStyle="{ backgroundColor: 'black' , width: '10px', height: '10px'}"
+      :labelActiveStyle ="{ backgroundColor: 'CornflowerBlue' , width: '10px', height: '10px'}"
+      :labelStyle="{ opacity: 0 , width: '10px', height: '10px'}"
+    ></vue-slider>
+</div> -->
 
 <div class="flex gap-2 ml-40 mt-0.5 rounded-2xl bg-gray-300 h-9 px-3 ">
 
@@ -165,16 +205,13 @@ const skipBackward = () => {
 </div>
 
 <div class="bg-gray-300 rounded-l-2xl px-3 mt-0.5 h-9 flex ml-10 font-bold  items-center text-xl">
-    {{(currentTime>60 ? (currentTime/60).toFixed(0) : '0') +  'm' }} 
-    {{(currentTime>60 ? (currentTime % 60).toFixed(2) : (currentTime).toFixed(2)) + 's'}}
+    {{ currentTime}}
   
-
 </div>
 <div v-if="wavesurfer[selTrackIndex]" class="bg-gray-300 rounded-r-2xl px-3 mt-0.5 h-9 flex ml-1 font-bold  items-center text-xl">
     <!-- {{ wavesurfer[selTrackIndex].getDuration() }}
     {{ wavesurfer[selTrackIndex].getDuration() % 60 }} -->
-    {{(wavesurfer[selTrackIndex].getDuration()>60 ? (wavesurfer[selTrackIndex].getDuration()/60).toFixed(0) : '0') +  'm' }} 
-    {{(wavesurfer[selTrackIndex].getDuration()>60 ? (wavesurfer[selTrackIndex].getDuration() % 60).toFixed(2) : (wavesurfer[selTrackIndex].getDuration()).toFixed(2)) + 's'}}
+    {{ duration }}
   
 
 </div>

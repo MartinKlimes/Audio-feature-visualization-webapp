@@ -1,7 +1,6 @@
 <script setup>
 import axios from 'axios';
 import { api } from '../../../custom';
-import Meyda from 'meyda';
 import { onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 

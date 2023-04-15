@@ -162,14 +162,14 @@ const getVisualizationProps = (track, intervalsType, type) => {
                     @click="selectedVis = 5"
                     />
                 </transition>
-            <Transition>
+            <!-- <Transition>
 
                 <Tempo
                 :id="track.id"
                 :trackName="track.trackName"
                 
                 />
-            </Transition>
+            </Transition> -->
 
             
             </div>
