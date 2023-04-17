@@ -25,15 +25,15 @@ const toggleMovingAverage = () => {
 </script>
 
 <template>
-  <div class="boxTight mt-2 w-full h-max rounded-md flex items-start pt-1 flex-col justify-center">
+  <div class="boxTight mt-2 w-full h-max bg-gray-100 rounded-md flex items-start pt-1 flex-col justify-center">
 
     <div>
-      <input type="checkbox"  @change="toggleHorizontalAverage" class="cursor-pointer ml-2" :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showHorizontalAverage" />
-      <label class="font-bold text-xs ml-1">Average (line)</label>
+      <input id="horizontal-average" type="checkbox"  @change="toggleHorizontalAverage" class="cursor-pointer ml-2" :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showHorizontalAverage" />
+      <label for="horizontal-average" class="font-bold text-xs ml-1">Average (line)</label>
     </div>
     <div>
-      <input type="checkbox"  @change="toggleMovingAverage" class="cursor-pointer ml-2"  :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showMovingAverage" />
-      <label class="font-bold text-xs ml-1">Moving Average</label>
+      <input id="moving-average" type="checkbox"  @change="toggleMovingAverage" class="cursor-pointer ml-2"  :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showMovingAverage" />
+      <label for="moving-average" class="font-bold text-xs ml-1">Moving Average</label>
     </div>
 
     <div v-if="currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].showMovingAverage" class="mt-2 flex flex-col items-center  rounded-md py-1 ">

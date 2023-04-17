@@ -41,8 +41,8 @@ onUnmounted(() => {
     
     <div>
     <div v-for="value in values" :key="value">
-      <input type="radio" :value="value" v-model="selectedValue" @change="changeFrameSize()"  class="cursor-pointer">
-      <label class="font-bold text-xs ml-1">{{ value }}</label>
+      <input :id="value" type="radio" :value="value" v-model="selectedValue" @change="changeFrameSize()"  class="cursor-pointer">
+      <label :for="value" class="font-bold text-xs ml-1">{{ value }}</label>
     </div>
   </div>
     

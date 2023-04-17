@@ -9,6 +9,7 @@ import { trackIndex, trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 
 
+
 const showZoomerSetting = ref(false)
 const hideZoomer = ref(false)
 const globalTrackIndex = trackIndex()
@@ -19,6 +20,7 @@ onMounted(() => {
   currentTrackList.selectTrack(props.track.id).waveform.isWaveformLoading = true
   api.get("/get-file/" + props.track.trackName).then((response) => {
     const audioSrc = response.request.responseURL;
+
     let colors = [];
     if (props.track.waveform.waveformColor) {
       colors = props.track.waveform.waveformColor.slice(2, -2).split('","');
@@ -51,7 +53,7 @@ const changeHeight = (e) => {
     wavesurfer[props.track.id].params.normalize = false
     wavesurfer[props.track.id].params.barHeight = e
     wavesurfer[props.track.id].drawBuffer()
-
+  
 
 
 };

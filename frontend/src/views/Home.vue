@@ -12,6 +12,7 @@ import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
 import Spectrogram from '../components/visualizations/spectrogram/Spectrogram.vue'
 import IntervalsVisualization from '../components/visualizations/intervals/IntervalsVisualization.vue';
+import RMS_Tempo from '../components/visualizations/RMS_Tempo.vue';
 import Tempo from '../components/visualizations/Tempo.vue';
 
 // import { defineAsyncComponent } from 'vue'
@@ -42,7 +43,8 @@ const getVisualizationProps = (track, intervalsType, type) => {
         histogramTimeFrameSize: data.histogramTimeFrameSize,
         histogramLengthFrameSize: data.histogramLengthFrameSize,
         height: data[intervalsType + '_dataHeight'],
-        intervalsType: type
+        intervalsType: type,
+        numOfFrames: data.numOfFrames
     };
 }
 
@@ -162,11 +164,40 @@ const getVisualizationProps = (track, intervalsType, type) => {
                     @click="selectedVis = 5"
                     />
                 </transition>
+                <transition>
+                    <IntervalsVisualization
+                    v-if="track.Tempo_data.isTempo"  
+                    v-show="track.Tempo_data.isTempoDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                    :props="getVisualizationProps(track, 'Tempo', 'Tempo')"
+                    @click="selectedVis = 6"
+                    />
+                </transition>
+                <transition>
+                    <IntervalsVisualization
+                    v-if="track.RMS_data.isRMS"  
+                    v-show="track.RMS_data.isRMSDisplayed"  
+                    :isSelected = "track.id===globalTrackIndex.selTrackIndex"
+                    :props="getVisualizationProps(track, 'RMS', 'RMS')"
+                    @click="selectedVis = 7"
+                    />
+                </transition>
+
+
             <!-- <Transition>
 
                 <Tempo
                 :id="track.id"
                 :trackName="track.trackName"
+                :num-segments="500"
+                />
+            </Transition> -->
+            <!-- <Transition>
+
+                <RMS_Tempo
+                :id="track.id"
+                :trackName="track.trackName"
+                :visualization="'Tempo'"
                 
                 />
             </Transition> -->

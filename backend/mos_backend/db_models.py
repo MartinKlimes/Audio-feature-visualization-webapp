@@ -37,6 +37,8 @@ class Recording(db.Model):
     ioi_data = db.relationship('InterOnsetInterval', backref='recording', uselist=False)
     ibi_data = db.relationship('InterBeatInterval', backref='recording', uselist=False)
     imi_data = db.relationship('InterMeasureInterval', backref='recording', uselist=False)
+    RMS_data = db.relationship('RMS', backref='recording', uselist=False)
+    Tempo_data = db.relationship('Tempo', backref='recording', uselist=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, filename, filepath, user_id, ground_truth=None, isTrackSelected=False, backgroundColor=None,
@@ -58,6 +60,8 @@ class Recording(db.Model):
         self.ioi_data = InterOnsetInterval(isIOI=False, isIOIDisplayed=False, graph_type="bar",ioi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
         self.ibi_data = InterBeatInterval(isIBI=False, isIBIDisplayed=False, graph_type="bar", ibi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
         self.imi_data = InterMeasureInterval(isIMI=False, isIMIDisplayed=False, graph_type="bar", imi_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.RMS_data = RMS(isRMS=False,numOfFrames =100, isRMSDisplayed=False, graph_type="line", RMS_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
+        self.Tempo_data = Tempo(isTempo=False,numOfFrames =100, isTempoDisplayed=False, graph_type="line", Tempo_dataHeight=100, graph_color="rgba(0, 0, 255, 0.5)", recording_id=self.id)
         self.user_id = user_id
     def to_dict(self):
         return {
@@ -77,6 +81,9 @@ class Recording(db.Model):
             'ioi_data': self.ioi_data.to_dict() if self.ioi_data else None,
             'ibi_data': self.ibi_data.to_dict() if self.ibi_data else None,
             'imi_data': self.imi_data.to_dict() if self.imi_data else None,
+            'RMS_data': self.RMS_data.to_dict() if self.RMS_data else None,
+            'Tempo_data': self.Tempo_data.to_dict() if self.Tempo_data else None,
+
         }
 
 class Waveform(db.Model):
@@ -182,7 +189,6 @@ class InterBeatInterval(db.Model):
             'isIBIDisplayed': self.isIBIDisplayed,
             'ibi_dataHeight': self.ibi_dataHeight
         }
-
 class InterMeasureInterval(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     graph_type = db.Column(db.String(256), nullable=True)
@@ -200,4 +206,44 @@ class InterMeasureInterval(db.Model):
             'isIMI': self.isIMI,
             'isIMIDisplayed': self.isIMIDisplayed,
             'imi_dataHeight': self.imi_dataHeight
+        }
+class RMS(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    numOfFrames = db.Column(db.Integer, nullable=True)
+    graph_type = db.Column(db.String(256), nullable=True)
+    graph_color = db.Column(db.String(256), nullable=True)
+    recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
+    isRMS = db.Column(db.Boolean, nullable=True)
+    isRMSDisplayed = db.Column(db.Boolean, nullable=True)
+    RMS_dataHeight = db.Column(db.Integer, nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'numOfFrames': self.numOfFrames,
+            'graph_type': self.graph_type,
+            'graph_color': self.graph_color,
+            'isRMS': self.isRMS,
+            'isRMSDisplayed': self.isRMSDisplayed,
+            'RMS_dataHeight': self.RMS_dataHeight
+        }
+class Tempo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    numOfFrames = db.Column(db.Integer, nullable=True)
+    graph_type = db.Column(db.String(256), nullable=True)
+    graph_color = db.Column(db.String(256), nullable=True)
+    recording_id = db.Column(db.Integer, db.ForeignKey('recording.id'), nullable=False)
+    isTempo = db.Column(db.Boolean, nullable=True)
+    isTempoDisplayed = db.Column(db.Boolean, nullable=True)
+    Tempo_dataHeight = db.Column(db.Integer, nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'numOfFrames': self.numOfFrames,
+            'graph_type': self.graph_type,
+            'graph_color': self.graph_color,
+            'isTempo': self.isTempo,
+            'isTempoDisplayed': self.isTempoDisplayed,
+            'Tempo_dataHeight': self.Tempo_dataHeight
         }

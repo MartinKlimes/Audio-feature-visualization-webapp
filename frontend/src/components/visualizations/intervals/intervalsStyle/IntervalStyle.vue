@@ -18,7 +18,7 @@ const props = defineProps({
 })
 const changeColor = (e) => { 
   currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].graph_color = e;
-  updateRecording(props.id,'graph_color', e)
+  updateRecording(props.id,'graph_color', e, props.selectedIntervalVis)
 };
 
 const changeChartType = () => {
@@ -29,7 +29,7 @@ const changeChartType = () => {
   }
   setTimeout(() => {
     currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].graph_type = chartType.value
-  updateRecording(props.id,'graph_type', chartType.value)
+  updateRecording(props.id,'graph_type', chartType.value, props.selectedIntervalVis)
     
   }, 0);
 }
@@ -38,8 +38,9 @@ const changeChartType = () => {
 
 
 <template>
- <div class="flex flex-col bg-white box rounded-md py-2 px-1  w-full items-center " >
-    <div class="flex gap-1">
+
+ <div class="flex flex-col bg-white box rounded-md py-2 px-1  w-full items-center  gap-1" >
+    <div class="flex  gap-1">
       <BlueButtons
         :disabled="!selectedIntervalVis"
         :is-disabled="!selectedIntervalVis"

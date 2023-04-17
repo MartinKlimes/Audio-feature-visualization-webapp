@@ -7,14 +7,13 @@ const props = defineProps({
   track: Object,
 });
 
-const createVisualization = (visualization, isVisualization, isVisualizationDisplayed) => {
-  updateRecording(props.track.id, isVisualizationDisplayed, !visualization[isVisualizationDisplayed]);
-
+const createVisualization = (visualization, isVisualization, isVisualizationDisplayed, visualizationType) => {
+  updateRecording(props.track.id, isVisualizationDisplayed, !visualization[isVisualizationDisplayed],visualizationType);
   if (!visualization[isVisualization]) {
     // visualization[isVisualization + 'Loading'] = true
     visualization[isVisualization] = true;
     visualization[isVisualizationDisplayed] = true;
-    updateRecording(props.track.id, isVisualization, true);
+    updateRecording(props.track.id, isVisualization, true, visualizationType);
   } else {
     visualization[isVisualizationDisplayed] = !visualization[isVisualizationDisplayed];
   }
@@ -31,7 +30,7 @@ const createPianoroll = () => {
 
 const createIMI = () => {
   if (props.track.txtFileName) {
-    createVisualization(props.track.imi_data, "isIMI", "isIMIDisplayed");
+    createVisualization(props.track.imi_data, "isIMI", "isIMIDisplayed", 'imi_data');
   } else {
     showAlert("First select text file!");
     setTimeout(closeAlert, 1500);
@@ -91,14 +90,14 @@ const createIMI = () => {
         <BlueButttons
         :is-btn-clicked="track.ioi_data.isIOIDisplayed"
         :isDisabled="!track.ioi_data.isIOI"
-        @click="createVisualization(track.ioi_data, 'isIOI', 'isIOIDisplayed')"
+        @click="createVisualization(track.ioi_data, 'isIOI', 'isIOIDisplayed', 'ioi_data')"
       
         class="h-6 rounded-x-none"
       >IOI</BlueButttons>
         <BlueButttons
         :is-btn-clicked="track.ibi_data.isIBIDisplayed"
         :isDisabled="!track.ibi_data.isIBI"
-        @click="createVisualization(track.ibi_data, 'isIBI', 'isIBIDisplayed')"
+        @click="createVisualization(track.ibi_data, 'isIBI', 'isIBIDisplayed', 'ibi_data')"
         
         class="h-6 rounded-l-none"
       >IBI</BlueButttons>
@@ -106,9 +105,21 @@ const createIMI = () => {
         <!-- <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-r-none" @click="">IOI</button>
         <button class="btn-hover-cursor w-11 font-semibold shadow-sm shadow-dark-100 rounded-l-none">IBI</button> -->
       </div>
+      <BlueButttons
+        :is-btn-clicked="track.Tempo_data.isTempoDisplayed"
+        :isDisabled="!track.Tempo_data.isTempo"
+        @click="createVisualization(track.Tempo_data, 'isTempo', 'isTempoDisplayed', 'Tempo_data')"
+        class="h-6"
+        >Tempo</BlueButttons
+      >
+      <BlueButttons
+        :is-btn-clicked="track.RMS_data.isRMSDisplayed"
+        :isDisabled="!track.RMS_data.isRMS"
+        @click="createVisualization(track.RMS_data, 'isRMS', 'isRMSDisplayed', 'RMS_data')"
+        class="h-6"
+        >RMS</BlueButttons
+      >
 
-      <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">Tempo</button>
-      <button class="btn-hover-cursor w-22 font-semibold shadow-sm shadow-dark-100">RMS</button>
     </div>
   </div>
 </template>

@@ -24,7 +24,7 @@ watchEffect(() => {
   list.value[0] = props.track.waveform.isWaveform;
   list.value[1] = props.track.spectrogram.isSpectrogram;
   list.value[2] = props.track.pianoroll.isPianoroll;
-  list.value[3] = props.track.imi_data.isIMI || props.track.ioi_data.isIOI || props.track.ibi_data.isIBI
+  list.value[3] = props.track.imi_data.isIMI || props.track.ioi_data.isIOI || props.track.ibi_data.isIBI || props.track.Tempo_data.isTempo || props.track.RMS_data.isRMS
 
   for (let i = 0; i < list.value.length; i++) {
     if (list.value[i]) {
@@ -56,8 +56,8 @@ const props = defineProps({
       {{ track.trackName }}
     </span>
 
-    <div class="min-w-38 border-2 rounded-md border-gray">
-      <div class="flex overflow-x-auto gap-1 mb-1 max-w-37">
+    <div class="min-w-38 border-2 rounded-md border-gray ">
+      <div class="flex overflow-x-auto gap-1 mb-1 max-w-37 justify-center">
         <div
           v-for="(visualization, i) in visualizations"
           :key="i"

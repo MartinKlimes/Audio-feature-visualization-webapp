@@ -1,4 +1,5 @@
 <script setup>
+import axios from 'axios';
 import { api } from '../../../custom';
 import { onMounted } from 'vue';
 import Chart from 'chart.js/auto';
@@ -8,22 +9,28 @@ import Chart from 'chart.js/auto';
 const props = defineProps({
     id: Number,
     trackName: String,
-    numSegments: Number
+    visualization: String
 })
 
 
 onMounted(() => {
-  api.get(`/get-tempo/${props.trackName}/${props.numSegments}`)
-  .then(response => {
-    console.log(response.data);
-    
-    const chart = new Chart(document.getElementById(`tempo-${props.id}`), {
+
+  api.get("/get-file/" + props.trackName, {
+  responseType: 'arraybuffer'
+  }).then(response => {
+    const audioData = response.data;
+    const audioContext = new AudioContext();
+
+    audioContext.decodeAudioData(audioData, decodedData => {
+          const numSegments = 500;
+          const rmsValues = calculateRMSForSegments(decodedData, numSegments);
+          const chart = new Chart(document.getElementById('tempo'), {
         type: 'line',
         data: {
-          labels: Array.from({length: props.numSegments}, (_, i) => i + 1),
+          labels: Array.from({length: numSegments}, (_, i) => i + 1),
           datasets: [{
             label: 'RMS',
-            data: response.data,
+            data: rmsValues,
             borderColor: 'rgb(255, 99, 132)',
             borderWidth: 1
           }]
@@ -34,7 +41,7 @@ onMounted(() => {
           y: {
             title: {
               display: true,
-              text: 'BPM',
+              text: 'RMS value',
             },
           },
           x: {
@@ -49,8 +56,16 @@ onMounted(() => {
 
 
       });
+
+
+
+    })
   })
 })
+
+
+
+
 
 
 </script>
@@ -58,7 +73,7 @@ onMounted(() => {
 <template>
 
 <div id="tem">
-<canvas :id="`tempo-${id}`" :height="100"></canvas>
+<canvas id="tempo" :height="100"></canvas>
 
 
 </div>

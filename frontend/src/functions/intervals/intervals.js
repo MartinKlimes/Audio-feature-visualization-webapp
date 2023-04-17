@@ -1,31 +1,55 @@
 import Chart from 'chart.js/auto';
 
 export default class ChartManager {
-  constructor(data, id, type, graph_color,graph_type) {
-    console.log(graph_color);
+  constructor(data, id, type, graph_color,graph_type, duration) {
+  
+
     this.graph_color = graph_color
     this.intervals = [];
     this.times = [];
-    for (let i = 0; i < data.length - 1; i++) {
-      const interval = data[i + 1] - data[i];
-      this.intervals.push(interval);
-      this.times.push(data[i]);
+    this.labels = []
+    if(type == 'Tempo' || type == 'RMS'){
+      this.intervals = data
+      const intervalSize = duration / data.length;
+      for (let i = 0; i < data.length; i++) {
+        const start = i * intervalSize;
+        const startDate = new Date(start * 1000);
+        const startMinutes = startDate.getUTCMinutes();
+        const startSeconds = startDate.getUTCSeconds();
+  
+        const binLabel = `${startMinutes.toString().padStart(2, '0')}:${startSeconds.toString().padStart(2, '0')}`;
+        this.labels.push(binLabel);
+      }
+    } else{
+      for (let i = 0; i < data.length - 1; i++) {
+        const interval = data[i + 1] - data[i];
+        this.intervals.push(interval);
+        this.times.push(data[i]);
+      }
+      this.intervals.push(data[data.length - 1] - data[data.length - 2]);
+      this.times.push(data[data.length - 1]);
+      this.labels = Array.from({ length: this.intervals.length }, (_, i) => i + 1)
     }
     this.type = type
     // Add the last interval and its time as well
-    this.intervals.push(data[data.length - 1] - data[data.length - 2]);
-    this.times.push(data[data.length - 1]);
+    
 
-    this.chart = new Chart(document.getElementById(`Inter-${type}-${id}`), {
+    this.chart = new Chart(document.getElementById(`${type}-${id}`), {
       type: graph_type || 'bar',
       data: {
-        labels:  Array.from({ length: this.intervals.length }, (_, i) => i + 1),
+        labels:  this.labels,
         datasets: [{
           label: 'IOI',
           backgroundColor: graph_color == 'rgba(0, 0, 255, 0.5)'? 'rgba(0, 0, 255, 0.5)' : hexToRGBA(graph_color, 0.8),
           data: this.intervals,
+          borderColor: graph_color == 'rgba(0, 0, 255, 0.5)'? 'rgba(0, 0, 255, 0.5)' : hexToRGBA(graph_color, 0.8),
+            tension: 0.1,
+            pointRadius: 2,
+     
+
         }],
       },
+      
       options: {
         plugins: {
           legend: {
@@ -33,7 +57,7 @@ export default class ChartManager {
           },
           title: {
             display: true,
-            text: `Inter-${type.charAt(0).toUpperCase() + type.slice(1)}-Interval`,
+            text:( type == 'Tempo' || type == 'RMS') ? type :  `Inter-${type.charAt(0).toUpperCase() + type.slice(1)}-Interval`,
           },
         },
         responsive: true,
@@ -41,13 +65,13 @@ export default class ChartManager {
           y: {
             title: {
               display: true,
-              text: type === 'measure' ? 'Bar duration [s]' : type === 'onset' ? 'Onset duration [s]' : 'Beats duration [s]',
+              text: type === 'measure' ? 'Bar duration [s]' : type === 'onset' ? 'Onset duration [s]' : type === 'Tempo' ? 'BPM' : type === 'RMS' ? 'RMS value [db]' : 'Beats duration [s]',
             },
           },
           x: {
             title: {
               display: true,
-              text: type === 'measure' ? 'Number of bar' : type === 'onset' ? 'Number of onset' : 'Number of beat',
+              text: type === 'measure' ? 'Number of bar' : type === 'onset' ? 'Number of onset' : (type === 'Tempo' || type === 'RMS')  ? 'Time [min:sec]' : 'Number of beat',
             }, 
             
           },
@@ -128,10 +152,12 @@ createMovingAverage(windowSize = this.windowSize) {
     this.chart.config.type = newType;
     this.chart.update();
   }
+  
   changeColor(newColor) {
     const datasets = this.chart.data.datasets;
     for (let i = 0; i < datasets.length; i++) {
       datasets[i].backgroundColor = hexToRGBA(newColor, 0.5);
+      datasets[i].borderColor = hexToRGBA(newColor, 0.5);
   
     }
     this.chart.update();
@@ -222,4 +248,35 @@ function hexToRGBA(hex, alpha) {
   const g = parseInt(hex.substring(3, 5), 16);
   const b = parseInt(hex.substring(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const calculateRMS = (audioBuffer) => {
+  let sumOfSquares = 0;
+  for (let channel = 0; channel < audioBuffer.numberOfChannels; channel++) {
+      const channelData = audioBuffer.getChannelData(channel);
+      for (let i = 0; i < channelData.length; i++) {
+      sumOfSquares += channelData[i] * channelData[i];
+      }
+  }
+  const rms = Math.sqrt(sumOfSquares / (audioBuffer.numberOfChannels * audioBuffer.length));
+  return rms;
+}
+
+export const calculateRMSForSegments = (audioBuffer, numSegments) =>  {
+  const segmentLength = Math.floor(audioBuffer.length / numSegments);
+  const rmsValues = [];
+  for (let i = 0; i < numSegments; i++) {
+    const segmentStart = i * segmentLength;
+    const segmentEnd = (i + 1) * segmentLength;
+    const segment = {
+      numberOfChannels: audioBuffer.numberOfChannels,
+      length: segmentEnd - segmentStart,
+      getChannelData(channel) {
+        return audioBuffer.getChannelData(channel).subarray(segmentStart, segmentEnd);
+      }
+    };
+    const rms = calculateRMS(segment);
+    rmsValues.push(rms);
+  }
+  return rmsValues;
 }

@@ -1,5 +1,5 @@
 from mos_backend import app, db
-from mos_backend.db_models import Recording, Waveform, Spectrogram, Pianoroll, InterBeatInterval, InterOnsetInterval, InterMeasureInterval
+from mos_backend.db_models import *
 from werkzeug.utils import secure_filename
 import os
 import string
@@ -65,6 +65,7 @@ def update_recording():
     column = data.get('column')
     new_value = data.get('new_value')
     record_id = data.get('record_id')
+    visualization_type = data.get('visualization_type')
 
     user = current_user
     recording = Recording.query.filter_by(id=record_id, user=user).first()
@@ -74,6 +75,8 @@ def update_recording():
     ioi_data = InterOnsetInterval.query.filter_by(recording_id=recording.id).first()
     ibi_data = InterBeatInterval.query.filter_by(recording_id=recording.id).first()
     imi_data = InterMeasureInterval.query.filter_by(recording_id=recording.id).first()
+    Tempo_data = Tempo.query.filter_by(recording_id=recording.id).first()
+    RMS_data = RMS.query.filter_by(recording_id=recording.id).first()
     if not recording:
         return "Nahrávka nenalezena"
 
@@ -89,15 +92,26 @@ def update_recording():
     if pianoroll:
         setattr(pianoroll, column, new_value)
         db.session.commit()
-    if ioi_data:
-        setattr(ioi_data, column, new_value)
-        db.session.commit()
-    if ibi_data:
-        setattr(ibi_data, column, new_value)
-        db.session.commit()
-    if imi_data:
-        setattr(imi_data, column, new_value)
-        db.session.commit()
+    if visualization_type == 'ioi_data':
+        if ioi_data:
+            setattr(ioi_data, column, new_value)
+            db.session.commit()
+    if visualization_type == 'ibi_data':
+        if ibi_data:
+            setattr(ibi_data, column, new_value)
+            db.session.commit()
+    if visualization_type == 'imi_data':
+        if imi_data:
+            setattr(imi_data, column, new_value)
+            db.session.commit()
+    if visualization_type == 'Tempo_data':
+        if Tempo_data:
+            setattr(Tempo_data, column, new_value)
+            db.session.commit()
+    if visualization_type == 'RMS_data':
+        if RMS_data:
+            setattr(RMS_data, column, new_value)
+            db.session.commit()
 
     return f'{column} in record id: {record_id} change to: {new_value}'
 
@@ -128,13 +142,16 @@ def delete_audio_fil(event_name, type):
         ioi_data = InterOnsetInterval.query.filter_by(recording_id=record.id).first()
         ibi_data = InterBeatInterval.query.filter_by(recording_id=record.id).first()
         imi_data = InterMeasureInterval.query.filter_by(recording_id=record.id).first()
-
+        Tempo_data = Tempo.query.filter_by(recording_id=record.id).first()
+        RMS_data = RMS.query.filter_by(recording_id=record.id).first()
         db.session.delete(waveform)
         db.session.delete(pianoroll)
         db.session.delete(spectrogram)
         db.session.delete(ioi_data)
         db.session.delete(ibi_data)
         db.session.delete(imi_data)
+        db.session.delete(Tempo_data)
+        db.session.delete(RMS_data)
         os.remove(f'./user_uploads/{user.username}/{event_name}')
         db.session.delete(record)
     elif type == 'bars':
