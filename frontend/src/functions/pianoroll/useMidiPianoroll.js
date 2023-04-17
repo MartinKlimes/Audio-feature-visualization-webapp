@@ -1,20 +1,17 @@
 
+let saturationValues 
 
-let saturationValues
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-export const createVerticalKeyboard = (id,height, width,paddingRight, colors) => {
+export const createVerticalKeyboard = (id,height,colors) => {
 
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);
-  
-  pianoroll.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
   
   const notes = Array.from(svgElements.querySelectorAll('.note'));
   const pitches = notes.map(note => Number(note.getAttributeNS(null, 'data-pitch'))); // získání všech hodnot 'data-pitch' jako pole čísel
   const maxMidiNumber = Math.max(...pitches)
   const minMidiNumber = Math.min(...pitches)
-
 
     const pitchAccidentals = {};
     for (let i = minMidiNumber; i <= maxMidiNumber; i++) {
@@ -24,9 +21,6 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
 
   const numOfKeys = Object.keys(pitchAccidentals).length;
   const keyHeight = Math.round(height / numOfKeys)
-  pianoroll.config = {pixelsPerTimeStep: width, noteHeight: keyHeight}
-
-
 
   const keyboard = document.createElement("div");
   keyboard.style.display = "flex";
@@ -43,31 +37,34 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
   
   let currentMaxMidiNumber = maxMidiNumber
   while (currentMaxMidiNumber >= minMidiNumber) {
-  const key = document.createElement("div");
-  key.style.flexGrow = 1;
-  key.style.height = keyHeight + "px";
-  key.style.borderBottom = "1px solid gray ";
-  key.style.borderRight = "1px solid gray ";
-  key.id = `key-${currentMaxMidiNumber}`
-  keyboard.appendChild(key);
+    const key = document.createElement("div");
+    key.style.flexGrow = 1;
+    key.style.height = keyHeight + "px";
+    key.style.borderBottom = "1px solid gray ";
+    key.style.borderRight = "1px solid gray ";
+    key.id = `key-${currentMaxMidiNumber}`
+    keyboard.appendChild(key);
 
 
-  if(!pitchAccidentals[currentMaxMidiNumber]){
-      
-      key.classList.add('white-background');
-  } else {
-      key.classList.add('black-background');
-  } 
-  
-  if(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'].includes(getNoteName(currentMaxMidiNumber)) || (currentMaxMidiNumber == maxMidiNumber) || (currentMaxMidiNumber == minMidiNumber)){
-    createKeyDescription(key,keyHeight,currentMaxMidiNumber  )
-  }
+    if(!pitchAccidentals[currentMaxMidiNumber]){
+        
+        key.classList.add('white-background');
+    } else {
+        key.classList.add('black-background');
+    } 
+    
+    if(['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'].includes(getNoteName(currentMaxMidiNumber)) || (currentMaxMidiNumber == maxMidiNumber) || (currentMaxMidiNumber == minMidiNumber)){
+      createKeyDescription(key,keyHeight,currentMaxMidiNumber  )
+    }
 
-  currentMaxMidiNumber--
+    currentMaxMidiNumber--
   }
 
   document.getElementById(`keyboard-${id}`).appendChild(keyboard);
 
+  if(!saturationValues){
+    saturationValues = getsaturationValues(id)
+  }
 
   if(colors){
     setTimeout(() => {
@@ -79,21 +76,20 @@ export const createVerticalKeyboard = (id,height, width,paddingRight, colors) =>
     }, 1000);
 
   }
-  return false
+  return {keyHeight}
 }
 // const setSize = (size) => {
 
 //   pianoroll.config = {noteHeight: size/(maxMidiNumber-minMidiNumber)}
 
 // }
-export const getsaturationValues = (id) => {
+const getsaturationValues = (id) => {
   const notes = getNotes(id)
   const colors = notes.map(note => note.getAttribute('fill'));
   saturationValues = colors.map(color => {
     const rgbaValues = color.substring(color.indexOf('(') + 1, color.lastIndexOf(')')).split(',');
     return parseFloat(rgbaValues[3]);
   });
- 
   return saturationValues;
 }
 
@@ -106,10 +102,12 @@ const getNotes = (id) => {
 }
 
 export const setInstrumentColor = (id, numberOfInstrument, color) => {
+  
   const notes = getNotes(id)
   const instruments = notes.map(note => Number(note.getAttributeNS(null, 'data-instrument')))
   const uniqueInstruments = Array.from(new Set(instruments));
   const instrumentColors = {};
+  
 
   if(color){
     notes.forEach((element, id) => {
@@ -159,7 +157,6 @@ const createKeyDescription = (key, keyHeight, currentMaxMidiNumber) => {
 
 
 export const trackCursorPosition = (wavePos, id, dynamicNames, color = 'red') => {
-  console.log(color);
   const matchingKeys = [];
   const pianoroll = document.getElementById(`pianoroll-${id}`)
   const svgElements = pianoroll.querySelector(`div:nth-of-type(3) svg`);

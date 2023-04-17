@@ -1,5 +1,4 @@
 import FFT from "../spectorgram/fft";
-import { api } from "../../../custom";
 import { trackList } from "../../stores/globalStores";
 import Plotly from 'plotly.js-dist'
 /**

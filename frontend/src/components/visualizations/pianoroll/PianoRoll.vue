@@ -4,7 +4,7 @@ import {ref, onMounted, watchEffect, watch } from 'vue';
 import { wavesurfer } from '../../../functions/waveform';
 import Cursor from '../../tools/Cursor.vue'
 import { api } from '../../../../custom';
-import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor, getsaturationValues} from '../../../functions/pianoroll/useMidiPianoroll'
+import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor} from '../../../functions/pianoroll/useMidiPianoroll'
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import LoadingOverlay from '../../tools/LoadingOverlay.vue';
 
@@ -63,46 +63,28 @@ watch(()=> props.track.MIDIFileName, () =>{
     })
 }, {immediate: true})
 
-// setTimeout(() => {
-//     const formData = new FormData();
-//     formData.append('file_name', props.track.MIDIFileName);
-//     formData.append('start_time', 5);
-//     formData.append('end_time', 10);
-
-//     api.post('/trim_midi', formData, {
-//             headers: {
-//                 "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-//                 'Content-Type': 'multipart/form-data'
-                
-//     }}).then((response) => {
-//         console.log(response);
-//     })
-   
-// }, 1000);
-    // určení počátečního a koncového času
 
 
-//     
-
-
-const countWidthWaveform = () => {
+const changeSize = (keyHeight) => {
     const width = wavesurfer[props.track.id].drawer.width / wavesurfer[props.track.id].getDuration()
     const paddingRight = (wavesurfer[props.track.id].getDuration() - document.getElementById(`pianoroll-player-${props.track.id}`).duration) * width
-    return {width, paddingRight}
+    pianoroll.value.getElementsByTagName('div')[2].style.paddingRight = `${paddingRight}px`
+    pianoroll.value.config = {pixelsPerTimeStep: width, noteHeight: keyHeight}
 }
-
 const editTrimmedPianoroll = () => {
-    currentTrackList.selectTrack(props.track.id).pianoroll.scrollLeft =  props.track.start * countWidthWaveform().width
+    const width = wavesurfer[props.track.id].drawer.width / wavesurfer[props.track.id].getDuration()
+    currentTrackList.selectTrack(props.track.id).pianoroll.scrollLeft =  props.track.start * width
     pianoroll.value.getElementsByTagName('div')[2].style.overflow = "hidden";
-    pianoroll.value.getElementsByTagName('div')[2].scrollLeft = props.track.start * countWidthWaveform().width
+    pianoroll.value.getElementsByTagName('div')[2].scrollLeft = props.track.start * width
 }
 
 const editPianoroll = () => {
     watch(() => props.track.waveform.isWaveformReady, () => {
    
         if(props.track.waveform.isWaveformReady){   
-        
-        getsaturationValues(props.track.id) //save saturation for colors
+        let colors
+        let noteHeight
+        // getsaturationValues(props.track.id) //save saturation for colors
     
         //if track is trimmed
         if(props.track.start){ 
@@ -116,16 +98,17 @@ const editPianoroll = () => {
         mousemoveListener()
 
         
-        let colors
+        
         if(props.track.pianoroll.pianorollColor){
             colors = props.track.pianoroll.pianorollColor.slice(1, -1).split(',').map(color => color.replace(/"/g, ''))
             
         }
 
-        const {width, paddingRight} = countWidthWaveform()
         watchEffect(() =>{
-            console.log(props.track.pianoroll.dynamicNames);
-            props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors, props.track.pianoroll.dynamicNames)               
+            const {keyHeight} = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, colors, props.track.pianoroll.dynamicNames)              
+            noteHeight = keyHeight
+            changeSize(keyHeight)
+            props.track.pianoroll.isPianorollLoading = false
         })
         watch(
             () => props.track.MIDIFileName,
@@ -134,7 +117,10 @@ const editPianoroll = () => {
                     if(props.track.start){ 
                         editTrimmedPianoroll()  
                     }
-                props.track.pianoroll.isPianorollLoading = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)               
+                const {keyHeight} = createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight,  colors)               
+                changeSize(keyHeight)
+                noteHeight = keyHeight
+                props.track.pianoroll.isPianorollLoading = false
             }, 1000);
         })
 
@@ -159,18 +145,25 @@ const editPianoroll = () => {
         })).initPlugin('timeline')
 
         wavesurfer[props.track.id].on('zoom', () => {
-            const {width, paddingRight} = countWidthWaveform()
-            if(props.track.start){ 
+            if(props.track.start){ //if track is trimmed
                 editTrimmedPianoroll()  
             }
-            createVerticalKeyboard(props.track.id,props.track.pianoroll.pianorollHeight, width, paddingRight, colors)  
+            if(colors){
+                setTimeout(() => {
+                    colors.forEach((color, index) => {
+                        setInstrumentColor(props.track.id, index, color)
+                    }); 
+                }, 1000);
+            }
+            changeSize(noteHeight)
+       
         })
         }
     }, {immediate: true})
 }
 
 
-  const positionCursor = ($e) => {
+  const positionCursor = () => {
   const waveWidth = wavesurfer[props.track.id].drawer.width
   wavesurfer[props.track.id].seekTo((parseInt(document.getElementById(`pianoroll-cursor-${props.track.id}`).style.left, 10) + wavesurfer[props.track.id].drawer.wrapper.scrollLeft) / waveWidth)
 }
