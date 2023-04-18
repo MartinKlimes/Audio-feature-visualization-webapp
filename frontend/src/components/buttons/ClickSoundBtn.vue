@@ -2,8 +2,8 @@
 import { Icon } from "@iconify/vue";
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import SelectFiles from "./SelectFiles.vue";
-import { wavesurfer } from "../../functions/waveform";
-import { api } from "../../../custom";
+import { wavesurfer } from "../../functions/waveform/waveform";
+import { api } from "../../composables/custom";
 
 let clickOnBarLineIndex = 0;
 const selectedClickSound = ref();

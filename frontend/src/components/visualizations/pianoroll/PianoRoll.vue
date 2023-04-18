@@ -1,9 +1,9 @@
 <script setup>
 import 'html-midi-player'
 import {ref, onMounted, watchEffect, watch } from 'vue';
-import { wavesurfer } from '../../../functions/waveform';
+import { wavesurfer } from '../../../functions/waveform/waveform';
 import Cursor from '../../tools/Cursor.vue'
-import { api } from '../../../../custom';
+import { api } from '../../../composables/custom';
 import {trackCursorPosition, createVerticalKeyboard, setInstrumentColor} from '../../../functions/pianoroll/useMidiPianoroll'
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import LoadingOverlay from '../../tools/LoadingOverlay.vue';
@@ -85,7 +85,6 @@ const editPianoroll = () => {
         let colors
         let noteHeight
         // getsaturationValues(props.track.id) //save saturation for colors
-    
         //if track is trimmed
         if(props.track.start){ 
             editTrimmedPianoroll()

@@ -2,7 +2,7 @@
 import { onUnmounted, ref, watchEffect, watch } from "vue";
 
 import BlueButttons from "../../../buttons/BlueButtons.vue";
-import { updateRecording } from "../../../../../custom";
+import { updateRecording } from "../../../../composables/custom";
 import { setInstrumentColor } from "../../../../functions/pianoroll/useMidiPianoroll";
 import ColorsPicker from "../../../visualizationManager/ColorsPicker.vue";
 import { onClickOutside } from "@vueuse/core";

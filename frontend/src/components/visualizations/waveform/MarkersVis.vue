@@ -3,7 +3,7 @@ import BlueButtons from "../../buttons/BlueButtons.vue";
 import MarkersCreate from "./MarkersCreate.vue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
-import { showAlert, closeAlert } from "../../../alerts";
+import { showAlert, closeAlert } from "../../../composables/alerts";
 
 const props = defineProps({
   trackName: String,

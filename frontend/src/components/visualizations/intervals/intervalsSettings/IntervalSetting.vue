@@ -3,7 +3,7 @@ import { trackList } from "../../../../stores/globalStores";
 import BlueButtons from "../../../buttons/BlueButtons.vue";
 import { ref, watch} from "vue";
 import { Icon } from "@iconify/vue";
-import { updateRecording } from "../../../../../custom";
+import { updateRecording } from "../../../../composables/custom";
 import IntervalAverage from "./IntervalAverage.vue";
 import IntervalStyle from "../intervalsStyle/IntervalStyle.vue";
 import IntervalHistograms from "./IntervalHistograms.vue";

@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { getCookie }from '../frontend/src/cookieHandling'
+import { getCookie }from './cookieHandling'
 
 export const api = axios.create({
     withCredentials: true,

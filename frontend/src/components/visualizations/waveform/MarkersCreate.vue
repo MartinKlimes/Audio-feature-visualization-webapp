@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, onUnmounted, watch, ref, computed } from "vue";
-import { api } from "../../../../custom";
+import { api } from "../../../composables/custom";
 import BlueButtons from "../../buttons/BlueButtons.vue";
-import { wavesurfer } from "../../../functions/waveform";
-import { marker } from "../../../functions/waveform";
+import { wavesurfer } from "../../../functions/waveform/waveform";
+import { marker } from "../../../functions/waveform/waveform";
 import { ColorPicker } from "vue-accessible-color-picker";
 import SelectFiles from "../../buttons/SelectFiles.vue";
 import ClickSoundBtn from "../../buttons/ClickSoundBtn.vue";

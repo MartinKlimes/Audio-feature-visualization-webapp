@@ -2,9 +2,9 @@
 import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import { useHideBtn } from "../../../composables/useHideBtn";
-import { api } from "../../../../custom";
-import { createWavesurfer } from "../../../functions/waveform";
-import { wavesurfer } from "../../../functions/waveform";
+import { api } from "../../../composables/custom";
+import { createWavesurfer } from "../../../functions/waveform/waveform";
+import { wavesurfer } from "../../../functions/waveform/waveform";
 import { trackIndex, trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
 

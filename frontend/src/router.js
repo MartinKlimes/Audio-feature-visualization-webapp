@@ -3,9 +3,9 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
 
-import {loggedIn} from './cookieHandling'
+import {loggedIn} from './composables/cookieHandling'
 
-import {showAlert, closeAlert} from './alerts'
+import {showAlert, closeAlert} from './composables/alerts'
 import { userInfo } from './stores/globalStores';
 
 

@@ -4,9 +4,9 @@ import { useI18n } from "vue-i18n";
 import { reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
-import { showAlert, closeAlert } from "../alerts";
+import { showAlert, closeAlert } from "../composables/alerts";
 
-import { api } from "../../custom";
+import { api } from "../composables/custom";
 
 // import Vue router for redirects
 import router from "../router.js";

@@ -2,14 +2,14 @@
 
 import {ref} from 'vue'
 import { Icon } from '@iconify/vue';
-import {showAlert, closeAlert} from '../../alerts'
+import {showAlert, closeAlert} from '../../composables/alerts'
 
 // import Vue router for redirects
 import router from '../../router.js'
 import { userInfo } from '../../stores/globalStores';
 import { onClickOutside } from '@vueuse/core'
 // import axios
-import { api } from '../../../custom';
+import { api } from '../../composables/custom';
 import { useI18n } from 'vue-i18n';
 import PlayerBtn from './AudioPlayer.vue';
 

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { wavesurfer } from '../../../../functions/waveform';
+import { wavesurfer } from '../../../../functions/waveform/waveform';
 import { trackList } from '../../../../stores/globalStores';
 
 

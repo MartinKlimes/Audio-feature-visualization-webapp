@@ -3,9 +3,9 @@ import ColorWaveform from "./ColorWaveform.vue";
 import BlueButtons from "../../buttons/BlueButtons.vue";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import { wavesurfer } from "../../../functions/waveform";
+import { wavesurfer } from "../../../functions/waveform/waveform";
 import { trackList } from "../../../stores/globalStores";
-import { updateRecording } from "../../../../custom";
+import { updateRecording } from "../../../composables/custom";
 import SizeSetter from "../../tools/SizeSetter.vue";
 
 const showColorPicker = ref(false);

@@ -2,10 +2,10 @@
 <script setup>
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
-import { wavesurfer } from "../../../../functions/waveform";
+import { wavesurfer } from "../../../../functions/waveform/waveform";
 import { ref } from "vue";
 import { trackList } from "../../../../stores/globalStores";
-import { updateRecording } from "../../../../../custom";
+import { updateRecording } from "../../../../composables/custom";
 const selectedValue = ref(wavesurfer[props.id].spectrogram.params[props.parametr])
 const currentTrackList = trackList()
 

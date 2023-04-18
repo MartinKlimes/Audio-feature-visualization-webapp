@@ -1,6 +1,6 @@
 <script setup>
-import { wavesurfer } from '../../functions/waveform';
-import { updateRecording } from '../../../custom';
+import { wavesurfer } from '../../functions/waveform/waveform';
+import { updateRecording } from '../../composables/custom';
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { ref } from 'vue';

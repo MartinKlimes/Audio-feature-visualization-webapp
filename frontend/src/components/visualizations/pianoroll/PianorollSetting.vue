@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import BlueButttons from "../../buttons/BlueButtons.vue";
 import PianorollStyle from "./pianorollStyle/PianorollStyle.vue";
 import { Icon } from "@iconify/vue";
-import { updateRecording } from "../../../../custom";
+import { updateRecording } from "../../../composables/custom";
 import ExportBtn from "../../buttons/ExportBtn.vue";
 import { trackList } from "../../../stores/globalStores";
 import { ColorPicker } from "vue-accessible-color-picker";

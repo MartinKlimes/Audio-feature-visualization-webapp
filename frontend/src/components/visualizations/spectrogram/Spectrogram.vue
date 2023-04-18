@@ -3,7 +3,7 @@ import Cursor from "../../tools/Cursor.vue";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import Spectrogram from "../../../functions/spectorgram/index";
 import colormap from "colormap";
-import { wavesurfer } from "../../../functions/waveform";
+import { wavesurfer } from "../../../functions/waveform/waveform";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import { Icon } from "@iconify/vue";
 import { trackList } from "../../../stores/globalStores";

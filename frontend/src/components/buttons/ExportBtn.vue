@@ -2,7 +2,7 @@
 import BlueButtons from './BlueButtons.vue';
 import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
-import { wavesurfer } from '../../functions/waveform';
+import { wavesurfer } from '../../functions/waveform/waveform';
 import html2canvas from 'html2canvas';
 
 const props = defineProps({

@@ -2,11 +2,11 @@
 
 import { tracklistState, trackList } from '../../stores/globalStores';
 import { storeToRefs } from 'pinia'
-import { api } from '../../../custom';
+import { api } from '../../composables/custom';
 import UploadModal from './UploadModal.vue';
 import { reactive, ref } from 'vue'
 import { Icon } from '@iconify/vue';
-import {showAlert, closeAlert} from '../../alerts'
+import {showAlert, closeAlert} from '../../composables/alerts'
 import { uploadModalState } from '../../stores/globalStores';
 
 

@@ -1,9 +1,9 @@
 <script setup>
 import { ColorPicker } from 'vue-accessible-color-picker'
-import { wavesurfer } from '../../../functions/waveform';
+import { wavesurfer } from '../../../functions/waveform/waveform';
 import { onClickOutside } from '@vueuse/core';
 import { ref, watchEffect} from 'vue';
-import { updateRecording } from '../../../../custom';
+import { updateRecording } from '../../../composables/custom';
 
 const props = defineProps({
     id: Number,

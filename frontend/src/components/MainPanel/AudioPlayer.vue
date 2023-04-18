@@ -2,7 +2,7 @@
 import { Icon } from '@iconify/vue';
 import PlayBtn from '../buttons/PlayBtn.vue';
 import { trackIndex } from '../../stores/globalStores';
-import { wavesurfer } from '../../functions/waveform';
+import { wavesurfer } from '../../functions/waveform/waveform';
 import { storeToRefs } from 'pinia';
 import { ref, watchEffect } from 'vue';
 import VueSlider from 'vue-slider-component';

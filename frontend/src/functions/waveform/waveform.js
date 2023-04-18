@@ -2,15 +2,15 @@
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import Cursor from '../functions/cursor/index';
-import Markers from './markers/index';
+import Cursor from '../cursor/index';
+import Markers from '../markers/index';
 
-import Spectrogram from './spectorgram/index';
-import {createVerticalKeyboard, trackCursorPosition} from './pianoroll/useMidiPianoroll'
+import Spectrogram from '../spectorgram/index';
+import {createVerticalKeyboard, trackCursorPosition} from '../pianoroll/useMidiPianoroll'
 
 // import colormapJSON from '../hot-colormap.json'
-import { api } from "../../custom";
-import { trackList } from "../stores/globalStores";
+import { api } from "../../composables/custom";
+import { trackList } from "../../stores/globalStores";
 import colormap from "colormap"
 import { watch } from "vue";
 

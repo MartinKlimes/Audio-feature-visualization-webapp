@@ -5,15 +5,11 @@ import AudioTrackSide from '../components/trackManager/AudioTrackSide.vue'
 import UploadModal from '../components/trackManager/UploadModal.vue';
 import { tracklistState, uploadModalState, trackList, trackIndex } from '../stores/globalStores';
 import Waveform from '../components/visualizations/waveform/Waveform.vue';
-import { getCookie } from '../cookieHandling';
-import Cursor from '../components/tools/Cursor.vue';
 import TrackToVisualize from '../components/visualizationManager/TrackToVisualize.vue';
 import RightPanel from '../components/RightPanel.vue';
 import PianoRoll from '../components/visualizations/pianoroll/PianoRoll.vue';
 import Spectrogram from '../components/visualizations/spectrogram/Spectrogram.vue'
 import IntervalsVisualization from '../components/visualizations/intervals/IntervalsVisualization.vue';
-import RMS_Tempo from '../components/visualizations/RMS_Tempo.vue';
-import Tempo from '../components/visualizations/Tempo.vue';
 
 // import { defineAsyncComponent } from 'vue'
 // const Spectrogram = defineAsyncComponent(() =>

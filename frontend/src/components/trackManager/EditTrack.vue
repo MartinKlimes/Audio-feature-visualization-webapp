@@ -4,9 +4,9 @@ import { ref, computed, reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 import { useI18n } from "vue-i18n";
-import { api } from "../../../custom";
+import { api } from "../../composables/custom";
 import { trackList } from "../../stores/globalStores";
-import { updateRecording } from "../../../custom";
+import { updateRecording } from "../../composables/custom";
 const { t, locale } = useI18n();
 
 const currentTrackList = trackList();

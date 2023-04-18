@@ -5,9 +5,9 @@ import { storeToRefs } from "pinia";
 import { Icon } from "@iconify/vue";
 import { onMounted, reactive } from "vue";
 import { ref } from "vue";
-import { getCookie } from "../../cookieHandling";
-import { api } from "../../../custom";
-import { showAlert, closeAlert } from "../../alerts";
+import { getCookie } from "../../composables/cookieHandling";
+import { api } from "../../composables/custom";
+import { showAlert, closeAlert } from "../../composables/alerts";
 import { onClickOutside } from "@vueuse/core";
 
 const currentTrackList = trackList();

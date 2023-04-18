@@ -4,7 +4,7 @@ import BlueButtons from '../../../buttons/BlueButtons.vue';
 import SizeSetter from '../../../tools/SizeSetter.vue';
 import ColorsPicker from '../../../visualizationManager/ColorsPicker.vue';
 import { trackList } from '../../../../stores/globalStores';
-import { updateRecording } from '../../../../../custom';
+import { updateRecording } from '../../../../composables/custom';
 const showColorPicker = ref(false);
 const showSizeSetter = ref(false);
 const currentTrackList = trackList()

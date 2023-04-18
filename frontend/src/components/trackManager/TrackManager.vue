@@ -1,11 +1,11 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { trackIndex, trackList } from "../../stores/globalStores";
-import { api } from "../../../custom";
-import { showAlert, closeAlert } from "../../alerts";
+import { api } from "../../composables/custom";
+import { showAlert, closeAlert } from "../../composables/alerts";
 import EditTrack from "./EditTrack.vue";
 import { ref, reactive } from "vue";
-import { marker } from "../../functions/waveform"
+import { marker } from "../../functions/waveform/waveform"
 import SelButtons from "../buttons/BlueButtons.vue"
 import EditBarsMIDI from "./EditBarsMIDI.vue";
 

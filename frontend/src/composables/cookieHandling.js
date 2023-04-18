@@ -1,6 +1,6 @@
 
 
-import { api } from '../custom';
+import { api } from './custom';
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;

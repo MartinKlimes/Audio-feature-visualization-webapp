@@ -4,10 +4,10 @@ import { Icon } from "@iconify/vue";
 import BlueButtons from "../../../buttons/BlueButtons.vue";
 import SelectFiles from "../../../buttons/SelectFiles.vue";
 import { onMounted, ref } from "vue";
-import { api } from "../../../../../custom";
-import { wavesurfer } from "../../../../functions/waveform";
+import { api } from "../../../../composables/custom";
+import { wavesurfer } from "../../../../functions/waveform/waveform";
 import { trackList } from "../../../../stores/globalStores";
-import { updateRecording } from "../../../../../custom";
+import { updateRecording } from "../../../../composables/custom";
 
 const imagePaths = ref([]);
 const currentTrackList = trackList()

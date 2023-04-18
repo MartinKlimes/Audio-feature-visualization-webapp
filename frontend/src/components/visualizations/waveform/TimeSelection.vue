@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onDeactivated, onActivated, watchEffect, onUnmounted } from 'vue';
-import { wavesurfer} from '../../../functions/waveform';
+import { wavesurfer} from '../../../functions/waveform/waveform';
 import BlueButttons from '../../buttons/BlueButtons.vue';
 
 const from = ref(null)

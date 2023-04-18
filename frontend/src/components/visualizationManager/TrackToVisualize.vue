@@ -1,14 +1,14 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { ref, onMounted, reactive, computed } from "vue";
-import { api } from "../../../custom";
+import { api } from "../../composables/custom";
 import { trackIndex, trackList, alertState } from "../../stores/globalStores";
 import VisButtons from "./VisButtons.vue";
 import SelectFiles from "../buttons/SelectFiles.vue";
-import { wavesurfer } from "../../functions/waveform";
+import { wavesurfer } from "../../functions/waveform/waveform";
 import ColorsPicker from "./ColorsPicker.vue";
 import { storeToRefs } from "pinia";
-import { updateRecording } from "../../../custom";
+import { updateRecording } from "../../composables/custom";
 
 const globalTrackIndex = trackIndex();
 const alertGlobalState = alertState();

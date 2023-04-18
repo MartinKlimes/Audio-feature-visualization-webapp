@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { api } from '../../custom'
+import { api } from '../composables/custom'
 
 
 export const alertState = defineStore('alertState', 

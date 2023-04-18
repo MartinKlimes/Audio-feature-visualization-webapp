@@ -1,5 +1,8 @@
 <script setup>
-import { ref, watchEffect, toRef } from 'vue';
+import { ref, watchEffect, toRef} from 'vue';
+
+
+
 
 const props = defineProps({
     marginLeft: Number,
@@ -11,6 +14,7 @@ const props = defineProps({
       default: 1
     },
 })
+
 const cursor = ref(null)
 const color = toRef(props, 'color')
 const width = toRef(props, 'width')
@@ -21,9 +25,12 @@ watchEffect(() => {
     cursor.value.style.backgroundColor = `${color.value})`
   }
 })
+
+
 </script>
 
 
+
 <template>
-<div  class="h-full absolute z-10 " :class="[`bg-${color}`, `w-${width}`]" ref="cursor" :id="id" data-html2canvas-ignore="true" >
+<div  class="h-full absolute z-10 "  :class="[`bg-${color}`, `w-${width}`]" ref="cursor" :id="id" data-html2canvas-ignore="true" >
 </div></template>

@@ -1,7 +1,7 @@
 <script setup>
 import BlueButttons from "../buttons/BlueButtons.vue";
-import { updateRecording } from "../../../custom";
-import { showAlert, closeAlert } from "../../alerts";
+import { updateRecording } from "../../composables/custom";
+import { showAlert, closeAlert } from "../../composables/alerts";
 
 const props = defineProps({
   track: Object,

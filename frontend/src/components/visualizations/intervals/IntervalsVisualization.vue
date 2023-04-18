@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, watch, ref } from "vue";
-import { api } from "../../../../custom";
+import { api } from "../../../composables/custom";
 import ChartManager from "../../../functions/intervals/intervals";
 import LoadingOverlay from "../../tools/LoadingOverlay.vue";
-import { wavesurfer } from "../../../functions/waveform";
+import { wavesurfer } from "../../../functions/waveform/waveform";
 import {calculateRMSForSegments} from "../../../functions/intervals/intervals";
 import { trackList } from "../../../stores/globalStores";
 

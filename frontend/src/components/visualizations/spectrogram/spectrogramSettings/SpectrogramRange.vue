@@ -1,5 +1,5 @@
 <script setup>
-import { wavesurfer } from '../../../../functions/waveform';
+import { wavesurfer } from '../../../../functions/waveform/waveform';
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/material.css";
 import { ref } from 'vue';

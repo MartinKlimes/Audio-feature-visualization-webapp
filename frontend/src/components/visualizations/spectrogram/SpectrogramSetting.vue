@@ -2,8 +2,8 @@
 import { ref } from "vue";
 import { trackIndex, trackList } from "../../../stores/globalStores";
 import { Icon } from "@iconify/vue";
-import { updateRecording } from "../../../../custom";
-import { wavesurfer } from "../../../functions/waveform";
+import { updateRecording } from "../../../composables/custom";
+import { wavesurfer } from "../../../functions/waveform/waveform";
 import ExportBtn from "../../buttons/ExportBtn.vue";
 import BlueButtons from "../../buttons/BlueButtons.vue";
 import SpectrogramStyle from "./spectrogramStyle/SpectrogramStyle.vue";
