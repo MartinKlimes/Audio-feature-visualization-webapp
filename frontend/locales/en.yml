@@ -6,7 +6,7 @@ form:
   register: Sign Up
   login: Sign In
 
-login: 
+login:
   notregistered: Not registered?
   goregister: Create an account.
 

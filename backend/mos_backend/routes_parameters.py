@@ -1,17 +1,14 @@
 from mos_backend import app, db
-import matplotlib.pyplot as plt
 from werkzeug.utils import secure_filename
-
 import os
-import numpy as np
 import librosa.display
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify, send_from_directory, send_file
 import json
 
-@app.route('/get-onset-detection/<record_name>')
+@app.route('/get-event-detection/<record_name>')
 @jwt_required()
-def get_onset_detection(record_name):
+def get_event_detection(record_name):
     user = current_user
     json_path = f"./user_uploads/{user.username}/{record_name}.json"
 

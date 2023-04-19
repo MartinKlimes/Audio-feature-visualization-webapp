@@ -1,5 +1,3 @@
-
-
 export const useHideBtn = (hideBtn) => {
   const hide = () => {
     if (hideBtn.value === false) {

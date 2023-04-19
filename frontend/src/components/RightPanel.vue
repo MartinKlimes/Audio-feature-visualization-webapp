@@ -1,9 +1,8 @@
 <script setup>
-import WaveformSetting from "./visualizations/waveform/WaveformSetting.vue";
-import PianorollSetting from "./visualizations/pianoroll/PianorollSetting.vue";
-import SpectrogramSetting from "./visualizations/spectrogram/SpectrogramSetting.vue";
-import IntervalSetting from "./visualizations/intervals/intervalsSettings/IntervalSetting.vue";
-import BlueButttons from "./buttons/BlueButtons.vue";
+import WaveformSetting from "./visualizations/waveform/waveformSettings/WaveformSetting.vue";
+import PianorollSetting from "./visualizations/pianoroll/pianorollSettings/PianorollSetting.vue";
+import SpectrogramSetting from "./visualizations/spectrogram/spectrogramSettings/SpectrogramSetting.vue";
+import ChartSetting from "./visualizations/charts/chartSettings/chartSetting.vue";
 import { shallowRef, watch, ref, watchEffect } from "vue";
 import { Icon } from "@iconify/vue";
 import { trackIndex } from "../stores/globalStores";
@@ -12,11 +11,11 @@ const currentTrackSetting = shallowRef();
 const globalTrackIndex = trackIndex();
 
 const visualizations = [
-  [WaveformSetting, "mdi:waveform", 'waveform settings'],
-  [SpectrogramSetting, "icon-park:music-rhythm", 'spectrogram settings'],
-  [PianorollSetting, "ph:piano-keys-thin", 'pianoroll settings'],
-  [IntervalSetting, "mdi:graph-areaspline", 'intervals settings']
-]
+  [WaveformSetting, "mdi:waveform", "waveform settings"],
+  [SpectrogramSetting, "icon-park:music-rhythm", "spectrogram settings"],
+  [PianorollSetting, "ph:piano-keys-thin", "pianoroll settings"],
+  [ChartSetting, "mdi:graph-areaspline", "intervals settings"],
+];
 
 const list = ref([]);
 
@@ -24,7 +23,12 @@ watchEffect(() => {
   list.value[0] = props.track.waveform.isWaveform;
   list.value[1] = props.track.spectrogram.isSpectrogram;
   list.value[2] = props.track.pianoroll.isPianoroll;
-  list.value[3] = props.track.imi_data.isIMI || props.track.ioi_data.isIOI || props.track.ibi_data.isIBI || props.track.Tempo_data.isTempo || props.track.RMS_data.isRMS
+  list.value[3] =
+    props.track.imi_data.isIMI ||
+    props.track.ioi_data.isIOI ||
+    props.track.ibi_data.isIBI ||
+    props.track.Tempo_data.isTempo ||
+    props.track.RMS_data.isRMS;
 
   for (let i = 0; i < list.value.length; i++) {
     if (list.value[i]) {
@@ -35,13 +39,12 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-  if(props.selectedVis < 4){
+  if (props.selectedVis < 4) {
     currentTrackSetting.value = visualizations[props.selectedVis][0];
   } else {
-    currentTrackSetting.value = visualizations[3][0]
+    currentTrackSetting.value = visualizations[3][0];
   }
 });
-
 
 const props = defineProps({
   track: Object,
@@ -56,13 +59,13 @@ const props = defineProps({
       {{ track.trackName }}
     </span>
 
-    <div class="min-w-38 border-2 rounded-md border-gray ">
+    <div class="min-w-38 border-2 rounded-md border-gray">
       <div class="flex overflow-x-auto gap-1 mb-1 max-w-37 justify-center">
         <div
           v-for="(visualization, i) in visualizations"
           :key="i"
           v-show="list[i]"
-          class="cursor-pointer p-0.5  text-sm items-center flex justify-center min-w-6"
+          class="cursor-pointer p-0.5 text-sm items-center flex justify-center min-w-6"
           @click="currentTrackSetting = visualization[0]"
           :title="visualization[2]"
           :class="[
@@ -70,23 +73,21 @@ const props = defineProps({
               ? ' bg-gray-100 shadow-inner shadow-dark-200 '
               : 'bg-transparent hover:opacity-70 boxTight',
             { 'rounded-b-none rounded-l-md ': i === 0 },
-             { 'rounded-b-none rounded-r-md ': i === list.length-1 }
+            { 'rounded-b-none rounded-r-md ': i === list.length - 1 },
           ]"
         >
-        <template v-if="visualization[1].includes(':')">
-            <Icon :icon="visualization[1]" width="22"/>
-        </template>
-        <template v-else>
+          <template v-if="visualization[1].includes(':')">
+            <Icon :icon="visualization[1]" width="22" />
+          </template>
+          <template v-else>
             {{ visualization[1] }}
-        </template>
-      
+          </template>
         </div>
       </div>
 
       <KeepAlive>
-        <component :is="currentTrackSetting" :track="track" :selectedVis="selectedVis"/>
+        <component :is="currentTrackSetting" :track="track" :selectedVis="selectedVis" />
       </KeepAlive>
-
     </div>
   </div>
 </template>

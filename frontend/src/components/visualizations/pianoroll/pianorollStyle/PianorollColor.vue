@@ -1,6 +1,5 @@
 <script setup>
 import { onUnmounted, ref, watchEffect, watch } from "vue";
-
 import BlueButttons from "../../../buttons/BlueButtons.vue";
 import { updateRecording } from "../../../../composables/custom";
 import { setInstrumentColor } from "../../../../functions/pianoroll/useMidiPianoroll";
@@ -30,11 +29,6 @@ watch(
   { immediate: true }
 );
 
-// const setColor = (color) => {
-//     setInstrumentColor(props.track.id, selectedInstrument.value,color)
-//     props.track.pianoroll.pianorollColor[selectedInstrument.value] = color
-//     updateRecording(props.track.trackName,'pianorollColor',props.track.pianoroll.pianorollColor)
-// }
 
 onClickOutside(target, () => {
   setTimeout(() => {
@@ -44,7 +38,6 @@ onClickOutside(target, () => {
 
 onUnmounted(() => {
   const colorsToList = Object.values(colorsList.value);
-  console.log(colorsToList);
 
   updateRecording(props.id, "pianorollColor", colorsToList);
 });

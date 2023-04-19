@@ -1,25 +1,21 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import SpectrogramColormap from './SpectrogramColormap.vue';
-import BlueButtons from '../../../buttons/BlueButtons.vue';
-import SizeSetter from '../../../tools/SizeSetter.vue';
-import SpectrogramDisplayType from './SpectrogramDisplayType.vue';
-
+import SpectrogramColormap from "./SpectrogramColormap.vue";
+import BlueButtons from "../../../buttons/BlueButtons.vue";
+import SizeSetter from "../../../globalTools/SizeSetter.vue";
+import SpectrogramDisplayType from "./SpectrogramDisplayType.vue";
 
 const target = ref(null);
-const emits = defineEmits(['closeModal'])
+const emits = defineEmits(["closeModal"]);
 const showSizeSetter = ref(false);
-const showColormapSetter = ref(false)
-const showSpectrogramDisplay = ref(false)
-const loadingColor = ref(false)
+const showColormapSetter = ref(false);
+const showSpectrogramDisplay = ref(false);
 const props = defineProps({
-    id: Number,
-    trackName: String,
-    spectrogramColormap: String,
-})
-
-
+  id: Number,
+  trackName: String,
+  spectrogramColormap: String,
+});
 
 onClickOutside(target, () => {
   setTimeout(() => {
@@ -28,60 +24,40 @@ onClickOutside(target, () => {
 });
 </script>
 
-
 <template>
- <div class="flex flex-col bg-white box rounded-md p-2 mt-1 w-full items-center " ref="target">
+  <div class="flex flex-col bg-white box rounded-md p-2 mt-1 w-full items-center" ref="target">
     <div class="flex gap-1">
-        <BlueButtons 
-        :icon="'nimbus:size-height'" 
-        @click="showSizeSetter = !showSizeSetter" 
-        :is-btn-clicked="showSizeSetter" 
+      <BlueButtons
+        :icon="'nimbus:size-height'"
+        @click="showSizeSetter = !showSizeSetter"
+        :is-btn-clicked="showSizeSetter"
         :icon-class="'ml-0'"
         class="w-max"
-        ></BlueButtons> 
+      ></BlueButtons>
 
-        <BlueButtons
+      <BlueButtons
         :icon="'ic:outline-color-lens'"
         @click="showColormapSetter = !showColormapSetter"
         :is-btn-clicked="showColormapSetter"
         :icon-class="'ml-0'"
-        :loading="loadingColor"
-        ></BlueButtons>
-        <BlueButtons
+      ></BlueButtons>
+      <BlueButtons
         :icon="'ic:round-display-settings'"
         @click="showSpectrogramDisplay = !showSpectrogramDisplay"
         :is-btn-clicked="showSpectrogramDisplay"
         :icon-class="'ml-0'"
-        ></BlueButtons>
-
+      ></BlueButtons>
     </div>
 
     <Transition>
-        <SizeSetter
-        v-if="showSizeSetter"
-        :id="id"
-        :visualization="'spectrogram'"
-        :loading-visualization="'isSpectrogramLoading'"
-        />
+      <SizeSetter v-if="showSizeSetter" :id="id" :visualization="'spectrogram'" :loading-visualization="'isSpectrogramLoading'" />
     </Transition>
 
     <Transition>
-        <SpectrogramColormap 
-        v-if="showColormapSetter"
-        :id="id"
-        @change-color="loadingColor =! loadingColor"
-
-        />
+      <SpectrogramColormap v-if="showColormapSetter" :id="id"/>
     </Transition>
     <Transition>
-        <SpectrogramDisplayType
-        v-if="showSpectrogramDisplay"
-        :id="id"
-        />
+      <SpectrogramDisplayType v-if="showSpectrogramDisplay" :id="id" />
     </Transition>
-
- </div>
-
-
-
+  </div>
 </template>

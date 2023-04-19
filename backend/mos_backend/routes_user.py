@@ -1,16 +1,9 @@
 from mos_backend import app, db, bcrypt, jwt
 from mos_backend.db_models import User, Recording
 
-#  from requests_toolbelt import MultipartEncoder
-# import base64
-# from io import BytesIO
-#
-# from music21 import  *
-# import numpy as np
-# import json
 
 from flask import render_template
-from flask import request, jsonify, send_from_directory, send_file
+from flask import request, jsonify
 
 from werkzeug.utils import secure_filename
 import os, string

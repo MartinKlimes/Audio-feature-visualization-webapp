@@ -6,7 +6,7 @@ form:
   register: Registrace nového uživatele
   login: Přihlášení uživatele
 
-login: 
+login:
   notregistered: Nejste zaregistrovaní?
   goregister: Vytvořit nový účet.
 

@@ -1,14 +1,13 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import { ref, onMounted, reactive, computed } from "vue";
-import { api } from "../../composables/custom";
 import { trackIndex, trackList, alertState } from "../../stores/globalStores";
 import VisButtons from "./VisButtons.vue";
-import SelectFiles from "../buttons/SelectFiles.vue";
-import { wavesurfer } from "../../functions/waveform/waveform";
+import SelectFiles from "../globalTools/SelectFiles.vue";
 import ColorsPicker from "./ColorsPicker.vue";
 import { storeToRefs } from "pinia";
 import { updateRecording } from "../../composables/custom";
+import VolumeSlider from "./VolumeSlider.vue";
 
 const globalTrackIndex = trackIndex();
 const alertGlobalState = alertState();
@@ -49,10 +48,7 @@ const updateBackgroundColor = (color) => {
   <div
     :id="`trackToVisualize-${track.id}`"
     class="relative h-57 w-full px-1 py-1 flex-col justify-center rounded-md border border-gray-300"
-    :class="[
-      { 'shadow-md shadow-gray-500  ': isSelected },
-      currentTrackList.selectTrack(props.track.id).backgroundColor,
-    ]"
+    :class="[{ 'shadow-md shadow-gray-500  ': isSelected }, currentTrackList.selectTrack(props.track.id).backgroundColor]"
   >
     <div class="flex justify-center items-center relative">
       <button
@@ -64,7 +60,7 @@ const updateBackgroundColor = (color) => {
       </button>
       <Transition>
         <ColorsPicker
-          class="h-27 top-20"
+          class="w-full top-8 absolute"
           v-if="showColors"
           :selected-color="currentTrackList.selectTrack(props.track.id).backgroundColor"
           @close-color-picker="showColors = false"
@@ -88,21 +84,8 @@ const updateBackgroundColor = (color) => {
         "
       ></div>
     </div>
-    <div
-      class="mt-1 player-buttons h-7 w-full bg-white border border-gray-300 flex items-center justify-between px-2 rounded-md"
-    >
-      <Icon icon="material-symbols:volume-up-outline" width="20" />
-      <input type="range" class="slider appearance-none rounded-lg cursor-pointer w-28" />
-      <div class="inline-flex rounded-md shadow-sm bg-gray-600 text-white">
-        <button
-          class="w-5 text-sm border-r border-gray-400 rounded-l-md hover:bg-gray-300 hover:text-gray-800 duration-200"
-        >
-          M
-        </button>
-        <button class="w-5 text-sm rounded-r-md hover:bg-gray-300 hover:text-gray-800 duration-200">S</button>
-      </div>
-    </div>
-
+    
+    <VolumeSlider :id="track.id" :is-waveform-ready="track.waveform.isWaveformReady"/>
     <VisButtons :track="track" />
 
     <Icon
@@ -130,8 +113,7 @@ const updateBackgroundColor = (color) => {
         :files="currentTrackList.barsList"
         :selected-file="currentTrackList.selectTrack(track.id).txtFileName"
         @select-file="selectBars($event)"
-      @close-modal="isBarsUploaded = false"
-
+        @close-modal="isBarsUploaded = false"
       />
     </Transition>
     <Transition>
@@ -142,19 +124,16 @@ const updateBackgroundColor = (color) => {
         :files="currentTrackList.midiList"
         :selected-file="currentTrackList.selectTrack(track.id).MIDIFileName"
         @select-file="selectMIDI($event)"
-      @close-modal="isMIDIUploaded = false"
-
+        @close-modal="isMIDIUploaded = false"
       />
     </Transition>
   </div>
 </template>
 
-<style >
+<style>
 input[type="range"] {
   -webkit-appearance: none;
   cursor: pointer;
-
-
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -188,13 +167,13 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
     background-color: red;
   }
   50% {
-    background-color: #1d4ed8
+    background-color: #1d4ed8;
   }
   51% {
     background-color: red;
   }
   100% {
-    background-color: #1d4ed8
+    background-color: #1d4ed8;
   }
 }
 

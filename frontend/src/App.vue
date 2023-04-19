@@ -1,15 +1,11 @@
 <script setup>
-import AlertModal from './components/AlertModal.vue';
+import AlertModal from "./components/globalTools/AlertModal.vue";
 </script>
 
 <template>
+  <router-view />
 
-<router-view/>
-
-<AlertModal/>
-
+  <AlertModal />
 </template>
 
-<style>
-
-</style>
+<style></style>

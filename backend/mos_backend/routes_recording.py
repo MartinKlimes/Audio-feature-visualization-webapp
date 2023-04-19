@@ -241,20 +241,6 @@ def trim_audio():
 
     return jsonify({'message': f'{record_name_trimmed} was succesfuly trimmed!', 'id': recording.id})
 
-
-# @app.route('/get-trimmed-audio/<record_name>', methods=['POST', 'GET'])
-# @jwt_required()
-# def get_trimmed_audio(record_name):
-#     print(record_name)
-#
-#     user = current_user
-#
-#     return send_from_directory(
-#         os.path.realpath(f'./user_uploads/{user.username}/trimmed_tracks/'),
-#         record_name,
-#         as_attachment=False, environ=request.environ
-#     )
-
 @app.route('/get-click-audio/<record_name>')
 def get_click_audio(record_name):
     return send_file(os.path.realpath(f'./user_uploads/clickSound/{record_name}'))

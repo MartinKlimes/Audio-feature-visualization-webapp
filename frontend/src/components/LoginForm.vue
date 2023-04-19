@@ -28,7 +28,8 @@ const rules = {
 const v$ = useVuelidate(rules, formData);
 
 function loginUser(data) {
-  api.post("login", data)
+  api
+    .post("login", data)
     .then(function (response) {
       if (response.data.message === "login successful") {
         // if the login was successful, redirect user to the main page
@@ -54,26 +55,11 @@ function loginUser(data) {
 </script>
 
 <template>
-  <form
-    class="w-full bg-dark-500 bg-opacity-50 blur-sm pl-25 pr-25 pt-5 pb-5 text-white"
-    id="login-form"
-  >
+  <form class="w-full bg-dark-500 bg-opacity-50 blur-sm pl-25 pr-25 pt-5 pb-5 text-white" id="login-form">
     <span class="text-3xl mb-5">{{ t("form.login") }}</span>
 
-    <input
-      v-model="v$.username.$model"
-      type="text"
-      class="input-field"
-      :placeholder="t('form.username')"
-      autocomplete="username"
-    />
-    <input
-      v-model="v$.password.$model"
-      type="password"
-      class="input-field"
-      :placeholder="t('form.pswd')"
-      autocomplete="password"
-    />
+    <input v-model="v$.username.$model" type="text" class="input-field" :placeholder="t('form.username')" autocomplete="username" />
+    <input v-model="v$.password.$model" type="password" class="input-field" :placeholder="t('form.pswd')" autocomplete="password" />
 
     <div v-if="!v$.username.$invalid && !v$.password.$invalid">
       <button @click="loginUser(formData)" type="button" class="btn btn-blue">
@@ -88,11 +74,7 @@ function loginUser(data) {
 
     <div class="text-white mt-10 font-semibold">
       {{ t("login.notregistered") }}
-      <router-link
-        :to="{ path: '/signup' }"
-        class="text-green-400 hover:text-white"
-        >{{ t("login.goregister") }}</router-link
-      >
+      <router-link :to="{ path: '/signup' }" class="text-green-400 hover:text-white">{{ t("login.goregister") }}</router-link>
     </div>
   </form>
 

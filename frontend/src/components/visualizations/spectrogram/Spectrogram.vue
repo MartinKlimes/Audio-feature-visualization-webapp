@@ -1,18 +1,19 @@
 <script setup>
-import Cursor from "../../tools/Cursor.vue";
+import Cursor from "../../globalTools/Cursor.vue";
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import Spectrogram from "../../../functions/spectorgram/index";
+import Spectrogram from "../../../functions/wavesurferSpectorgram/index";
 import colormap from "colormap";
 import { wavesurfer } from "../../../functions/waveform/waveform";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import { Icon } from "@iconify/vue";
 import { trackList } from "../../../stores/globalStores";
-import LoadingOverlay from "../../tools/LoadingOverlay.vue";
-import {useHideBtn} from "../../../composables/useHideBtn"
+import LoadingOverlay from "../../globalTools/LoadingOverlay.vue";
+import { useHideBtn } from "../../../composables/useHideBtn";
+import NameVisualization from "../../globalTools/NameVisualization.vue";
 const currentTrackList = trackList();
-const hideBtn = ref(false)
-const hideLegendPanel = ref(false)
-const hideLablelsPanel = ref(false)
+const hideBtn = ref(false);
+const hideLegendPanel = ref(false);
+const hideLablelsPanel = ref(false);
 
 onMounted(() => {
   currentTrackList.selectTrack(props.track.id).spectrogram.isSpectrogramLoading = true;
@@ -22,7 +23,6 @@ onMounted(() => {
 });
 
 const createSpectrogramPlugin = () => {
-  console.log(props.track.spectrogram.fftSamples);
   watch(
     () => props.track.spectrogram.plotSpectrogram,
     () => {
@@ -91,21 +91,22 @@ const renderSpectrogram = () => {
 
 const { hide } = useHideBtn(hideBtn);
 
-  
 const hideLegend = () => {
-  hideLegendPanel.value =! hideLegendPanel.value
-  document.querySelector(`.spec-legend-${props.track.id}`).classList.toggle("hidden")
-}
+  hideLegendPanel.value = !hideLegendPanel.value;
+  document.querySelector(`.spec-legend-${props.track.id}`).classList.toggle("hidden");
+};
 
 const hideLabels = () => {
-  hideLablelsPanel.value =! hideLablelsPanel.value
-  document.querySelector(`.spec-labels-${props.track.id}`).classList.toggle("hidden")
-}
+  hideLablelsPanel.value = !hideLablelsPanel.value;
+  document.querySelector(`.spec-labels-${props.track.id}`).classList.toggle("hidden");
+};
 </script>
 
 <template>
-  <div :class="[{ 'shadow-md shadow-gray-500': isSelected }]">
+  <div :class="[{ 'shadow-md shadow-gray-500': isSelected },track.backgroundColor]">
     <div :id="`spectrogram-${track.id}`" class="relative min-h-20" @click="positionCursor()">
+      <NameVisualization :track-name="track.trackName" class="top-0 left-15 z-20 text-gray-400"/>
+
       <LoadingOverlay v-if="track.spectrogram.isSpectrogramLoading" />
       <Cursor :id="`spectrogram-cursor-${track.id}`" :color="'gray-500'" :width="4" />
       <Cursor :id="`spectrogram-liveCursor-${track.id}`" :color="'dark-800'" :width="1" />
@@ -122,14 +123,24 @@ const hideLabels = () => {
           @click="renderSpectrogram"
         />
       </div>
-      <div @mouseenter="hide" class="w-15 h-full absolute right-0 bottom-0 z-10 ">
-        <Icon v-if="hideBtn" :icon="hideLegendPanel? 'mdi:show-outline' : 'mdi:hide-outline'" class="hover:bg-white hover:border hover:border-black rounded-md float-right" @click="hideLegend()" />
+      <div @mouseenter="hide" class="w-15 h-full absolute right-0 bottom-0 z-10">
+        <Icon
+          v-if="hideBtn"
+          :icon="hideLegendPanel ? 'mdi:show-outline' : 'mdi:hide-outline'"
+          class="hover:bg-white hover:border hover:border-black rounded-md float-right"
+          @click="hideLegend()"
+        />
       </div>
       <div @mouseenter="hide" class="w-15 h-full absolute left-0 bottom-0 z-10">
-        <Icon v-if="hideBtn" :icon="hideLablelsPanel? 'mdi:show-outline' : 'mdi:hide-outline'" class="hover:bg-white hover:border hover:border-black rounded-md" @click="hideLabels()" />
+        <Icon
+          v-if="hideBtn"
+          :icon="hideLablelsPanel ? 'mdi:show-outline' : 'mdi:hide-outline'"
+          class="hover:bg-white hover:border hover:border-black rounded-md"
+          @click="hideLabels()"
+        />
       </div>
     </div>
-    
+
     <div :id="`timeline-spectrogram-${track.id}`" :class="track.backgroundColor"></div>
   </div>
 </template>
