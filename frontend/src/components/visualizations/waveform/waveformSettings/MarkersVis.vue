@@ -60,7 +60,7 @@ const checkBarsAndShow = () => {
       <Transition>
         <div
           v-if="showFileInfo && txtFileName"
-          class="absolute  z-1 rounded-md text-xs px-1 py-0.5 shadow-inner shadow-gray-500 top-9.5"
+          class="absolute  z-1 rounded-md text-xs px-1 py-0.5 shadow-inner shadow-gray-500 top-9.5 overflow-x-scroll max-w-27"
           :class="backgroundColor"
         >
           {{ txtFileName }}

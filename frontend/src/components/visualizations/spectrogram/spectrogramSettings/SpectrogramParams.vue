@@ -14,7 +14,7 @@ const changeParametr = (e) => {
     wavesurfer[props.id].spectrogram.init();
     currentTrackList.selectTrack(props.id).spectrogram.isSpectrogramLoading = false;
     updateRecording(props.id, props.parametr, e);
-  }, 0);
+  }, 10);
 };
 
 const props = defineProps({

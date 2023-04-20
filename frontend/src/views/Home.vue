@@ -19,6 +19,7 @@ currentTrackList.fetchRecordings();
 </script>
 
 <template>
+
   <div class="min-h-full">
     <NavBar @open-upload-modal="uploadModalVisible = true" :uploadModalVisible="uploadModalVisible" />
     <UploadModal v-if="uploadModalVisible" @close-upload-modal="uploadModalVisible = false" />
@@ -55,7 +56,7 @@ currentTrackList.fetchRecordings();
         id="content"
         class="h-full text-xl text-black bg-light-800 overflow-y-auto overflow-x-hidden transform duration-400"
         :class="{
-          'w-[72.5vw] ml-63': !hideSettingPanel && !hideTracklistPanel,
+          'w-[78vw] ml-63': !hideSettingPanel && !hideTracklistPanel,
           'w-[86vw] ml-63': hideSettingPanel && !hideTracklistPanel,
           'w-[90.5vw] ml-3 ': hideTracklistPanel && !hideSettingPanel,
           'w-[98.5vw] mx-3.5': hideTracklistPanel && hideSettingPanel,

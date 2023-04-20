@@ -1,5 +1,5 @@
 <script setup>
-import  "html-midi-player";
+// import 'html-midi-player'
 import { ref, onMounted, watchEffect, watch } from "vue";
 import { wavesurfer } from "../../../functions/waveform/waveform";
 import Cursor from "../../globalTools/Cursor.vue";

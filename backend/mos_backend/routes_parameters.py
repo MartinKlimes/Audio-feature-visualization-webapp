@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import librosa.display
 from flask_jwt_extended import jwt_required, current_user
-from flask import request, jsonify, send_from_directory, send_file
+from flask import request, jsonify
 import json
 
 @app.route('/get-event-detection/<record_name>')
@@ -13,11 +13,9 @@ def get_event_detection(record_name):
     json_path = f"./user_uploads/{user.username}/{record_name}.json"
 
     if os.path.exists(json_path):
-        # soubor existuje, načte vypočítaná data
         with open(json_path, 'r') as f:
             data = json.load(f)
     else:
-        # soubor neexistuje, provede výpočet a uložení dat
         if ' - trimmed (' in record_name or ' - bars (' in record_name:
             y, sr = librosa.load(f'./user_uploads/{user.username}/trimmed_tracks/{record_name}')
         else:
@@ -26,7 +24,6 @@ def get_event_detection(record_name):
         onset = librosa.onset.onset_detect(y, sr=sr, units='time')
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
         print(tempo)
-        # uložení vypočítaných dat do souboru
         data = {'onset': onset.tolist(), 'beats': beats.tolist()}
         with open(json_path, 'w') as f:
             json.dump(data, f)
