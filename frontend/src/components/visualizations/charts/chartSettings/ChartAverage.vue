@@ -2,6 +2,8 @@
 import VueSlider from "vue-slider-component";
 import { trackList } from "../../../../stores/globalStores";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
 const windowSize = ref(20);
@@ -36,7 +38,7 @@ const toggleMovingAverage = () => {
         class="cursor-pointer ml-2"
         :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showHorizontalAverage"
       />
-      <label for="horizontal-average" class="font-bold text-xs ml-1">Average (line)</label>
+      <label for="horizontal-average" class="font-bold text-xs ml-1">{{ t('Visualization.average')}}</label>
     </div>
     <div>
       <input
@@ -46,14 +48,14 @@ const toggleMovingAverage = () => {
         class="cursor-pointer ml-2"
         :checked="currentTrackList.selectTrack(id)[selectedIntervalVis].showMovingAverage"
       />
-      <label for="moving-average" class="font-bold text-xs ml-1">Moving Average</label>
+      <label for="moving-average" class="font-bold text-xs ml-1">{{ t('Visualization.movingAverage')}}</label>
     </div>
 
     <div
       v-if="currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].showMovingAverage"
       class="mt-2 flex flex-col items-center rounded-md py-1"
     >
-      <span class="text-sm opacity-40 font-bold boxTight p-1 rounded-md">window size: {{ windowSize }}</span>
+      <span class="text-sm opacity-40 font-bold boxTight p-1 rounded-md">{{ t('Visualization.windowSize')}}: {{ windowSize }}</span>
 
       <vue-slider
         v-model="windowSize"

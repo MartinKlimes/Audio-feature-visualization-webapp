@@ -7,6 +7,7 @@ import { useI18n } from "vue-i18n";
 import { api } from "../../composables/custom";
 import { trackList } from "../../stores/globalStores";
 import { updateRecording } from "../../composables/custom";
+import { getCookie } from "../../composables/cookieHandling";
 const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
@@ -38,7 +39,15 @@ async function rename() {
   state.alert_message = "Pleas wait";
 
   try {
-    await api.get("/rename-track/" + props.name + "/" + modifiedName.value);
+    await api.put("/rename-track",{
+        record_name: props.name,
+        modified_name: modifiedName.value,
+      }, {
+        headers: {
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          "Content-Type": "application/json",
+        },
+      });
   } catch (error) {
     state.alert_variant = "bg-red-500";
     state.alert_message = "Something went wrong. Try again later";
@@ -114,14 +123,14 @@ const useTrack = () => {
       <h4 class="inline-block font-bold">{{ name }}</h4>
       <!-- <span v-if="trackToEdit.isTrackSelected & !state.showForm" class="text-gray-400 text-sm ml-3" >({{1+ state.indexSelectedTracks}})</span> -->
       <button
-        title="Delete song"
+        :title="t('EditTrack.remove')"
         class="ml-1 mt-1 py-1 px-2 text-xs rounded text-white bg-red-600 float-right hover:bg-red-500"
         @click="$emit('deleteTrack', 'audio/' + name)"
       >
         <Icon icon="fa:times" />
       </button>
       <button
-        title="Rename song"
+        :title="t('EditTrack.rename')"
         class="ml-1 py-1 mt-1 px-2 text-xs rounded text-white bg-green-600 hover:bg-green-500 float-right"
         @click="state.showForm = !state.showForm"
       >
@@ -129,7 +138,7 @@ const useTrack = () => {
       </button>
 
       <span v-show="state.showTextInstruction & !state.showForm" class="mt-1 mr-8 float-right text-gray-400 text-sm">{{
-        !trackToEdit.isTrackSelected ? "Click to use audio" : "Click to remove audio"
+        !trackToEdit.isTrackSelected ? t('EditTrack.useOnClick') : t('EditTrack.removeOnClick')
       }}</span>
     </div>
     <div v-show="!state.showForm" class="absolute -mt-11 ml-3 w-[85%] h-full rounded cursor-pointer" @click="useTrack"></div>
@@ -148,7 +157,7 @@ const useTrack = () => {
           />
           <div class="text-sm text-red-600 mb-1 mt-1">
             <span v-if="v$.modifiedName.$error">
-              {{ t("edit-trackName") }}
+              {{ t('EditTrack.nameTooShort') }}
             </span>
           </div>
         </div>
@@ -160,7 +169,7 @@ const useTrack = () => {
             @click.prevent="rename"
             :disabled="state.in_submission"
           >
-            Submit
+            {{t("EditTrack.submit")}}
           </button>
         </div>
         <div v-else>

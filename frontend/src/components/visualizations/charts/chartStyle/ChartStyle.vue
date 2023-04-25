@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import BlueButtons from "../../../buttons/BlueButtons.vue";
 import SizeSetter from "../../../globalTools/SizeSetter.vue";
-import ColorsPicker from "../../../visualizationManager/ColorsPicker.vue";
+import ColorsPicker from "../../../globalTools/ColorsPicker.vue";
 import { trackList } from "../../../../stores/globalStores";
 import { updateRecording } from "../../../../composables/custom";
 const showColorPicker = ref(false);

@@ -1,11 +1,11 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { useHideBtn } from "../../../../composables/useHideBtn";
+import { useHideElement } from "../../../../composables/useHideElement";
 import { ref } from "vue";
 import { trackList } from "../../../../stores/globalStores";
 
 const showKeyboardSetting = ref(false);
-const { hide } = useHideBtn(showKeyboardSetting);
+const { hide } = useHideElement(showKeyboardSetting);
 const hideKeyboard = ref(false);
 const hideNotes = ref(false);
 const currentTrackList = trackList();

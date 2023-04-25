@@ -269,7 +269,8 @@ const calculateRMS = (audioBuffer) => {
     }
   }
   const rms = Math.sqrt(sumOfSquares / (audioBuffer.numberOfChannels * audioBuffer.length));
-  return rms;
+  const rmsInDB = 20 * Math.log10(rms);
+  return rmsInDB;
 };
 
 export const calculateRMSForSegments = (audioBuffer, numSegments) => {
@@ -277,7 +278,7 @@ export const calculateRMSForSegments = (audioBuffer, numSegments) => {
   const rmsValues = [];
   for (let i = 0; i < numSegments; i++) {
     const segmentStart = i * segmentLength;
-    const segmentEnd = (i + 1) * segmentLength;
+    const segmentEnd = (i + 1) * segmentLength; 
     const segment = {
       numberOfChannels: audioBuffer.numberOfChannels,
       length: segmentEnd - segmentStart,
@@ -285,8 +286,8 @@ export const calculateRMSForSegments = (audioBuffer, numSegments) => {
         return audioBuffer.getChannelData(channel).subarray(segmentStart, segmentEnd);
       },
     };
-    const rms = calculateRMS(segment);
-    rmsValues.push(rms);
+    const rmsInDB = calculateRMS(segment);
+    rmsValues.push(rmsInDB);
   }
   return rmsValues;
 };

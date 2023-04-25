@@ -2,9 +2,9 @@
 import { Icon } from "@iconify/vue";
 import { ref, onMounted, reactive, computed } from "vue";
 import { trackIndex, trackList, alertState } from "../../stores/globalStores";
-import VisButtons from "./VisButtons.vue";
+import VisualizationButtons from "./VisualizationButtons.vue";
 import SelectFiles from "../globalTools/SelectFiles.vue";
-import ColorsPicker from "./ColorsPicker.vue";
+import ColorsPicker from "../globalTools/ColorsPicker.vue";
 import { storeToRefs } from "pinia";
 import { updateRecording } from "../../composables/custom";
 import VolumeSlider from "./VolumeSlider.vue";
@@ -86,7 +86,7 @@ const updateBackgroundColor = (color) => {
     </div>
     
     <VolumeSlider :id="track.id" :is-waveform-ready="track.waveform.isWaveformReady"/>
-    <VisButtons :track="track" />
+    <VisualizationButtons :track="track" />
 
     <Icon
       icon="mdi:midi-port"

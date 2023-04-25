@@ -9,6 +9,8 @@ import BlueButtons from "../../../buttons/BlueButtons.vue";
 import SpectrogramStyle from "../spectrogramStyle/SpectrogramStyle.vue";
 import SpectrogramRange from "./SpectrogramRange.vue";
 import SpectrogramParams from "./SpectrogramParams.vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const props = defineProps({
   track: Object,
@@ -74,7 +76,7 @@ const removeSpectrogram = () => {
         @click="showSpectrogramFFTSamples = !showSpectrogramFFTSamples"
         :is-btn-clicked="showSpectrogramFFTSamples"
         title="spectrogram style"
-        >FFT size</BlueButtons
+        >{{t('Visualization.FFTsize')}}</BlueButtons
       >
 
       <BlueButtons
@@ -82,7 +84,7 @@ const removeSpectrogram = () => {
         @click="showSpectrogramWindowtype = !showSpectrogramWindowtype"
         :is-btn-clicked="showSpectrogramWindowtype"
         title="spectrogram style"
-        >window</BlueButtons
+        >{{t('Visualization.window')}}</BlueButtons
       >
     </div>
 

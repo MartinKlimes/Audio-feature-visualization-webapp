@@ -10,11 +10,12 @@ from pydub import AudioSegment
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify, send_from_directory, send_file
 
-@app.route('/upload-audio-file/<file_type>', methods=['POST'])
+@app.route('/upload-file/<file_type>', methods=['POST'])
 @jwt_required()
-def upload_audio_file(file_type):
+def upload_file(file_type):
     user = current_user
     file = request.files['file']
+
     if file:
         filename = secure_filename(file.filename)
         if file_type in ['audio,mpeg', 'audio,x-m4a', 'audio,wav', 'audio,flac']:
@@ -58,7 +59,7 @@ def get_audio_file():
 
     return jsonify(record_list, os.listdir((ground_truth_path)), os.listdir((midi_path)))
 
-@app.route('/update-recording', methods=['POST'])
+@app.route('/update-recording', methods=['PUT'])
 @jwt_required()
 def update_recording():
     data = request.get_json()
@@ -115,10 +116,13 @@ def update_recording():
 
     return f'{column} in record id: {record_id} change to: {new_value}'
 
-@app.route('/rename-track/<record_name>/<modified_name>', methods=['GET'])
+@app.route('/rename-track', methods=['PUT'])
 @jwt_required()
-def rename_track(record_name, modified_name):
+def rename_track():
     user = current_user
+    data = request.get_json()
+    record_name = data.get('record_name')
+    modified_name = data.get('modified_name')
     filepath = f'./user_uploads/{user.username}/'
     os.rename(filepath + record_name, filepath + modified_name)
     record = Recording.query.filter_by(filename=record_name, user=user).first()
@@ -128,11 +132,10 @@ def rename_track(record_name, modified_name):
 
     return jsonify({'message': 'Succesfully renamed'})
 
-@app.route('/delete-audio-file/<type>/<event_name>', methods=['POST', 'GET'])
+@app.route('/delete-file/<type>/<event_name>', methods=['DELETE'])
 @jwt_required()
-def delete_audio_fil(event_name, type):
+def delete_file(event_name, type):
     user = current_user
-
     if type == 'audio':
         record = Recording.query.filter_by(filename=event_name).first()
 

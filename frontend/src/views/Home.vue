@@ -5,7 +5,7 @@ import UploadModal from "../components/uploadManager/UploadModal.vue";
 import { trackList, trackIndex } from "../stores/globalStores";
 import TrackToVisualize from "../components/visualizationManager/TrackToVisualize.vue";
 import RightPanel from "../components/RightPanel.vue";
-import VisualizationsHome from "../components/visualizations/VisualizationsHome.vue";
+import Visualizations from "../components/visualizations/Visualizations.vue";
 
 const currentTrackList = trackList();
 const selectedVis = ref(3);
@@ -23,7 +23,6 @@ currentTrackList.fetchRecordings();
   <div class="min-h-full">
     <NavBar @open-upload-modal="uploadModalVisible = true" :uploadModalVisible="uploadModalVisible" />
     <UploadModal v-if="uploadModalVisible" @close-upload-modal="uploadModalVisible = false" />
-
     <div id="main-container" class="h-[calc(100vh-4.5rem)] flex overflow-hidden relative">
       <div
         id="tracklist"
@@ -62,7 +61,7 @@ currentTrackList.fetchRecordings();
           'w-[98.5vw] mx-3.5': hideTracklistPanel && hideSettingPanel,
         }"
       >
-        <VisualizationsHome @select-vis="selectedVis = $event"/>
+        <Visualizations @select-vis="selectedVis = $event"/>
       </div>
       <div
         class="h-full w-41 absolute top-0 right-1 flex justify-center bg-gray-200 transform duration-400"

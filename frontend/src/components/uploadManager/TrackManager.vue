@@ -1,13 +1,15 @@
 <script setup>
-import { Icon } from "@iconify/vue";
 import { trackIndex, trackList } from "../../stores/globalStores";
 import { api } from "../../composables/custom";
 import { showAlert, closeAlert } from "../../composables/alerts";
 import EditTrack from "./EditTrack.vue";
 import { ref, reactive } from "vue";
-import { marker } from "../../functions/waveform/waveform";
 import SelButtons from "../buttons/BlueButtons.vue";
 import EditBarsMIDI from "./EditBarsMIDI.vue";
+import { getCookie } from "../../composables/cookieHandling";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
 const globalTrackIndex = trackIndex();
@@ -18,8 +20,11 @@ const state = reactive({
 });
 
 const deleteTrack = async (event) => {
-  console.log(event);
-  await api.get("/delete-audio-file/" + event).then((response) => {
+
+  await api.delete("/delete-file/" + event, {headers: {
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          "Content-Type": "application/json",
+        }}).then((response) => {
     showAlert(response.data.message);
     setTimeout(closeAlert, 1500);
     // currentTrackList.trackState.splice(event.index, 1);
@@ -51,7 +56,7 @@ const deleteTrack = async (event) => {
         :icon="'clarity:bars-line'"
         class="mr-1"
       >
-        Bars
+        {{t('EditTrack.bars')}}
       </SelButtons>
       <SelButtons
         @click="(state.isEditMIDI = true), (state.isEditTrack = false), (state.isEditBars = false)"

@@ -2,6 +2,8 @@
 import { ref, onDeactivated } from "vue";
 import { wavesurfer } from "../../../../functions/waveform/waveform";
 import BlueButttons from "../../../buttons/BlueButtons.vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const fromBar = ref(0);
 const toBar = ref(0);
@@ -72,7 +74,7 @@ function selectBar() {
       @click="$emit('trim-audio', [wavesurfer[id].regions.list[fromBar].start, wavesurfer[id].regions.list[toBar].end, fromBar, toBar])"
       :disabled="loading"
       class="mt-1 px-2"
-      >Select</BlueButttons
+      >{{t('Visualization.select')}}</BlueButttons
     >
   </div>
 

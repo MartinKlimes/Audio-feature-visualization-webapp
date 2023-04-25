@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
-import { useHideBtn } from "../../../composables/useHideBtn";
+import { useHideElement } from "../../../composables/useHideElement";
 import { api } from "../../../composables/custom";
 import { createWavesurfer } from "../../../functions/waveform/waveform";
 import { wavesurfer } from "../../../functions/waveform/waveform";
@@ -9,11 +9,14 @@ import { trackIndex, trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../globalTools/LoadingOverlay.vue";
 import NameVisualization from "../../globalTools/NameVisualization.vue";
 
+
+
+
 const showZoomerSetting = ref(false);
 const hideZoomer = ref(false);
 const globalTrackIndex = trackIndex();
 const currentTrackList = trackList();
-const { hide } = useHideBtn(showZoomerSetting);
+const { hide } = useHideElement(showZoomerSetting);
 
 onMounted(() => {
   currentTrackList.selectTrack(props.track.id).waveform.isWaveformLoading = true;
@@ -70,10 +73,10 @@ const refreshZoomer = () => {
       <transition>
         <div :id="`waveform-${track.id}`">
           <LoadingOverlay v-if="track.waveform.isWaveformLoading" />
-          <NameVisualization :track-name="track.trackName" class="top-0 left-15 z-20 text-gray-500"/>
+          <NameVisualization :track-name="track.trackName" class="top-0 left-15 z-20 text-gray-500" />
 
           <div v-show="!hideZoomer" data-html2canvas-ignore="true">
-            <div class="absolute right-15 bottom-10 z-10 flex rounded-md bg-gray-200 " @mouseenter="zoom">
+            <div class="absolute right-15 bottom-10 z-10 flex rounded-md bg-gray-200" @mouseenter="zoom">
               <Icon icon="material-symbols:zoom-out" />
               <input
                 type="range"
@@ -87,7 +90,11 @@ const refreshZoomer = () => {
               />
               <Icon icon="material-symbols:zoom-in-rounded" />
             </div>
-            <div class="absolute -right-15 bottom-35 z-10 flex transform -rotate-90 bg-gray-200 rounded-md" :class="{'-mb-6' : track.waveform.waveformHeight < 300}" @mouseenter="zoom">
+            <div
+              class="absolute -right-15 bottom-35 z-10 flex transform -rotate-90 bg-gray-200 rounded-md"
+              :class="{ '-mb-6': track.waveform.waveformHeight < 300 }"
+              @mouseenter="zoom"
+            >
               <Icon icon="material-symbols:zoom-out" :rotate="1" />
               <input
                 type="range"
@@ -96,7 +103,6 @@ const refreshZoomer = () => {
                 value="1"
                 :id="`zoomerHeight-${track.id}`"
                 class="slider vertical bg-transparent"
-               
                 @input="changeHeight($event.target.value)"
               />
               <Icon icon="material-symbols:zoom-in-rounded" :rotate="1" />

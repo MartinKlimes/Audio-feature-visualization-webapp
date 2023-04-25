@@ -5,7 +5,7 @@ const { t, locale } = useI18n();
 </script>
 
 <template>
-  <div id="lang-switch" class="text-light-50 m-3 mt-4 h-10 pl-1 pr-1 bg-dark-500 bg-opacity-50 blur-sm bg-opacity-50 rounded-md z-30">
+  <div id="lang-switch" class="text-light-50 pt-1 m-3 flex justify-center items-center h-10 bg-gray-400  border border-gray-100 boxTight bg-opacity-50 blur-sm bg-opacity-50 rounded-md z-30">
     <input type="radio" id="one" class="hidden" value="en" v-model="locale" />
     <label for="one">
       <Icon icon="twemoji:flag-united-kingdom" :inline="true" width="25" class="m-2 cursor-pointer hover:opacity-70 transition" />

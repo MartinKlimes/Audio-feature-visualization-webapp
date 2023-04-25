@@ -34,8 +34,41 @@ button:
 alert:
   wrongpassword: Zadali jste nesprávné heslo.
   wrongusername: Uživatelské jméno neexistuje.
-
+  logout: Odhlášení proběhlo úspěšně.
+  loginsuccessful: Přihlášení proběhlo úspěšně!
+  logoutsuccessful: Odhlášení proběhlo úspěšně!
   emailexists: Emailová adresa je již použitá.
   usernameexists: Uživatelské jméno již existuje.
 
 not-found: Nenalezeno
+
+EditTrack:
+  nameTooShort: Název skladby je příliš krátký.
+  rename: Přejmenovat skladbu
+  remove: Odebrat skladbu
+  useOnClick: Přidat nahrávku
+  removeOnClick: Odebrat nahrávku
+  submit: Potvrdit
+  bars: Takty
+  alreadyUploaded: byl již nahrán!
+  upload: Nahrát
+  dragAndDrop: Vyberte soubor nebo jej přetáhněte sem 
+
+Visualization:
+  selectMIDI: Nejprve vyberte MIDI soubor!
+  selectTxt: Nejprve vyberte soubor s takty!
+  displayBars: Nejprve zobrazte takty!
+  average: Průměr (čára)
+  movingAverage: Klouzavý průměr
+  windowSize: Velikost okna
+  frameSize: Velikost rámce
+  FFTsize: FFT size
+  window: okno
+  lightness: světlost
+  add: Přidat
+  selectPart: Vybrat úsek
+  bars: Takt
+  time: Čas
+  timeFrame: Časové úseky
+  lenghtFrame: Délka rámce
+  select: Vybrat

@@ -17,7 +17,6 @@ class Recording(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(128), unique=False, nullable=False)
     filepath = db.Column(db.String(128), unique=True, nullable=False)
-    ground_truth = db.Column(db.String(128), unique=True, nullable=True)
     isTrackSelected = db.Column(db.Boolean, unique=False, nullable=True)
 
 
@@ -41,11 +40,10 @@ class Recording(db.Model):
     Tempo_data = db.relationship('Tempo', backref='recording', uselist=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, filename, filepath, user_id, ground_truth=None, isTrackSelected=False, backgroundColor=None,
+    def __init__(self, filename, filepath, user_id, isTrackSelected=False, backgroundColor=None,
                  txtFileName=None, MIDIFileName=None, waveformColor=None, start=None, end=None):
         self.filename = filename
         self.filepath = filepath
-        self.ground_truth = ground_truth
         self.isTrackSelected = isTrackSelected
         self.backgroundColor = backgroundColor
         self.txtFileName = txtFileName
@@ -68,7 +66,6 @@ class Recording(db.Model):
             'id': self.id,
             'trackName': self.filename,
             'filepath': self.filepath,
-            'ground_truth': self.ground_truth,
             'isTrackSelected': self.isTrackSelected,
             'backgroundColor': self.backgroundColor,
             'txtFileName': self.txtFileName,

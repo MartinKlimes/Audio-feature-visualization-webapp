@@ -1,6 +1,7 @@
 <script setup>
 import { useI18n } from "vue-i18n";
 
+
 import { reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
@@ -33,7 +34,7 @@ function loginUser(data) {
     .then(function (response) {
       if (response.data.message === "login successful") {
         // if the login was successful, redirect user to the main page
-        showAlert("Login was successful.");
+        showAlert(t("alert.loginsuccessful"));
         setTimeout(closeAlert, 1500);
         router.push("/");
       }

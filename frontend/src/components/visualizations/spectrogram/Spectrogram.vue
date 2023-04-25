@@ -8,7 +8,7 @@ import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js
 import { Icon } from "@iconify/vue";
 import { trackList } from "../../../stores/globalStores";
 import LoadingOverlay from "../../globalTools/LoadingOverlay.vue";
-import { useHideBtn } from "../../../composables/useHideBtn";
+import { useHideElement } from "../../../composables/useHideElement";
 import NameVisualization from "../../globalTools/NameVisualization.vue";
 const currentTrackList = trackList();
 const hideBtn = ref(false);
@@ -89,7 +89,7 @@ const renderSpectrogram = () => {
   }, 100);
 };
 
-const { hide } = useHideBtn(hideBtn);
+const { hide } = useHideElement(hideBtn);
 
 const hideLegend = () => {
   hideLegendPanel.value = !hideLegendPanel.value;
@@ -103,9 +103,9 @@ const hideLabels = () => {
 </script>
 
 <template>
-  <div :class="[{ 'shadow-md shadow-gray-500': isSelected },track.backgroundColor]">
+  <div :class="[{ 'shadow-md shadow-gray-500': isSelected }, track.backgroundColor]">
     <div :id="`spectrogram-${track.id}`" class="relative min-h-20" @click="positionCursor()">
-      <NameVisualization :track-name="track.trackName" class="top-0 left-15 z-20 text-gray-400"/>
+      <NameVisualization :track-name="track.trackName" class="top-0 left-15 z-20 text-gray-400" />
 
       <LoadingOverlay v-if="track.spectrogram.isSpectrogramLoading" />
       <Cursor :id="`spectrogram-cursor-${track.id}`" :color="'gray-500'" :width="4" />

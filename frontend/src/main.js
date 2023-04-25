@@ -7,6 +7,7 @@ import "virtual:windi.css";
 
 import { createPinia } from "pinia";
 
+
 // load localization yml files
 const messages = Object.fromEntries(
   Object.entries(import.meta.globEager("../locales/*.y(a)?ml")).map(([key, value]) => [

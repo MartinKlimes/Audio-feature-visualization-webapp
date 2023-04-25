@@ -4,6 +4,8 @@ import { wavesurfer } from "../../../../functions/waveform/waveform";
 import { onClickOutside } from "@vueuse/core";
 import { ref, watchEffect } from "vue";
 import { updateRecording } from "../../../../composables/custom";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const props = defineProps({
   id: Number,
@@ -58,7 +60,7 @@ onClickOutside(target, () => {
       alpha-channel="hide"
     />
 
-    <label for="range-input" class="absolute right-0 bottom-7 z-10 text-sm">lightness</label>
+    <label for="range-input" class="absolute right-0 bottom-7 z-10 text-sm">{{ t('Visualization.lightness') }}</label>
     <input
       id="range-input"
       type="number"

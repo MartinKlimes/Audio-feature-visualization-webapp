@@ -16,6 +16,7 @@
     "chart.js": "^3.9.1",
     "colormap": "^2.3.2",
     "html2canvas": "^1.4.1",
+    "loudness": "^0.4.1",
     "pinia": "^2.0.13",
     "plotly.js-dist": "^2.18.2",
     "vue": "^3.2.25",

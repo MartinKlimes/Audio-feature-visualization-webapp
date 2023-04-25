@@ -34,10 +34,43 @@ button:
 alert:
   wrongpassword: You have entered your password incorrectly!
   wrongusername: Username does not exist!
-
+  logout: Successfully logged out.
+  loginsuccessful: Login was successful!
+  logoutsuccessful: Successfully logged out!
   emailexists: Email address is already taken.
   usernameexists: Username is already taken.
 
 not-found: Not Found
 
-edit-trackName: Name of track is too short.
+
+
+EditTrack:
+  nameTooShort: Name of track is too short.
+  rename: Rename song
+  remove: Remove song
+  useOnClick: Click to use audio
+  removeOnClick: Click to remove audio
+  submit: Submit
+  bars: Bars
+  alreadyUploaded: is already uploaded
+  upload: Upload
+  dragAndDrop: Choose a file or drag it here
+
+Visualization:
+  selectMIDI: First select MIDI file!
+  selectTxt: First select text file!
+  displayBars: First display bars!
+  average: Average (line)
+  movingAverage: Moving Average
+  windowSize: Window size
+  frameSize: Frame size
+  FFTsize: FFT size
+  window: window
+  lightness: lightness
+  add: Add
+  selectPart: Select part
+  bars: Bars
+  time: Time
+  timeFrame: Time frame
+  lenghtFrame: Lenght frame
+  select: Select

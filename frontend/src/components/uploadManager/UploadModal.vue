@@ -8,7 +8,9 @@ import { getCookie } from "../../composables/cookieHandling";
 import { api } from "../../composables/custom";
 import { showAlert, closeAlert } from "../../composables/alerts";
 import { onClickOutside } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
+const { t, locale } = useI18n();
 const currentTrackList = trackList();
 
 const emits = defineEmits(["closeUploadModal"]);
@@ -82,7 +84,7 @@ function uploadOneFile(file, id) {
     // } else if (file.type == 'text/plain'){
     //   type = 'txt'
     // } else if (file.type == 'audio')
-    api.post("upload-audio-file/" + file.type.split("/"), formData, axiosConfig).then(function (response) {
+    api.post("upload-file/" + file.type.split("/"), formData, axiosConfig).then(function (response) {
       // uploadCheck.style.visibility = "visible";
       isUploaded.value[id] = true;
       currentTrackList.fetchRecordings();
@@ -105,7 +107,7 @@ const upload = ($event) => {
       fileList.push(files[i]);
       isUploaded.value.push(false);
     } else {
-      showAlert(`${files[i].name} is already uploaded`);
+      showAlert(`${files[i].name} ${t('EditTrack.alreadyUploaded')}`);
       setTimeout(closeAlert, 1500);
     }
   }
@@ -133,7 +135,7 @@ onClickOutside(target, () => {
         <div class="col-span-1">
           <div class="bg-white rounded border border-gray-200 relative flex flex-col">
             <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
-              <span class="card-title">Upload</span>
+              <span class="card-title">{{ t('EditTrack.upload') }}</span>
               <Icon
                 icon="material-symbols:close"
                 class="float-right text-2xl -m-3 hover:bg-gray-300 transition cursor-pointer"
@@ -157,7 +159,7 @@ onClickOutside(target, () => {
                   @drop.prevent.stop="upload($event)"
                 >
                   <Icon icon="uil:upload" class="text-2xl" /> <br />
-                  <h5>Choose a file or drag it here</h5>
+                  <h5>{{ t('EditTrack.dragAndDrop') }}</h5>
                   <input
                     id="added-files"
                     type="file"

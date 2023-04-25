@@ -1,22 +1,19 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { ref, shallowRef } from "vue";
-import BarSelection from "./BarSelection.vue";
-import TimeSelection from "./TimeSelection.vue";
-import { api } from "../../../../composables/custom";
-import { trackIndex, trackList, alertState } from "../../../../stores/globalStores";
+import { ref } from "vue";
+import {alertState } from "../../../../stores/globalStores";
 import BlueButtons from "../../../buttons/BlueButtons.vue";
 import ExportBtn from "../../../buttons/ExportBtn.vue";
 import { updateRecording } from "../../../../composables/custom";
-import { getCookie } from "../../../../composables/cookieHandling";
-import { showAlert, closeAlert } from "../../../../composables/alerts";
-import MarkersVis from "./MarkersVis.vue";
+import WaveformMarkers from "./WaveformMarkers.vue";
 import WaveformStyle from "../waveformStyle/WaveformStyle.vue";
+import WaveformTrim from "./WaveformTrim.vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
+
 const alertGlobalState = alertState();
 
-const currentSetting = shallowRef();
-const loading = ref(false);
-const currentTrackList = trackList();
+
 
 const showLinesVis = ref(false);
 const showAppearance = ref(false);
@@ -32,49 +29,9 @@ const removeWaveform = () => {
   updateRecording(props.track.id, "isWaveformDisplayed", false);
 };
 
-const showBarsToSelect = () => {
-  if (document.querySelector(`#bars-marker-${props.track.id}`)) {
-    currentSetting.value === BarSelection ? (currentSetting.value = "") : (currentSetting.value = BarSelection);
-  } else {
-    showAlert("First display bars!");
-    setTimeout(closeAlert, 1500);
-  }
-};
 
-const trimAudio = (event) => {
-  loading.value = true;
-  const record_name = props.track.trackName;
-  const start = event[0];
-  const end = event[1];
-  const fromBar = event[2] || false;
-  const toBar = event[3] || false;
-  api
-    .post(
-      "/trim-audio",
-      {
-        record_name,
-        start,
-        end,
-        fromBar,
-        toBar,
-      },
-      {
-        headers: {
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    )
-    .then((response) => {
-      currentTrackList.fetchRecordings().then(() => {
-        const track = currentTrackList.selectTrack(response.data.id);
-        track.waveform.isWaveform = true;
-        track.waveform.isWaveformDisplayed = true;
-        loading.value = false;
-        currentSetting.value = null;
-      });
-    });
-};
+
+
 </script>
 
 <template>
@@ -86,12 +43,12 @@ const trimAudio = (event) => {
       :icon="'material-symbols:add-circle-outline'"
       @click="showLinesVis = !showLinesVis"
       :class="{ blink: alertGlobalState.message.includes('bars') }"
-      >Add</BlueButtons
+      >{{t('Visualization.add')}}</BlueButtons
     >
 
     <Transition>
       <keep-alive>
-        <MarkersVis
+        <WaveformMarkers
           v-if="showLinesVis"
           :track-name="track.trackName"
           :id="track.id"
@@ -103,28 +60,12 @@ const trimAudio = (event) => {
 
     <ExportBtn :id="track.id" :track-name="track.trackName" :visualization="'waveform'" class="absolute top-0 right-0" />
 
-    <span class="text-xs opacity-50 mt-2">Select part</span>
-    <div class="flex border border-dashed border-gray-400 rounded-md p-1 justify-center items-center mb-1">
-      <BlueButtons
-        class="mr-1"
-        @click="showBarsToSelect()"
-        :icon="'material-symbols:content-cut-rounded'"
-        :is-btn-clicked="currentSetting === BarSelection"
-        >Bars</BlueButtons
-      >
-      <BlueButtons
-        @click="currentSetting === TimeSelection ? (currentSetting = '') : (currentSetting = TimeSelection)"
-        :icon="'material-symbols:content-cut-rounded'"
-        :is-btn-clicked="currentSetting === TimeSelection"
-        >Time</BlueButtons
-      >
-    </div>
-    <transition>
-      <KeepAlive>
-        <component :is="currentSetting" :trackName="track.trackName" :id="track.id" :loading="loading" @trim-audio="trimAudio($event)" />
-      </KeepAlive>
-    </transition>
-
+    <WaveformTrim
+    :id="track.id"
+    :track-name="track.trackName"
+    />
+    
+  
     <BlueButtons
       class="mt-2 flex"
       @click="showAppearance = !showAppearance"

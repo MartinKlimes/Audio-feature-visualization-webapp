@@ -38,7 +38,7 @@ const changeColor = (e) => {
   <div class="flex flex-col items-center relative h-max w-full p-2 bg-gray-200 rounded-md border border-gray-300 shadow-md">
     <ExportBtn :id="track.id" :track-name="track.trackName" :visualization="'pianoroll'" class="absolute top-0 right-0" />
     <div
-          class=" z-1 rounded-md text-xs px-1 py-0.5 shadow-inner shadow-gray-500 overflow-x-scroll max-w-27" 
+          class=" z-1 rounded-md text-xs px-1 py-0.5 shadow-inner shadow-gray-500 overflow-x-auto max-w-27" 
           :class="track.backgroundColor"
           title="name of MIDI file"
         >

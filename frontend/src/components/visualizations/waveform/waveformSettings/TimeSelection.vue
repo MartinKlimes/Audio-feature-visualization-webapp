@@ -2,6 +2,8 @@
 import { ref, onMounted, onDeactivated, onActivated, watchEffect, onUnmounted } from "vue";
 import { wavesurfer } from "../../../../functions/waveform/waveform";
 import BlueButttons from "../../../buttons/BlueButtons.vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const from = ref(null);
 const to = ref(null);
@@ -86,7 +88,7 @@ onActivated(() => {
       @click="$emit('trim-audio', [from, to])"
       :disabled="!from || !to"
       class="mt-1 px-2"
-      >Select</BlueButttons
+      >{{t('Visualization.select')}}</BlueButttons
     >
   </div>
 </template>

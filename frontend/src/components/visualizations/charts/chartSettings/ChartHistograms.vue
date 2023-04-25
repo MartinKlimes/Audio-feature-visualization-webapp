@@ -2,10 +2,12 @@
 import VueSlider from "vue-slider-component";
 import { trackList } from "../../../../stores/globalStores";
 import { onUnmounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 
 const currentTrackList = trackList();
 const windowSize = ref(20);
-const values = ["Time frame", "Lenght frame"];
+const values = [t('Visualization.timeFrame'), t('Visualization.lenghtFrame')];
 const selectedValue = ref();
 const props = defineProps({
   id: Number,
@@ -13,7 +15,7 @@ const props = defineProps({
 });
 
 const changeFrameSize = () => {
-  if (selectedValue.value == "Time frame") {
+  if (selectedValue.value == t('Visualization.timeFrame')) {
     currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].histogramLengthFrameSize = 0;
     setTimeout(() => {
       currentTrackList.selectTrack(props.id)[props.selectedIntervalVis].histogramTimeFrameSize = windowSize.value;
@@ -41,7 +43,7 @@ onUnmounted(() => {
     </div>
 
     <div class="mt-2 flex flex-col items-center boxTight rounded-md py-1">
-      <span class="text-sm opacity-40 font-bold px-1">Frame size: {{ windowSize }}</span>
+      <span class="text-sm opacity-40 font-bold px-1">{{t('Visualization.frameSize')}}: {{ windowSize }}</span>
     </div>
 
     <vue-slider
