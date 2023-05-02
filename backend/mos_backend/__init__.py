@@ -12,7 +12,7 @@ CORS(app, resources={r'/*': {'origins': '*'}}, supports_credentials=True)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:pswd123@localhost/mos-users'
 # database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://audio_feature_visualization_user:sEEBU4MVxEwTEn8ICKIOrbRsKYKcxveI@dpg-ch8dm55gk4q7lmplo310-a.oregon-postgres.render.com/audio_feature_visualization'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # postgresql://audio_feature_visualization_user:sEEBU4MVxEwTEn8ICKIOrbRsKYKcxveI@dpg-ch8dm55gk4q7lmplo310-a.oregon-postgres.render.com/audio_feature_visualization
 
