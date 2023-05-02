@@ -26,7 +26,7 @@ app.config["JWT_TOKEN_LOCATION"] = ['cookies']
 
 
 # must be set to True in production
-app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_COOKIE_SECURE"] = True
 jwt = JWTManager(app)
 
 from mos_backend.db_models import User, Recording

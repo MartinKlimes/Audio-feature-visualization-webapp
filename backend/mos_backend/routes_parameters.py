@@ -36,9 +36,10 @@ def get_event_detection(record_name):
     #     data = {'beats': data['beats']}
     # else:
     #     data = {'onset': data['onset']}
-    y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
-    data = sr
-    return jsonify(data)
+    # y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
+    # data = sr
+    # return jsonify(data)
+    return 'ahoj'
 
 
 @app.route('/get-tempo/<filename>/<int:num_segments>')
