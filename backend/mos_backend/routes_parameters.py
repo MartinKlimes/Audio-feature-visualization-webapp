@@ -2,7 +2,7 @@ from mos_backend import app, db
 from werkzeug.utils import secure_filename
 import os
 import librosa.display
-
+import soundfile
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify
 import json
@@ -36,10 +36,13 @@ def get_event_detection(record_name):
     #     data = {'beats': data['beats']}
     # else:
     #     data = {'onset': data['onset']}
-    y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
-    print(sr)
+    # y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
+    # print(sr)
     # return jsonify(data)
-    return 'ahoj'
+    sfo = soundfile.SoundFile(f'./user_uploads/{user.username}/{record_name}')
+    y, sr = librosa.load(sfo)
+
+    return jsonify(sr)
 
 
 @app.route('/get-tempo/<filename>/<int:num_segments>')
