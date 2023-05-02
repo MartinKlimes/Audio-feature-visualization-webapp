@@ -3,7 +3,7 @@ import { getCookie } from "./cookieHandling";
 
 export const api = axios.create({
   withCredentials: true,
-  baseURL: "http://audio-feature-visualization.onrender.com/",
+  baseURL: "https://audio-feature-visualization.onrender.com/",
 });
 
 export const updateRecording = (record_id, column, new_value, visualization_type) => {
