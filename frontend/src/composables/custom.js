@@ -3,11 +3,11 @@ import { getCookie } from "./cookieHandling";
 
 export const api = axios.create({
   withCredentials: true,
-  baseURL: "https://audio-feature-visualization.onrender.com/",
+  baseURL: "http://127.0.0.1:5000/",
 });
 
 export const updateRecording = (record_id, column, new_value, visualization_type) => {
-api
+i
     .put(
       "/update-recording",
       {
