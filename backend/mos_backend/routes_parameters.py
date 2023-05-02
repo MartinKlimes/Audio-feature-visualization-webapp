@@ -21,7 +21,7 @@ def get_event_detection(record_name):
         else:
             y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
 
-        onset = librosa.onset.onset_detect(y, sr=sr, units='time')
+        onset = librosa.onset.onset_detect(y=y, sr=sr, units='time')
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
         data = {'onset': onset.tolist(), 'beats': beats.tolist()}
         with open(json_path, 'w') as f:
