@@ -12,7 +12,6 @@ import json
 def get_event_detection(record_name):
     user = current_user
     json_path = f"./user_uploads/{user.username}/{record_name}.json"
-
     if os.path.exists(json_path):
         with open(json_path, 'r') as f:
             data = json.load(f)
@@ -24,7 +23,6 @@ def get_event_detection(record_name):
 
         onset = librosa.onset.onset_detect(y, sr=sr, units='time')
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
-        print(tempo)
         data = {'onset': onset.tolist(), 'beats': beats.tolist()}
         with open(json_path, 'w') as f:
             json.dump(data, f)
