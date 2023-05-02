@@ -1,8 +1,8 @@
 from mos_backend import app, db
 from werkzeug.utils import secure_filename
 import os
-import librosa
-import soundfile
+import librosa.display
+
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify
 import json
@@ -39,8 +39,8 @@ def get_event_detection(record_name):
     # y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
     # print(sr)
     # return jsonify(data)
-    sfo = soundfile.SoundFile(f'./user_uploads/{user.username}/{record_name}')
-    y, sr = librosa.load(sfo)
+    # sfo = soundfile.SoundFile(f'./user_uploads/{user.username}/{record_name}')
+    y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
 
     return jsonify(sr)
 
