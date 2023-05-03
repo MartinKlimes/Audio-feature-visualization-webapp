@@ -1,7 +1,7 @@
 from mos_backend import app, db
 from werkzeug.utils import secure_filename
 import os
-import librosa
+import librosa.display
 
 from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify
