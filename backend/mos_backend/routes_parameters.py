@@ -7,12 +7,50 @@ from flask_jwt_extended import jwt_required, current_user
 from flask import request, jsonify
 import json
 
+# @app.route('/get-event-detection/<record_name>')
+# @jwt_required()
+# def get_event_detection(record_name):
+#     user = current_user
+#     print('ted')
+#     json_path = f"./user_uploads/{user.username}/{record_name}.json"
+#     if os.path.exists(json_path):
+#         with open(json_path, 'r') as f:
+#             data = json.load(f)
+#     else:
+#         if ' - trimmed (' in record_name or ' - bars (' in record_name:
+#             y, sr = librosa.load(f'./user_uploads/{user.username}/trimmed_tracks/{record_name}')
+#         else:
+#             y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
+#
+#         onset = librosa.onset.onset_detect(y=y, sr=sr, units='time')
+#         tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
+#         data = {'onset': onset.tolist(), 'beats': beats.tolist()}
+#         with open(json_path, 'w') as f:
+#             json.dump(data, f)
+#
+#     if 'data_type' in request.args:
+#         data_type = request.args['data_type']
+#     else:
+#         data_type = 'onset'
+#
+#     if data_type == 'beats':
+#         data = {'beats': data['beats']}
+#     else:
+#         data = {'onset': data['onset']}
+#
+#     return jsonify(data)
 @app.route('/get-event-detection/<record_name>')
 @jwt_required()
 def get_event_detection(record_name):
     user = current_user
     print('ted')
-    json_path = f"./user_uploads/{user.username}/{record_name}.json"
+    if 'data_type' in request.args:
+        data_type = request.args['data_type']
+    else:
+        data_type = 'onset'
+
+    json_path = f"./user_uploads/{user.username}/{record_name}_{data_type}.json"
+
     if os.path.exists(json_path):
         with open(json_path, 'r') as f:
             data = json.load(f)
@@ -22,21 +60,15 @@ def get_event_detection(record_name):
         else:
             y, sr = librosa.load(f'./user_uploads/{user.username}/{record_name}')
 
-        onset = librosa.onset.onset_detect(y=y, sr=sr, units='time')
-        tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
-        data = {'onset': onset.tolist(), 'beats': beats.tolist()}
+        if data_type == 'beats':
+            _, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
+            data = {'beats': beats.tolist()}
+        else:
+            onset = librosa.onset.onset_detect(y=y, sr=sr, units='time')
+            data = {'onset': onset.tolist()}
+
         with open(json_path, 'w') as f:
             json.dump(data, f)
-
-    if 'data_type' in request.args:
-        data_type = request.args['data_type']
-    else:
-        data_type = 'onset'
-
-    if data_type == 'beats':
-        data = {'beats': data['beats']}
-    else:
-        data = {'onset': data['onset']}
 
     return jsonify(data)
 
