@@ -7,8 +7,7 @@ export const api = axios.create({
 });
 
 export const updateRecording = (record_id, column, new_value, visualization_type) => {
-i
-    .put(
+api.put(
       "/update-recording",
       {
         record_id: record_id,
