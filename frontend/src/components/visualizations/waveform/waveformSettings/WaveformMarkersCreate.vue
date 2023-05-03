@@ -75,7 +75,7 @@ onMounted(() => {
             .then((response) => {
 
               emits("fillMarkersList", response.data[props.dataType]);
-              markersList.value[props.dataType] = response.data[props.dataType]
+              // markersList.value[props.dataType] = response.data[props.dataType]
 
               addMarkers(response.data[props.dataType]);
               emits("toggleLoading", props.dataType);
