@@ -1,4 +1,11 @@
-## Postup, jak to rozchodit:
+
+Jedná se o elektronickou přílohu k diplomové práci s názvem Webová aplikace pro vizualizaci parametrů hudebních nahrávek.
+
+
+Aplikaci lze vyzkoušet na následující adrese: [Audio-Feature-Visualization](https://audio-feature-visualization.onrender.com/signin)
+
+
+## Postup, jak zprovoznit aplikaci:
 * Otevřít v PyCharmu složku backend jako projekt a nainstalovat requirements (viz requirements.txt)
 * Nainstalovat Node.js a pnpm – https://pnpm.io/installation
 * Otevřít ve Visual Studiu Code složku frontend
