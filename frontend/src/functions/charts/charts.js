@@ -55,6 +55,9 @@ export default class ChartManager {
           title: {
             display: true,
             text: type == "Tempo" || type == "RMS" ? type : `Inter-${type.charAt(0).toUpperCase() + type.slice(1)}-Interval`,
+            font: {
+              size: 19 // Nastavte požadovanou velikost písma pro osu X
+              }
           },
         },
         responsive: true,
@@ -72,7 +75,15 @@ export default class ChartManager {
                   : type === "RMS"
                   ? "RMS value [db]"
                   : "Beats duration [s]",
+                  font: {
+                    size: 19 // Nastavte požadovanou velikost písma pro osu X
+                    }
             },
+             ticks: {
+              font: {
+                size: 16 // Nastavte požadovanou velikost písma pro osu X
+                }
+              }
           },
           x: {
             title: {
@@ -85,7 +96,15 @@ export default class ChartManager {
                   : type === "Tempo" || type === "RMS"
                   ? "Time [min:sec]"
                   : "Number of beat",
+                  font: {
+                    size: 19 // Nastavte požadovanou velikost písma pro osu X
+                    }
             },
+            ticks: {
+              font: {
+                size: 16 // Nastavte požadovanou velikost písma pro osu X
+                }
+              }
           },
         },
       },
