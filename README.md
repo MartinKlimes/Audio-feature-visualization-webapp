@@ -1,7 +1,7 @@
 
 # Audio-feature-visualization
 
-The web application allows users to visualize and compare various music recording parameters from multiple recordings simultaneously. There are currently no similar web-based applications available. Users can customize each visualization according to their preferences, and all changes are automatically saved to the database. This ensures that users won't lose their personalized visualization settings for individual recordings.
+The web application allows users to visualize and compare various music recording parameters from multiple recordings simultaneously. There are currently no similar web-based applications available. Users can customize each visualization according to their preferences, and all changes are automatically saved to the database.
 
 
 ## Tech Stack
