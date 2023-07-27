@@ -61,7 +61,7 @@ The user can upload recordings, music notation files, and MIDI files to the appl
 
 ![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/feadfff7-7341-4ae4-84d6-080263cec98b)
 
-This is how the main page of the application looks. It is composed of multiple components that seamlessly exchange data utilizing the Pinia store and facilitate server communication through RestAPI.
+This is the main page of the application. It consists of multiple components that effortlessly exchange data using the Pinia store and enable communication with the server through RestAPI.
 
 ![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/e64c9a71-1fb7-4d6b-a74d-a65cce532363)
 
