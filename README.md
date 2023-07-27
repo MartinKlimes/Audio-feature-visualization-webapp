@@ -1,11 +1,7 @@
 
 # Audio-feature-visualization
 
-Webová aplikace nabízí uživatelům možnost vizualizovat a porovnávat různé hu-
-dební parametry více nahrávek současně. Podobná aplikace této ve webovém prostředí chybí. Aplikace disponuje souborem nastavení, které je možné pro každou vizualizaci
-upravit dle vlastních preferencí. Jakékoli změny v nastavení se automaticky ukládají
-do databáze, což zajišťuje, že uživatelé neztratí svá data o nastavení vizualizací pro
-jednotlivé nahrávky.
+The web application allows users to visualize and compare various music recording parameters from multiple recordings simultaneously. There are currently no similar web-based applications available. Users can customize each visualization according to their preferences, and all changes are automatically saved to the database. This ensures that users won't lose their personalized visualization settings for individual recordings.
 
 
 ## Tech Stack
