@@ -78,7 +78,7 @@ Users have the flexibility to visualize multiple parameters from an unlimited nu
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/MartinKlimes/Audio-feature-visualization-webapp.git
 ```
 
 Go to the project directory
