@@ -57,7 +57,7 @@ Registration is available for users on the platform, and their information is se
 
 ![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/ad940c12-88d2-4ed3-b48e-03309f2c69f9)
 
-The user can upload recordings, music notation files, and MIDI files to the application, and all data is saved on the server. Recordings can be added via drag-and-drop, renamed, or deleted.
+The user can upload recordings, music notation files, and MIDI files to the application, and all data is saved on the server. Recordings can be added via drag-and-drop, renamed, or deleted. The user also has the option in the settings panel to switch the application from Czech to English language.
 
 ![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/feadfff7-7341-4ae4-84d6-080263cec98b)
 
