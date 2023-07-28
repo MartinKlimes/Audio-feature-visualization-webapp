@@ -55,7 +55,7 @@ https://audio-feature-visualization.onrender.com/
 
 Registration is available for users on the platform, and their information is securely stored in the database. After a successful login, a JSON Web Token (JWT) is generated on the server and sent to the user for subsequent request validation. The form enables validation of input data.
 
-![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/ad940c12-88d2-4ed3-b48e-03309f2c69f9)
+![App Screenshot](https://github.com/MartinKlimes/Audio-feature-visualization-webapp/assets/107542941/de3a3aaf-569d-4bcd-9f14-ac9eb9a457cd)
 
 The user can upload recordings, music notation files, and MIDI files to the application, and all data is saved on the server. Recordings can be added via drag-and-drop, renamed, or deleted. The user also has the option in the settings panel to switch the application from Czech to English language.
 
