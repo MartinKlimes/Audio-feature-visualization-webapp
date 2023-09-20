@@ -50,6 +50,12 @@ The web application allows users to visualize and compare various music recordin
 
 https://audio-feature-visualization.onrender.com/
 
+## Documentation
+
+[Documentation](https://drive.google.com/file/d/10ewwWTRCiWncaQMfoQy4w9VBdOK00oJ3/view)
+
+## YouTube
+https://youtu.be/oowly3jtM-Y
 
 ## Screenshots
 
@@ -68,9 +74,7 @@ This is the main page of the application. It consists of multiple components tha
 Users have the flexibility to visualize multiple parameters from an unlimited number of recordings. Moreover, they can export all visualizations as needed. Each visualization comes with a dedicated settings panel on the right, allowing users to customize their display preferences.
 
 ![App Screenshot](https://github.com/MartinKlimes/MartinKlimes/assets/107542941/4c351ef8-e90d-42d7-ace7-37be312f9334)
-## Documentation
 
-[Documentation](https://drive.google.com/file/d/10ewwWTRCiWncaQMfoQy4w9VBdOK00oJ3/view)
 
 
 ## Run Locally
